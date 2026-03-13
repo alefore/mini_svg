@@ -159,7 +159,7 @@ def MapToBox(input_box: Box, output_box: Box,
 
 class SvgChart(ShapeDrawer):
 
-  def __init__(self, width: float, height: float, styles: list[pathlib.Path]):
+  def __init__(self, width: float, height: float, styles: list[pathlib.Path]) -> None:
     self._width = width
     self._height = height
     self._lines = [
