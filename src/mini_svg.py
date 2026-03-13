@@ -57,14 +57,27 @@ class ComposeTransformers(PointTransformer):
 class ShapeDrawer(ABC):
 
   @abstractmethod
-  def add_line(self, x1: float, y1: float, x2: float, y2: float, params: dict[str, str] | None) -> None:
+  def add_line(self, x1: float, y1: float, x2: float, y2: float,
+               params: dict[str, str] | None) -> None:
     pass
 
-  def add_horizontal_line(self, x1: float, x2: float, y: float, params: dict[str, str] | None = None) -> None:
+  def add_horizontal_line(self,
+                          x1: float,
+                          x2: float,
+                          y: float,
+                          params: dict[str, str] | None = None) -> None:
     self.add_line(x1, y, x2, y, params)
 
-  def add_vertical_line(self, x: float, y1: float, y2: float, params: dict[str, str] | None = None) -> None:
+  def add_vertical_line(self,
+                        x: float,
+                        y1: float,
+                        y2: float,
+                        params: dict[str, str] | None = None) -> None:
     self.add_line(x, y1, x, y2, params)
+
+  @abstractmethod
+  def add_literal(self, content: str) -> None:
+    pass
 
   @abstractmethod
   def width(self) -> float:
@@ -78,11 +91,20 @@ class ShapeDrawer(ABC):
     return NoopTransformer()
 
   @abstractmethod
-  def add_rect(self, x: float, y: float, w: float, h: float, params: dict[str, str] | None = None) -> None:
+  def add_rect(self,
+               x: float,
+               y: float,
+               w: float,
+               h: float,
+               params: dict[str, str] | None = None) -> None:
     pass
 
   @abstractmethod
-  def add_circle(self, cx: float, cy: float, r: float, params: dict[str, str] | None = None) -> None:
+  def add_circle(self,
+                 cx: float,
+                 cy: float,
+                 r: float,
+                 params: dict[str, str] | None = None) -> None:
     pass
 
 
@@ -93,25 +115,33 @@ class TransformedShapeDrawer(ShapeDrawer):
     self._transformer = transformer
     self.delegate = delegate
 
-  def add_line(self, x1: float, y1: float, x2: float, y2: float, params: dict[str, str] | None) -> None:
+  def add_line(self, x1: float, y1: float, x2: float, y2: float,
+               params: dict[str, str] | None) -> None:
     tx1, ty1 = self._transformer.transform(x1, y1)
     tx2, ty2 = self._transformer.transform(x2, y2)
     self.delegate.add_line(tx1, ty1, tx2, ty2, params)
 
   def width(self) -> float:
     p1_x, _ = self._transformer.transform(0.0, 0.0)
-    p2_x, _ = self._transformer.transform(self.delegate.width(), self.delegate.height())
+    p2_x, _ = self._transformer.transform(self.delegate.width(),
+                                          self.delegate.height())
     return p2_x - p1_x
 
   def height(self) -> float:
     _, p1_y = self._transformer.transform(0.0, 0.0)
-    _, p2_y = self._transformer.transform(self.delegate.width(), self.delegate.height())
+    _, p2_y = self._transformer.transform(self.delegate.width(),
+                                          self.delegate.height())
     return p2_y - p1_y
 
   def transformer(self) -> PointTransformer:
     return self._transformer
 
-  def add_rect(self, x: float, y: float, w: float, h: float, params: dict[str, str] | None = None) -> None:
+  def add_rect(self,
+               x: float,
+               y: float,
+               w: float,
+               h: float,
+               params: dict[str, str] | None = None) -> None:
     # Map two points to find the new bounding box
     tx1, ty1 = self._transformer.transform(x, y)
     tx2, ty2 = self._transformer.transform(x + w, y + h)
@@ -121,10 +151,17 @@ class TransformedShapeDrawer(ShapeDrawer):
     nw, nh = abs(tx1 - tx2), abs(ty1 - ty2)
     self.delegate.add_rect(nx, ny, nw, nh, params)
 
-  def add_circle(self, cx: float, cy: float, r: float, params: dict[str, str] | None = None) -> None:
+  def add_circle(self,
+                 cx: float,
+                 cy: float,
+                 r: float,
+                 params: dict[str, str] | None = None) -> None:
     tx, ty = self._transformer.transform(cx, cy)
     self.delegate.add_circle(
         tx, ty, abs(self._transformer.transform(cx + r, cy)[0] - tx), params)
+
+  def add_literal(self, content: str) -> None:
+    self.delegate.add_literal(content)
 
 
 @dataclass
@@ -159,7 +196,8 @@ def MapToBox(input_box: Box, output_box: Box,
 
 class SvgChart(ShapeDrawer):
 
-  def __init__(self, width: float, height: float, styles: list[pathlib.Path]) -> None:
+  def __init__(self, width: float, height: float,
+               styles: list[pathlib.Path]) -> None:
     self._width = width
     self._height = height
     self._lines = [
@@ -188,7 +226,8 @@ class SvgChart(ShapeDrawer):
       extra_params = f" style='{style}'"
     return extra_params
 
-  def add_line(self, x1: float, y1: float, x2: float, y2: float, params: dict[str, str] | None) -> None:
+  def add_line(self, x1: float, y1: float, x2: float, y2: float,
+               params: dict[str, str] | None) -> None:
     extra_params = self._get_extra(params)
     self.add_literal(
         f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"{extra_params}/>'
@@ -197,13 +236,22 @@ class SvgChart(ShapeDrawer):
   def add_literal(self, text: str) -> None:
     self._lines.append(text)
 
-  def add_rect(self, x: float, y: float, w: float, h: float, params: dict[str, str] | None = None) -> None:
+  def add_rect(self,
+               x: float,
+               y: float,
+               w: float,
+               h: float,
+               params: dict[str, str] | None = None) -> None:
     extra_params = self._get_extra(params)
     self.add_literal(
         f'<rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}"{extra_params}/>'
     )
 
-  def add_circle(self, cx: float, cy: float, r: float, params: dict[str, str] | None = None) -> None:
+  def add_circle(self,
+                 cx: float,
+                 cy: float,
+                 r: float,
+                 params: dict[str, str] | None = None) -> None:
     extra_params = self._get_extra(params)
     self.add_literal(f"<circle cx='{cx}' cy='{cy}' r='{r}'{extra_params}/>")
 
@@ -211,3 +259,35 @@ class SvgChart(ShapeDrawer):
     with open(path, 'w') as f:
       f.write("\n".join(self._lines))
       f.write("</svg>")
+
+
+class PlotXY:
+
+  def __init__(self, delegate: ShapeDrawer, input_box: Box) -> None:
+    self.delegate = delegate
+    self.input_box = input_box
+    self.output_box = Box(0, 0, self.delegate.width(), self.delegate.height())
+    self.x_label: str | None = None
+    self.y_label: str | None = None
+
+  def set_output_box(self, output_box: Box) -> None:
+    self.output_box = output_box
+
+  def set_x_label(self, label: str) -> None:
+    self.x_label = label
+
+  def set_y_label(self, label: str) -> None:
+    self.y_label = label
+
+  def build(self) -> ShapeDrawer:
+    box = MapToBox(self.input_box, self.output_box, self.delegate)
+    box.add_vertical_line(0, 0, self.input_box.y2)
+    box.add_horizontal_line(0, self.input_box.x2, 0)
+    self.delegate.add_literal(
+        f'<text x="{self.delegate.width()/2}" y="{self.delegate.height()-10}" text-anchor="middle" font-size="12">{self.x_label}</text>'
+    )
+    self.delegate.add_literal(
+        f'<text transform="rotate(-90 15,{self.delegate.height()/2})" x="15" y="{self.delegate.height()/2}" text-anchor="middle" font-size="12">{self.y_label}</text>'
+    )
+
+    return box
