@@ -270,15 +270,46 @@ class PlotXY:
   x_label: str | None = None
   y_label: str | None = None
 
+  # Draw up to this number of tics on the x axes.
+  x_tics_count: int = 0
+
   def __init__(self, delegate: ShapeDrawer, input_box: Box) -> None:
     self.delegate = delegate
     self.input_box = input_box
     self.output_box = Box(0, 0, self.delegate.width(), self.delegate.height())
 
+  def _find_tic_interval(self, low: float, high: float, max_len: int) -> float:
+    """Returns the ideal distance between tics.
+
+    The ideal distance is such that:
+
+    * It is a multiple of a power of 10 (e.g., of the form `a*10**b` for an
+      int a >= 0 and an int b).
+    * At most `max_len` multiples of the ideal distance fall bewteen `low` and
+      `high`.
+    """
+    assert low < high
+    assert max_len > 0
+    raise NotImplementedError()  #  {{🍄 find tic interval}}
+
+  def _get_tics(self, low: float, high: float, max_len: int) -> list[float]:
+    """Returns a list with the values where tics should be drawn.
+
+    Uses `_find_tic_interval` to find the multiplers and returns at most
+    `max_len` values (between `low` and `high`, inclusive).
+    """
+    assert low < high
+    if max_len <= 0:
+      return []
+    raise NotImplementedError()  #  {{🍄 get tics}}
+
   def build(self) -> ShapeDrawer:
     box = MapToBox(self.input_box, self.output_box, self.delegate)
     box.add_vertical_line(0, 0, self.input_box.y2)
     box.add_horizontal_line(0, self.input_box.x2, 0)
+    for x in self._get_tics(0, self.input_box.x2, self.x_tics_count):
+      box.add_vertical_line(x, 0, self.input_box.y2)
+
     self.delegate.add_literal(
         f'<text x="{self.delegate.width()/2}" y="{self.delegate.height()-10}" text-anchor="middle" font-size="12">{self.x_label}</text>'
     )

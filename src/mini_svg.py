@@ -5,7 +5,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import ScalarFormatter
-from typing import Any, Callable, Iterable
+from typing import Any, Callable, Iterable, NewType
 import re
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
@@ -52,6 +52,15 @@ class ComposeTransformers(PointTransformer):
     for t in self._transformers:
       x, y = t.transform(x, y)
     return x, y
+
+
+@dataclass
+class Rect:
+  x: float
+  y: float
+  w: float
+  h: float
+  params: dict[str, str] = {}
 
 
 class ShapeDrawer(ABC):
@@ -223,7 +232,10 @@ class SvgChart(ShapeDrawer):
     extra_params = ""
     style = params and params.get('style')
     if style:
-      extra_params = f" style='{style}'"
+      extra_params += f" style='{style}'"
+    class_value = params and params.get('class')
+    if class_value:
+      extra_params += f" class='{class_value}'"
     return extra_params
 
   def add_line(self, x1: float, y1: float, x2: float, y2: float,
@@ -253,7 +265,12 @@ class SvgChart(ShapeDrawer):
                  r: float,
                  params: dict[str, str] | None = None) -> None:
     extra_params = self._get_extra(params)
-    self.add_literal(f"<circle cx='{cx}' cy='{cy}' r='{r}'{extra_params}/>")
+    contents = f"circle cx='{cx:.1f}' cy='{cy:.1f}' r='{r:.1f}'{extra_params}"
+    title = (params or {}).get("title")
+    if title:
+      self.add_literal(f"<{contents}><title>{title}</title></circle>")
+    else:
+      self.add_literal(f"<{contents}/>")
 
   def write(self, path: pathlib.Path) -> None:
     with open(path, 'w') as f:
@@ -270,15 +287,86 @@ class PlotXY:
   x_label: str | None = None
   y_label: str | None = None
 
+  # Draw up to this number of tics on the axes.
+  x_tics_count: int = 10
+  y_tics_count: int = 10
+
+  labels: frozenset[str] = frozenset()
+
   def __init__(self, delegate: ShapeDrawer, input_box: Box) -> None:
     self.delegate = delegate
     self.input_box = input_box
     self.output_box = Box(0, 0, self.delegate.width(), self.delegate.height())
 
+  def _find_tic_interval(self, low: float, high: float, max_len: int) -> float:
+    """Returns the ideal distance between tics."""
+    assert low < high
+    assert max_len > 0
+    power_of_10 = 10**math.floor(math.log10((high - low) / max_len))
+    for factor in [1, 2, 5, 10]:
+      candidate = power_of_10 * factor
+      count = (high - max(low, 0)) // candidate  # Positive tics.
+      if low <= 0:
+        count += 1  # For zero.
+        if low < 0:
+          count += abs(low) // candidate  # Negative tics.
+      if count <= max_len:
+        return candidate
+    assert False
+
+  def _get_tics(self, low: float, high: float, max_len: int) -> list[float]:
+    """Returns a list with the values where tics should be drawn.
+
+    Uses `_find_tic_interval` to find the multiplers and returns at most
+    `max_len` values (between `low` and `high`, inclusive).
+    """
+    assert low < high
+    if max_len <= 0:
+      return []
+    interval: float = self._find_tic_interval(low, high, max_len)
+    assert interval != 0
+    first_tic: float = math.ceil(low / interval) * interval
+    if first_tic > high:
+      return []
+    return [
+        first_tic + k * interval
+        for k in range(min(max_len,
+                           int((high - first_tic) / interval) + 1))
+    ]
+
   def build(self) -> ShapeDrawer:
     box = MapToBox(self.input_box, self.output_box, self.delegate)
-    box.add_vertical_line(0, 0, self.input_box.y2)
-    box.add_horizontal_line(0, self.input_box.x2, 0)
+    for x in self._get_tics(self.input_box.x1, self.input_box.x2,
+                            self.x_tics_count):
+      box.add_vertical_line(x, self.input_box.y1, self.input_box.y2,
+                            {"class": "tic"})
+      span = (self.input_box.height() / 50) * (
+          self.output_box.width() / self.output_box.height())
+      box.add_vertical_line(x, -span, 0)
+      dx, dy = box.transformer().transform(x, 2 * -span)
+      box.add_literal(f"<text x='{dx}' y='{dy}' class='tic-value-x'>{x}</text>")
+
+    for y in self._get_tics(self.input_box.y1, self.input_box.y2,
+                            self.y_tics_count):
+      box.add_horizontal_line(self.input_box.x1, self.input_box.x2, y,
+                              {"class": "tic"})
+      span = self.input_box.width() / 50
+      box.add_horizontal_line(-span, 0, y)
+      dx, dy = box.transformer().transform(2 * -span, y)
+      box.add_literal(f"<text x='{dx}' y='{dy}' class='tic-value-y'>{y}</text>")
+
+    for i, key in enumerate(sorted(self.labels)):
+      lx = self.delegate.width() - 60
+      ly = 20 + (i * 20)
+      self.delegate.add_rect(lx, ly, 10, 10, {"class": key})
+      self.delegate.add_literal(
+          f'<text x="{lx + 15}" y="{ly + 9}">{key}</text>')
+
+    box.add_vertical_line(self.input_box.x1, self.input_box.y1,
+                          self.input_box.y2)
+    box.add_horizontal_line(self.input_box.x1, self.input_box.x2,
+                            self.input_box.y1)
+
     self.delegate.add_literal(
         f'<text x="{self.delegate.width()/2}" y="{self.delegate.height()-10}" text-anchor="middle" font-size="12">{self.x_label}</text>'
     )
@@ -287,3 +375,28 @@ class PlotXY:
     )
 
     return box
+
+
+DataDict = NewType("DataDict", dict[str, list[tuple[float, float]]])
+
+
+def _box_for_points(data_dict: DataDict) -> Box:
+  all_points = [pt for pts in data_dict.values() for pt in pts]
+  all_x = [pt[0] for pt in all_points]
+  all_y = [pt[1] for pt in all_points]
+  return Box(min(0, min(all_x)), min(0, min(all_y)), max(all_x), max(all_y))
+
+
+def simple_plot(delegate: ShapeDrawer, points: DataDict) -> PlotXY:
+  return PlotXY(delegate, _box_for_points(points))
+
+
+def scatterplot(drawer: ShapeDrawer, data_dict: DataDict) -> None:
+  box = _box_for_points(data_dict)
+  radius = min(box.width(), box.height()) / 30
+  for key, points in data_dict.items():
+    for x, y in points:
+      drawer.add_circle(x, y, radius, {
+          "class": key,
+          "title": f"{key}: ({x}, {y})"
+      })
