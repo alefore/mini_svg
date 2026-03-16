@@ -534,25 +534,26 @@ class Histogram(NamedTuple):
     return plot.produce() + (ShapeStream(self._draw()) | plot.transformer())
 
 
-class _PlotBoxOne(NamedTuple):
+@dataclass(frozen=True)
+class _BoxPlotOne:
   label: str
   y_min: float
   y_max: float
-  quantiles: list[float]
+  quantiles: tuple[float, float, float]
   min_whisker: float
   max_whisker: float
 
   @classmethod
   def create(cls, label: str, data: list[float]):
     data = sorted(data)
-    quantiles = statistics.quantiles(data, n=4, method='inclusive')
-    q1, median, q3 = quantiles
+    q1, median, q3 = statistics.quantiles(data, n=4, method='inclusive')
     iqr = q3 - q1
     fences = [q1 - 1.5 * iqr, q3 + 1.5 * iqr]
     min_whisker = min(x for x in data if x >= fences[0])
     max_whisker = max(x for x in data if x <= fences[1])
 
-    return cls(label, min(data), max(data), quantiles, min_whisker, max_whisker)
+    return cls(label, min(data), max(data), (q1, median, q3), min_whisker,
+               max_whisker)
 
   def draw(self, index: int, plot: Plot2D) -> Iterable[Shape]:
     x = plot.transformer().transformer.transform(index, 0)[0]
@@ -575,19 +576,12 @@ class _PlotBoxOne(NamedTuple):
                           ParamsDict({"style": "stroke: var(--bg-mild)"}))
 
 
-class PlotBox(NamedTuple):
+@dataclass(frozen=True)
+class _BoxPlot:
 
-  data: dict[str, _PlotBoxOne]
+  data: dict[str, _BoxPlotOne]
   y_min: float
   y_max: float
-
-  @classmethod
-  def create(cls, raw_data: dict[str, list[float]]):
-    data = {
-        key: _PlotBoxOne.create(key, value) for key, value in raw_data.items()
-    }
-    return cls(data, min(d.y_min for d in data.values()),
-               max(d.y_max for d in data.values()))
 
   @shape_generator
   def _draw(self, plot: Plot2D) -> Iterable[Shape]:
@@ -606,3 +600,9 @@ class PlotBox(NamedTuple):
     plot_defaults.update(kwargs)
     plot = Plot2D(**plot_defaults)
     return plot.produce() + self._draw(plot)
+
+
+def box_plot(raw_data: dict[str, list[float]]):
+  data = {key: _BoxPlotOne.create(key, value) for key, value in raw_data.items()}
+  return _BoxPlot(data, min(d.y_min for d in data.values()),
+                  max(d.y_max for d in data.values()))
