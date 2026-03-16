@@ -233,35 +233,34 @@ class SvgWriter:
 
   def write(self, shapes: Iterable[Shape]) -> None:
     for shape in shapes:
-      match shape:
-        case Rect():
-          self._add_rect(shape)
-        case Line():
-          self._add_line(shape)
-        case Circle():
-          self._add_circle(shape)
-        case Text():
-          self._add_text(shape)
+      self._write_shape(shape)
     with open(self._filename, 'w') as f:
       f.write("\n".join(self._lines))
       f.write("</svg>")
 
-  def _add_line(self, line: Line) -> None:
+  @singledispatchmethod
+  def _write_shape(self, arg: Any) -> None:
+    raise TypeError(f"Cannot handle type {type(arg)}")
+
+  def _add_literal(self, text: str) -> None:
+    self._lines.append(text)
+
+  @_write_shape.register
+  def _(self, line: Line) -> None:
     extra_params = self._get_extra(line.params)
     self._add_literal(
         f'<line x1="{line.x1:.1f}" y1="{line.y1:.1f}" x2="{line.x2:.1f}" y2="{line.y2:.1f}"{extra_params}/>'
     )
 
-  def _add_literal(self, text: str) -> None:
-    self._lines.append(text)
-
-  def _add_rect(self, rect: Rect) -> None:
+  @_write_shape.register
+  def _(self, rect: Rect) -> None:
     extra_params = self._get_extra(rect.params)
     self._add_literal(
         f'<rect x="{rect.x:.1f}" y="{rect.y:.1f}" width="{rect.w:.1f}" height="{rect.h:.1f}"{extra_params}/>'
     )
 
-  def _add_circle(self, circle: Circle) -> None:
+  @_write_shape.register
+  def _(self, circle: Circle) -> None:
     extra_params = self._get_extra(circle.params)
     contents = f"circle cx='{circle.cx:.1f}' cy='{circle.cy:.1f}' r='{circle.r:.1f}'{extra_params}"
     title = circle.params.get("title")
@@ -270,7 +269,8 @@ class SvgWriter:
     else:
       self._add_literal(f"<{contents}/>")
 
-  def _add_text(self, text: Text) -> None:
+  @_write_shape.register
+  def _(self, text: Text) -> None:
     extra_params = self._get_extra(text.params)
     self._add_literal(
         f"<text x='{text.x}' y='{text.y}'{extra_params}>{text.text}</text>")
