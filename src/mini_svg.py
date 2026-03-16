@@ -143,17 +143,6 @@ class Text:
 Shape = Rect | Line | Circle | Text
 
 
-class ShapeConsumer:
-
-  @abstractmethod
-  def receive(self, shapes: Iterable[Shape]) -> None:
-    pass
-
-  @abstractmethod
-  def get_box(self) -> Box:
-    pass
-
-
 class ShapeTransformer:
 
   def __init__(self, transformer: PointTransformer) -> None:
@@ -212,7 +201,7 @@ def MoveAndScale(input_box: Box, output_box: Box) -> ShapeTransformer:
   return ShapeTransformer(ComposeTransformers([to_origin, scale, to_output]))
 
 
-class SvgWriter(ShapeConsumer):
+class SvgWriter:
 
   def __init__(self, filename: pathlib.Path, width: float, height: float,
                styles: list[pathlib.Path]) -> None:
