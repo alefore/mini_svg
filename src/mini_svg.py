@@ -475,32 +475,14 @@ def scatterplot(data_dict: DataDict) -> Iterable[Shape]:
 BinElements = NewType("BinElements", int)
 
 
-class Histogram(NamedTuple):
+@dataclass(frozen=True)
+class _Histogram:
   binned_data: dict[str, list[BinElements]]
 
   bin_size: float
   min_value: float
   max_value: float
   max_count: BinElements
-
-  @classmethod
-  def create(cls, bins: int, data: dict[str, list[float]]):
-    all_values = [v for obs in data.values() for v in obs]
-    min_value, max_value = min(all_values), max(all_values)
-    bin_size = (max_value - min_value) / bins
-
-    binned_data: dict[str, list[BinElements]] = dict()
-    for label, values in data.items():
-      counts: list[BinElements] = [BinElements(0)] * bins
-      for v in values:
-        index = int((v - min_value) / bin_size)
-        if index == bins:
-          index -= 1
-        counts[index] = BinElements(counts[index] + 1)
-      binned_data[label] = counts
-
-    max_count = max(max(bins) for bins in binned_data.values())
-    return cls(binned_data, bin_size, min_value, max_value, max_count)
 
   def _draw(self) -> Iterable[Shape]:
     individual_bin_width = self.bin_size * 0.8 / len(self.binned_data)
@@ -532,6 +514,25 @@ class Histogram(NamedTuple):
     plot_defaults.update(kwargs)
     plot = Plot2D(**plot_defaults)
     return plot.produce() + (ShapeStream(self._draw()) | plot.transformer())
+
+
+def histogram_plot(bins: int, data: dict[str, list[float]]) -> _Histogram:
+  all_values = [v for obs in data.values() for v in obs]
+  min_value, max_value = min(all_values), max(all_values)
+  bin_size = (max_value - min_value) / bins
+
+  binned_data: dict[str, list[BinElements]] = dict()
+  for label, values in data.items():
+    counts: list[BinElements] = [BinElements(0)] * bins
+    for v in values:
+      index = int((v - min_value) / bin_size)
+      if index == bins:
+        index -= 1
+      counts[index] = BinElements(counts[index] + 1)
+    binned_data[label] = counts
+
+  max_count = max(max(bins) for bins in binned_data.values())
+  return _Histogram(binned_data, bin_size, min_value, max_value, max_count)
 
 
 @dataclass(frozen=True)
