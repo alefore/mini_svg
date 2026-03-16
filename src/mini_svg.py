@@ -111,11 +111,17 @@ class Line:
   params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
 
 
-def vertical_line(x, y1, y2, params: ParamsDict | None = None) -> Line:
+def vertical_line(x: float,
+                  y1: float,
+                  y2: float,
+                  params: ParamsDict | None = None) -> Line:
   return Line(x, y1, x, y2, params or ParamsDict({}))
 
 
-def horizontal_line(x1, x2, y, params: ParamsDict | None = None) -> Line:
+def horizontal_line(x1: float,
+                    x2: float,
+                    y: float,
+                    params: ParamsDict | None = None) -> Line:
   return Line(x1, y, x2, y, params or ParamsDict({}))
 
 
@@ -145,12 +151,6 @@ class ShapeStream:
 
   def __iter__(self):
     yield from self._it
-
-  def __or__(
-      self, transformer: Callable[[Iterable[Shape]],
-                                  Iterable[Shape]]) -> "ShapeStream":
-    """Allow: stream | transformer"""
-    return ShapeStream(transformer(self._it))
 
   def __add__(self, other: Iterable[Shape]) -> "ShapeStream":
     """Allow: stream_a + stream_b"""
@@ -359,7 +359,7 @@ class _XYPlot:
                                          defaults.identity_line))
 
   def produce(self) -> ShapeStream:
-    return (self._draw() | self.transformer) + self._legend()
+    return self.transformer(self._draw()) + self._legend()
 
   def _legend(self) -> Iterator[Shape]:
     assert self.output_range
