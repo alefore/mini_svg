@@ -1,17 +1,12 @@
 from abc import ABC, abstractmethod
-import pathlib
-import re
+from dataclasses import dataclass, field, fields
 from functools import singledispatchmethod, wraps
 import itertools
 import math
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.ticker import ScalarFormatter
-from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType
+import pathlib
 import re
-import matplotlib.pyplot as plt
-from dataclasses import dataclass, field
 import statistics
+from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType
 
 
 class PointTransformer(ABC):
@@ -260,7 +255,7 @@ class SvgWriter:
         extra_params += f" {keyword}='{value}'"
     return extra_params
 
-  def write(self, shapes: Iterable[Shape]) -> None:
+  def consume(self, shapes: Iterable[Shape]) -> None:
     for shape in shapes:
       self._write_shape(shape)
     with open(self._filename, 'w') as f:
@@ -311,6 +306,12 @@ class PlotTics:
   value_format: str
 
 
+def value_with_default(value, default):
+  if value is not None:
+    return value
+  return default
+
+
 @dataclass(frozen=True)
 class PlotTicsConfig:
   # List of values where tics should be drawn. If given, all other fields are
@@ -318,19 +319,29 @@ class PlotTicsConfig:
   values: frozenset[float] | None = None
 
   # Do not draw more than this number of tics.
-  max_count: int = 10
+  max_count: int | None = None
 
   # Minimum distance between tics.
   min_distance: float | None = None
 
   value_format: str | None = None
 
+  def with_defaults(self, defaults: "PlotTicsConfig") -> "PlotTicsConfig":
+    return PlotTicsConfig(
+        values=value_with_default(self.values, defaults.values),
+        max_count=value_with_default(self.max_count, defaults.max_count),
+        min_distance=value_with_default(self.min_distance,
+                                        defaults.min_distance),
+        value_format=value_with_default(self.value_format,
+                                        defaults.value_format))
+
   def _find_base(self, low: float, high: float) -> float:
     """Returns the ideal distance between tics."""
     assert low < high
-    assert self.max_count > 0
+    max_count = value_with_default(self.max_count, 10)
+    assert max_count > 0
     assert not self.values
-    rough_distance = (high - low) / self.max_count
+    rough_distance = (high - low) / max_count
     if self.min_distance:
       rough_distance = max(rough_distance, self.min_distance)
     power_of_10 = 10**math.floor(math.log10(rough_distance))
@@ -341,8 +352,8 @@ class PlotTicsConfig:
         count += 1  # For zero.
         if low < 0:
           count += abs(low) // candidate  # Negative tics.
-      if count <= self.max_count and (not self.min_distance or
-                                      candidate >= self.min_distance):
+      if count <= max_count and (not self.min_distance or
+                                 candidate >= self.min_distance):
         return candidate
     assert False
 
@@ -352,7 +363,8 @@ class PlotTicsConfig:
     assert low < high
     if self.values is not None:
       return self.values
-    if self.max_count <= 0:
+    max_count = value_with_default(self.max_count, 10)
+    if max_count <= 0:
       return frozenset()
     assert base != 0
     first_tic: float = math.ceil(low / base) * base
@@ -360,7 +372,7 @@ class PlotTicsConfig:
       return frozenset()
     return frozenset(
         first_tic + k * base
-        for k in range(min(self.max_count,
+        for k in range(min(max_count,
                            int((high - first_tic) / base) + 1)))
 
   def _get_fmt(self, low: float, high: float, base: float) -> str:
@@ -369,7 +381,8 @@ class PlotTicsConfig:
     return "d" if base > 1 else f".{abs(math.floor(math.log10(base)))}f"
 
   def build(self, low: float, high: float) -> PlotTics:
-    if self.max_count <= 0:
+    max_count = value_with_default(self.max_count, 10)
+    if max_count <= 0:
       return PlotTics(values=frozenset(), value_format="ignored")
     if self.values:
       sorted_values = sorted(self.values)
@@ -382,13 +395,8 @@ class PlotTicsConfig:
         value_format=self._get_fmt(low, high, base))
 
 
-@dataclass(frozen=True)
-class Plot2D:
-
-  domain: Box
-  output_range: Box
-  margins: Margins
-
+@dataclass(frozen=True, kw_only=True)
+class _XYPlot:
   x_axis_values: PlotTicsConfig = PlotTicsConfig()
   y_axis_values: PlotTicsConfig = PlotTicsConfig()
 
@@ -397,15 +405,35 @@ class Plot2D:
 
   labels: frozenset[str] = frozenset()
 
+  domain: Box | None = None
+  output_range: Box | None = None
+  margins: Margins | None = None
+
+  @property
   def transformer(self) -> ShapeTransformer:
+    assert self.domain
+    assert self.output_range
+    assert self.margins
     return MoveAndScale(
         self.domain,
         self.output_range.with_y_reversed().with_margins(self.margins))
 
+  def with_defaults(self, defaults: "_XYPlot") -> "_XYPlot":
+    return _XYPlot(
+        domain=self.domain or defaults.domain,
+        output_range=self.output_range or defaults.output_range,
+        margins=self.margins or defaults.margins,
+        x_axis_values=self.x_axis_values.with_defaults(defaults.x_axis_values),
+        y_axis_values=self.y_axis_values.with_defaults(defaults.y_axis_values),
+        x_label=self.x_label or defaults.x_label,
+        y_label=self.y_label or defaults.y_label,
+        labels=self.labels or defaults.labels)
+
   def produce(self) -> ShapeStream:
-    return (self._draw() | self.transformer()) + self._legend()
+    return (self._draw() | self.transformer) + self._legend()
 
   def _legend(self) -> Iterator[Shape]:
+    assert self.output_range
     for i, key in enumerate(sorted(self.labels)):
       lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
@@ -427,6 +455,8 @@ class Plot2D:
 
   @shape_generator
   def _draw(self) -> Iterator[Shape]:
+    assert self.domain
+    assert self.output_range
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
       yield vertical_line(x, self.domain.y1, self.domain.y2,
@@ -448,6 +478,24 @@ class Plot2D:
 
     yield vertical_line(self.domain.x1, self.domain.y1, self.domain.y2)
     yield horizontal_line(self.domain.x1, self.domain.x2, self.domain.y1)
+
+
+def with_plot_config(func):
+  plot_fields = {f.name for f in fields(_XYPlot)}
+
+  @wraps(func)
+  def wrapper(*args, **kwargs):
+    plot_kwargs = {k: v for k, v in kwargs.items() if k in plot_fields}
+    remaining_kwargs = {k: v for k, v in kwargs.items() if k not in plot_fields}
+    if args and isinstance(args[0], _XYPlot):
+      return func(*args, **remaining_kwargs)
+    config = _XYPlot(**plot_kwargs)
+    if args and not isinstance(args[0], _XYPlot):
+      # Handle `obj.method(...)`. `args` includes `obj`.
+      return func(args[0], config, *args[1:], **remaining_kwargs)
+    return func(config, *args, **remaining_kwargs)
+
+  return wrapper
 
 
 DataDict = NewType("DataDict", dict[str, list[tuple[float, float]]])
@@ -495,25 +543,19 @@ class _Histogram:
               (bin_index + 0.1 + 0.8 * group_index / len(self.binned_data)), 0,
               individual_bin_width, count, ParamsDict({"class": label.lower()}))
 
-  def produce(self, *args, **kwargs) -> Iterable[Shape]:
+  @with_plot_config
+  def produce(self, plot: _XYPlot) -> Iterable[Shape]:
     bin_count = max(len(bins) for bins in self.binned_data.values())
-    plot_defaults: dict[str, Any] = {
-        "domain":
-            Box(self.min_value, 0, self.max_value, self.max_count),
-        "y_label":
-            "Histogram",
-        "x_axis_values":
-            PlotTicsConfig(
+    plot = plot.with_defaults(
+        _XYPlot(
+            domain=Box(self.min_value, 0, self.max_value, self.max_count),
+            y_label="Histogram",
+            x_axis_values=PlotTicsConfig(
                 values=frozenset(self.min_value + i * self.bin_size
                                  for i in range(0, bin_count, 2))),
-        "y_axis_values":
-            PlotTicsConfig(min_distance=1),
-        "labels":
-            frozenset(self.binned_data),
-    }
-    plot_defaults.update(kwargs)
-    plot = Plot2D(**plot_defaults)
-    return plot.produce() + (ShapeStream(self._draw()) | plot.transformer())
+            y_axis_values=PlotTicsConfig(min_distance=1),
+            labels=frozenset(self.binned_data)))
+    return plot.produce() + plot.transformer(self._draw())
 
 
 def histogram_plot(bins: int, data: dict[str, list[float]]) -> _Histogram:
@@ -556,9 +598,11 @@ class _BoxPlotOne:
     return cls(label, min(data), max(data), (q1, median, q3), min_whisker,
                max_whisker)
 
-  def draw(self, index: int, plot: Plot2D) -> Iterable[Shape]:
-    x = plot.transformer().transformer.transform(index, 0)[0]
-    return (self._shapes(index) | plot.transformer()) + [
+  def draw(self, index: int, plot: _XYPlot) -> Iterable[Shape]:
+    x = plot.transformer.transformer.transform(index, 0)[0]
+    assert plot.output_range
+    assert plot.margins
+    return plot.transformer(self._shapes(index)) + [
         Text(self.label, x,
              plot.output_range.height() - plot.margins.bottom - 20,
              ParamsDict({"class": "boxplot-label"}))
@@ -585,25 +629,22 @@ class _BoxPlot:
   y_max: float
 
   @shape_generator
-  def _draw(self, plot: Plot2D) -> Iterable[Shape]:
+  def _draw(self, plot: _XYPlot) -> Iterable[Shape]:
     return itertools.chain.from_iterable(
-        value.draw(index, plot)
-        for index, value in enumerate(self.data.values()))
+        self.data[key].draw(index, plot)
+        for index, key in enumerate(sorted(self.data)))
 
-  def produce(self, *args, **kwargs) -> Iterable[Shape]:
-    plot_defaults: dict[str, Any] = {
-        "domain":
-            Box(-1, math.floor(self.y_min), len(self.data),
-                math.ceil(self.y_max)),
-        "x_axis_values":
-            PlotTicsConfig(max_count=0),
-    }
-    plot_defaults.update(kwargs)
-    plot = Plot2D(**plot_defaults)
+  @with_plot_config
+  def produce(self, plot: _XYPlot) -> Iterable[Shape]:
+    plot = plot.with_defaults(
+        _XYPlot(
+            domain=Box(-1, math.floor(self.y_min), len(self.data),
+                       math.ceil(self.y_max)),
+            x_axis_values=PlotTicsConfig(max_count=0)))
     return plot.produce() + self._draw(plot)
 
 
 def box_plot(raw_data: dict[str, list[float]]):
-  data = {key: _BoxPlotOne.create(key, value) for key, value in raw_data.items()}
+  data = {k: _BoxPlotOne.create(k, v) for k, v in raw_data.items()}
   return _BoxPlot(data, min(d.y_min for d in data.values()),
                   max(d.y_max for d in data.values()))
