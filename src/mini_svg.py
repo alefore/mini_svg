@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import pathlib
 import re
-from functools import singledispatchmethod
+from functools import singledispatchmethod, wraps
 import itertools
 import math
 import matplotlib.pyplot as plt
@@ -143,13 +143,42 @@ class Text:
 Shape = Rect | Line | Circle | Text
 
 
+class ShapeStream:
+
+  def __init__(self, iterable: Iterable[Shape]) -> None:
+    self._it = iterable
+
+  def __iter__(self):
+    yield from self._it
+
+  def __or__(
+      self, transformer: Callable[[Iterable[Shape]],
+                                  Iterable[Shape]]) -> "ShapeStream":
+    """Allow: stream | transformer"""
+    return ShapeStream(transformer(self._it))
+
+  def __add__(self, other: Iterable[Shape]) -> "ShapeStream":
+    """Allow: stream_a + stream_b"""
+    return ShapeStream(itertools.chain(self._it, other))
+
+
+def shape_generator(
+    func: Callable[..., Iterable[Shape]]) -> Callable[..., ShapeStream]:
+
+  @wraps(func)
+  def wrapper(*args: Any, **kwargs: Any) -> ShapeStream:
+    return ShapeStream(func(*args, **kwargs))
+
+  return wrapper
+
+
 class ShapeTransformer:
 
   def __init__(self, transformer: PointTransformer) -> None:
     self.transformer = transformer
 
-  def transform(self, shapes: Iterable[Shape]) -> Iterable[Shape]:
-    return map(self._handle, shapes)
+  def __call__(self, shapes: Iterable[Shape]) -> ShapeStream:
+    return ShapeStream(map(self._handle, shapes))
 
   @singledispatchmethod
   def _handle(self, arg: Any) -> Shape:
@@ -187,16 +216,16 @@ class ShapeTransformer:
     return Text(text.text, tx, ty, text.params)
 
 
-def MoveAndScale(input_box: Box, output_box: Box) -> ShapeTransformer:
+def MoveAndScale(domain: Box, range: Box) -> ShapeTransformer:
   "Returns a new delegate where drawing is constrained to the box given."
 
-  to_origin = PointTranslate(-input_box.x1, -input_box.y1)
+  to_origin = PointTranslate(-domain.x1, -domain.y1)
 
-  sx = (output_box.x2 - output_box.x1) / (input_box.x2 - input_box.x1)
-  sy = (output_box.y2 - output_box.y1) / (input_box.y2 - input_box.y1)
+  sx = (range.x2 - range.x1) / (domain.x2 - domain.x1)
+  sy = (range.y2 - range.y1) / (domain.y2 - domain.y1)
   scale = PointScale(sx, sy)
 
-  to_output = PointTranslate(output_box.x1, output_box.y1)
+  to_output = PointTranslate(range.x1, range.y1)
 
   return ShapeTransformer(ComposeTransformers([to_origin, scale, to_output]))
 
@@ -356,8 +385,8 @@ class PlotTicsConfig:
 @dataclass(frozen=True)
 class Plot2D:
 
-  input_box: Box
-  output_box: Box
+  domain: Box
+  output_range: Box
   margins: Margins
 
   x_axis_values: PlotTicsConfig = PlotTicsConfig()
@@ -370,56 +399,55 @@ class Plot2D:
 
   def transformer(self) -> ShapeTransformer:
     return MoveAndScale(
-        self.input_box,
-        self.output_box.with_y_reversed().with_margins(self.margins))
+        self.domain,
+        self.output_range.with_y_reversed().with_margins(self.margins))
 
-  def produce(self) -> Iterator[Shape]:
-    return itertools.chain(self.transformer().transform(self._draw()),
-                           self._legend())
+  def produce(self) -> ShapeStream:
+    return (self._draw() | self.transformer()) + self._legend()
 
   def _legend(self) -> Iterator[Shape]:
     for i, key in enumerate(sorted(self.labels)):
-      lx = self.output_box.width() - 60
+      lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
       yield Rect(lx, ly, 10, 10, ParamsDict({"class": key}))
       yield Text(key, lx + 15, ly + 9)
 
     if self.x_label:
       yield Text(self.x_label,
-                 self.output_box.width() / 2, self.output_box.height(),
+                 self.output_range.width() / 2, self.output_range.height(),
                  ParamsDict({"class": "label-x"}))
     if self.y_label:
       yield Text(
           self.y_label, 15,
-          self.output_box.height() / 2,
+          self.output_range.height() / 2,
           ParamsDict({
               "class": "label-y",
-              "transform": f"rotate(-90 15,{self.output_box.height()/2})"
+              "transform": f"rotate(-90 15,{self.output_range.height()/2})"
           }))
 
+  @shape_generator
   def _draw(self) -> Iterator[Shape]:
-    x_values = self.x_axis_values.build(self.input_box.x1, self.input_box.x2)
+    x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
-      yield vertical_line(x, self.input_box.y1, self.input_box.y2,
+      yield vertical_line(x, self.domain.y1, self.domain.y2,
                           ParamsDict({"class": "tic"}))
-      span = (self.input_box.height() / 50) * (
-          self.output_box.width() / self.output_box.height())
+      span = (self.domain.height() / 50) * (
+          self.output_range.width() / self.output_range.height())
       yield vertical_line(x, -span, 0)
       yield Text(f"{x:{x_values.value_format}}", x, 2 * -span,
                  ParamsDict({"class": "tic-value-x"}))
 
-    y_values = self.y_axis_values.build(self.input_box.y1, self.input_box.y2)
+    y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
-      yield horizontal_line(self.input_box.x1, self.input_box.x2, y,
+      yield horizontal_line(self.domain.x1, self.domain.x2, y,
                             ParamsDict({"class": "tic"}))
-      span = self.input_box.width() / 50
-      yield horizontal_line(self.input_box.x1 - span, self.input_box.x1, y)
-      yield Text(f"{y:{y_values.value_format}}", self.input_box.x1 - 2 * span,
-                 y, ParamsDict({"class": "tic-value-y"}))
+      span = self.domain.width() / 50
+      yield horizontal_line(self.domain.x1 - span, self.domain.x1, y)
+      yield Text(f"{y:{y_values.value_format}}", self.domain.x1 - 2 * span, y,
+                 ParamsDict({"class": "tic-value-y"}))
 
-    yield vertical_line(self.input_box.x1, self.input_box.y1, self.input_box.y2)
-    yield horizontal_line(self.input_box.x1, self.input_box.x2,
-                          self.input_box.y1)
+    yield vertical_line(self.domain.x1, self.domain.y1, self.domain.y2)
+    yield horizontal_line(self.domain.x1, self.domain.x2, self.domain.y1)
 
 
 DataDict = NewType("DataDict", dict[str, list[tuple[float, float]]])
@@ -488,7 +516,7 @@ class Histogram(NamedTuple):
   def produce(self, *args, **kwargs) -> Iterable[Shape]:
     bin_count = max(len(bins) for bins in self.binned_data.values())
     plot_defaults: dict[str, Any] = {
-        "input_box":
+        "domain":
             Box(self.min_value, 0, self.max_value, self.max_count),
         "y_label":
             "Histogram",
@@ -503,8 +531,7 @@ class Histogram(NamedTuple):
     }
     plot_defaults.update(kwargs)
     plot = Plot2D(**plot_defaults)
-    return itertools.chain(plot.produce(),
-                           plot.transformer().transform(self._draw()))
+    return plot.produce() + (ShapeStream(self._draw()) | plot.transformer())
 
 
 class _PlotBoxOne(NamedTuple):
@@ -529,12 +556,13 @@ class _PlotBoxOne(NamedTuple):
 
   def draw(self, index: int, plot: Plot2D) -> Iterable[Shape]:
     x = plot.transformer().transformer.transform(index, 0)[0]
-    yield Text(self.label, x,
-               plot.output_box.height() - plot.margins.bottom - 20,
-               ParamsDict({"class": "boxplot-label"}))
-    for shape in plot.transformer().transform(self._shapes(index)):
-      yield shape
+    return (self._shapes(index) | plot.transformer()) + [
+        Text(self.label, x,
+             plot.output_range.height() - plot.margins.bottom - 20,
+             ParamsDict({"class": "boxplot-label"}))
+    ]
 
+  @shape_generator
   def _shapes(self, index) -> Iterable[Shape]:
     q1, median, q3 = self.quantiles
     box_w = 0.7
@@ -561,6 +589,7 @@ class PlotBox(NamedTuple):
     return cls(data, min(d.y_min for d in data.values()),
                max(d.y_max for d in data.values()))
 
+  @shape_generator
   def _draw(self, plot: Plot2D) -> Iterable[Shape]:
     return itertools.chain.from_iterable(
         value.draw(index, plot)
@@ -568,7 +597,7 @@ class PlotBox(NamedTuple):
 
   def produce(self, *args, **kwargs) -> Iterable[Shape]:
     plot_defaults: dict[str, Any] = {
-        "input_box":
+        "domain":
             Box(-1, math.floor(self.y_min), len(self.data),
                 math.ceil(self.y_max)),
         "x_axis_values":
@@ -576,4 +605,4 @@ class PlotBox(NamedTuple):
     }
     plot_defaults.update(kwargs)
     plot = Plot2D(**plot_defaults)
-    return itertools.chain(plot.produce(), self._draw(plot))
+    return plot.produce() + self._draw(plot)
