@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pathlib
 import re
+from functools import singledispatchmethod
 import itertools
 import math
 import matplotlib.pyplot as plt
@@ -59,6 +60,14 @@ ParamsDict = NewType("ParamsDict", dict[str, str])
 
 
 @dataclass(frozen=True)
+class Margins:
+  top: float = 0
+  right: float = 0
+  bottom: float = 0
+  left: float = 0
+
+
+@dataclass(frozen=True)
 class Box:
   x1: float
   y1: float
@@ -71,16 +80,22 @@ class Box:
   def height(self) -> float:
     return abs(self.y2 - self.y1)
 
-  def with_margins(self, top: float, right: float, bottom: float,
-                   left: float) -> "Box":
-    return Box(self.x1 + left, self.y1 + bottom, self.x2 - right, self.y2 - top)
+  def with_margins(self, margins: Margins) -> "Box":
+    if self.y1 < self.y2:
+      return Box(self.x1 + margins.left, self.y1 + margins.bottom,
+                 self.x2 - margins.right, self.y2 - margins.top)
+    return Box(self.x1 + margins.left, self.y1 - margins.bottom,
+               self.x2 - margins.right, self.y2 + margins.top)
 
-  def with_y_reversed(self):
+  def with_y_reversed(self) -> "Box":
     return Box(self.x1, self.y2, self.x2, self.y1)
 
 
 def simple_box(width: float, height: float) -> Box:
   return Box(0, 0, width, height)
+
+
+DEFAULT_BOX = simple_box(1.0, 1.0)
 
 
 @dataclass(frozen=True)
@@ -145,23 +160,20 @@ class ShapeTransformer:
     self.transformer = transformer
 
   def transform(self, shapes: Iterable[Shape]) -> Iterable[Shape]:
-    for shape in shapes:
-      match shape:
-        case Rect():
-          yield self._rect(shape)
-        case Line():
-          yield self._line(shape)
-        case Circle():
-          yield self._circle(shape)
-        case Text():
-          yield self._text(shape)
+    return map(self._handle, shapes)
 
-  def _line(self, line: Line) -> Line:
+  @singledispatchmethod
+  def _handle(self, arg: Any) -> Shape:
+    raise TypeError(f"Cannot handle type {type(arg)}")
+
+  @_handle.register
+  def _(self, line: Line) -> Line:
     tx1, ty1 = self.transformer.transform(line.x1, line.y1)
     tx2, ty2 = self.transformer.transform(line.x2, line.y2)
     return Line(tx1, ty1, tx2, ty2, line.params)
 
-  def _rect(self, rect: Rect) -> Rect:
+  @_handle.register
+  def _(self, rect: Rect) -> Rect:
     # Map two points to find the new bounding box
     tx1, ty1 = self.transformer.transform(rect.x, rect.y)
     tx2, ty2 = self.transformer.transform(rect.x + rect.w, rect.y + rect.h)
@@ -171,7 +183,8 @@ class ShapeTransformer:
     nw, nh = abs(tx1 - tx2), abs(ty1 - ty2)
     return Rect(nx, ny, nw, nh, rect.params)
 
-  def _circle(self, circle: Circle) -> Circle:
+  @_handle.register
+  def _(self, circle: Circle) -> Circle:
     tx, ty = self.transformer.transform(circle.cx, circle.cy)
     return Circle(
         tx, ty,
@@ -179,7 +192,8 @@ class ShapeTransformer:
             self.transformer.transform(circle.cx + circle.r, circle.cy)[0] -
             tx), circle.params)
 
-  def _text(self, text: Text) -> Text:
+  @_handle.register
+  def _(self, text: Text) -> Text:
     tx, ty = self.transformer.transform(text.x, text.y)
     return Text(text.text, tx, ty, text.params)
 
@@ -354,8 +368,8 @@ class PlotTicsConfig:
 class Plot2D:
 
   input_box: Box
-  image_box: Box
   output_box: Box
+  margins: Margins
 
   x_axis_values: PlotTicsConfig = PlotTicsConfig()
   y_axis_values: PlotTicsConfig = PlotTicsConfig()
@@ -366,7 +380,9 @@ class Plot2D:
   labels: frozenset[str] = frozenset()
 
   def transformer(self) -> ShapeTransformer:
-    return MoveAndScale(self.input_box, self.image_box)
+    return MoveAndScale(
+        self.input_box,
+        self.output_box.with_y_reversed().with_margins(self.margins))
 
   def produce(self) -> Iterator[Shape]:
     return itertools.chain(self.transformer().transform(self._draw()),
@@ -380,7 +396,6 @@ class Plot2D:
       yield Text(key, lx + 15, ly + 9)
 
     if self.x_label:
-      print(self.output_box.width())
       yield Text(self.x_label,
                  self.output_box.width() / 2, self.output_box.height(),
                  ParamsDict({"class": "label-x"}))
@@ -491,7 +506,7 @@ class Histogram(NamedTuple):
         "x_axis_values":
             PlotTicsConfig(
                 values=frozenset(self.min_value + i * self.bin_size
-                                 for i in range(bin_count))),
+                                 for i in range(0, bin_count, 2))),
         "y_axis_values":
             PlotTicsConfig(min_distance=1),
         "labels":
@@ -523,10 +538,12 @@ class _PlotBoxOne(NamedTuple):
 
     return cls(label, min(data), max(data), quantiles, min_whisker, max_whisker)
 
-  def draw(self, index: int, transformer: ShapeTransformer) -> Iterable[Shape]:
-    x = transformer.transformer.transform(index, 0)[0]
-    yield Text(self.label, x, 10, ParamsDict({"class": "boxplot-label"}))
-    for shape in transformer.transform(self._shapes(index)):
+  def draw(self, index: int, plot: Plot2D) -> Iterable[Shape]:
+    x = plot.transformer().transformer.transform(index, 0)[0]
+    yield Text(self.label, x,
+               plot.output_box.height() - plot.margins.bottom - 20,
+               ParamsDict({"class": "boxplot-label"}))
+    for shape in plot.transformer().transform(self._shapes(index)):
       yield shape
 
   def _shapes(self, index) -> Iterable[Shape]:
@@ -555,9 +572,9 @@ class PlotBox(NamedTuple):
     return cls(data, min(d.y_min for d in data.values()),
                max(d.y_max for d in data.values()))
 
-  def _draw(self, transformer: ShapeTransformer) -> Iterable[Shape]:
+  def _draw(self, plot: Plot2D) -> Iterable[Shape]:
     return itertools.chain.from_iterable(
-        value.draw(index, transformer)
+        value.draw(index, plot)
         for index, value in enumerate(self.data.values()))
 
   def produce(self, *args, **kwargs) -> Iterable[Shape]:
@@ -570,4 +587,4 @@ class PlotBox(NamedTuple):
     }
     plot_defaults.update(kwargs)
     plot = Plot2D(**plot_defaults)
-    return itertools.chain(plot.produce(), self._draw(plot.transformer()))
+    return itertools.chain(plot.produce(), self._draw(plot))
