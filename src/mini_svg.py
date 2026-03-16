@@ -231,7 +231,7 @@ class SvgWriter:
         extra_params += f" {keyword}='{value}'"
     return extra_params
 
-  def receive(self, shapes: Iterable[Shape]) -> None:
+  def write(self, shapes: Iterable[Shape]) -> None:
     for shape in shapes:
       match shape:
         case Rect():
