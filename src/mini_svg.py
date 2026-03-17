@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, fields
-from functools import singledispatchmethod, wraps
+from functools import singledispatchmethod
 import itertools
 import math
 import pathlib
 import re
 import statistics
-from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, Type, TypeVar, cast
+from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, TypeVar, cast
 
-from meta import value_with_default
+from meta import value_with_default, with_config
 from point_transformer import PointTransformer, MoveAndScale
 from plot_ticks import PlotTicks, PlotTicksConfig
 from box import Margins, Box, simple_box
@@ -150,35 +150,6 @@ class _XYPlot:
     if self.identity_line:
       clip = min(self.domain.x2, self.domain.y2)
       yield Line(0, 0, clip, clip, ShapeParams(css_class="identity-line"))
-
-
-C = TypeVar("C")
-R = TypeVar("R")
-
-
-def with_config(
-    config_class: Type[C]) -> Callable[[Callable[..., R]], Callable[..., R]]:
-  config_fields = {f.name for f in fields(cast(Any, config_class))}
-
-  def decorator(func: Callable[..., R]) -> Callable[..., R]:
-
-    @wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> R:
-      relevant_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
-      remaining_kwargs = {
-          k: v for k, v in kwargs.items() if k not in config_fields
-      }
-      if args and isinstance(args[0], config_class):
-        return func(*args, **remaining_kwargs)
-      config = config_class(**relevant_kwargs)
-      if args and not isinstance(args[0], config_class):
-        # Handle `obj.method(...)`. `args` includes `obj`.
-        return func(args[0], config, *args[1:], **remaining_kwargs)
-      return func(config, *args, **remaining_kwargs)
-
-    return wrapper
-
-  return decorator
 
 
 with_plot_config = with_config(_XYPlot)
