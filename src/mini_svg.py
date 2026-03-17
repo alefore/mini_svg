@@ -8,89 +8,10 @@ import re
 import statistics
 from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, Type, TypeVar, cast, overload
 
-
-class PointTransformer(ABC):
-
-  @abstractmethod
-  def transform(self, x: float, y: float) -> tuple[float, float]:
-    pass
-
-
-class NoopTransformer(PointTransformer):
-
-  def transform(self, x: float, y: float) -> tuple[float, float]:
-    return x, y
-
-
-class PointTranslate(PointTransformer):
-
-  def __init__(self, dx: float, dy: float):
-    self.dx, self.dy = dx, dy
-
-  def transform(self, x: float, y: float) -> tuple[float, float]:
-    return x + self.dx, y + self.dy
-
-
-class PointScale(PointTransformer):
-
-  def __init__(self, sx: float, sy: float):
-    self.sx, self.sy = sx, sy
-
-  def transform(self, x: float, y: float) -> tuple[float, float]:
-    return x * self.sx, y * self.sy
-
-
-class ComposeTransformers(PointTransformer):
-
-  def __init__(self, transformers: list[PointTransformer]):
-    self._transformers = transformers
-
-  def transform(self, x: float, y: float) -> tuple[float, float]:
-    for t in self._transformers:
-      x, y = t.transform(x, y)
-    return x, y
-
+from point_transformer import PointTransformer, MoveAndScale
+from box import Margins, Box, simple_box
 
 ParamsDict = NewType("ParamsDict", dict[str, str])
-
-
-@dataclass(frozen=True)
-class Margins:
-  top: float = 0
-  right: float = 0
-  bottom: float = 0
-  left: float = 0
-
-
-@dataclass(frozen=True)
-class Box:
-  x1: float
-  y1: float
-  x2: float
-  y2: float
-
-  def width(self) -> float:
-    return abs(self.x2 - self.x1)
-
-  def height(self) -> float:
-    return abs(self.y2 - self.y1)
-
-  def with_margins(self, margins: Margins) -> "Box":
-    if self.y1 < self.y2:
-      return Box(self.x1 + margins.left, self.y1 + margins.bottom,
-                 self.x2 - margins.right, self.y2 - margins.top)
-    return Box(self.x1 + margins.left, self.y1 - margins.bottom,
-               self.x2 - margins.right, self.y2 + margins.top)
-
-  def with_y_reversed(self) -> "Box":
-    return Box(self.x1, self.y2, self.x2, self.y1)
-
-
-def simple_box(width: float, height: float) -> Box:
-  return Box(0, 0, width, height)
-
-
-DEFAULT_BOX = simple_box(1.0, 1.0)
 
 
 @dataclass(frozen=True)
@@ -209,20 +130,6 @@ class ShapeTransformer:
   def _(self, text: Text) -> Text:
     tx, ty = self.transformer.transform(text.x, text.y)
     return Text(text.text, tx, ty, text.params)
-
-
-def MoveAndScale(domain: Box, range: Box) -> ShapeTransformer:
-  "Returns a new delegate where drawing is constrained to the box given."
-
-  to_origin = PointTranslate(-domain.x1, -domain.y1)
-
-  sx = (range.x2 - range.x1) / (domain.x2 - domain.x1)
-  sy = (range.y2 - range.y1) / (domain.y2 - domain.y1)
-  scale = PointScale(sx, sy)
-
-  to_output = PointTranslate(range.x1, range.y1)
-
-  return ShapeTransformer(ComposeTransformers([to_origin, scale, to_output]))
 
 
 @dataclass(frozen=True)
@@ -357,9 +264,10 @@ class _XYPlot:
     assert self.domain
     assert self.output_range
     assert self.margins
-    return MoveAndScale(
-        self.domain,
-        self.output_range.with_y_reversed().with_margins(self.margins))
+    return ShapeTransformer(
+        MoveAndScale(
+            self.domain,
+            self.output_range.with_y_reversed().with_margins(self.margins)))
 
   def with_defaults(self, defaults: "_XYPlot") -> "_XYPlot":
     return _XYPlot(
