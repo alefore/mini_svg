@@ -53,8 +53,8 @@ def with_config(
   return decorator
 
 
-def _extend_argparse_field(var_type: Type[Any], name: str, default,
-                           parser) -> None:
+def _extend_argparse_field(var_type: Type[Any], name: str, default: Any,
+                           parser: argparse.ArgumentParser) -> None:
   origin = get_origin(var_type)
   args = get_args(var_type)
   match (origin, args):
@@ -76,7 +76,7 @@ def _extend_argparse_field(var_type: Type[Any], name: str, default,
 
 def extend_argparse(config_class: Type[C],
                     parser: argparse.ArgumentParser,
-                    prefix=''):
+                    prefix: str = '') -> None:
   type_hints = get_type_hints(config_class)
   for f in fields(cast(Any, config_class)):
     origin = get_origin(f.type)
