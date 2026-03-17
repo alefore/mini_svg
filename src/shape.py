@@ -39,7 +39,7 @@ class Line:
                x: float,
                y1: float,
                y2: float,
-               params: ShapeParams | None = None) -> Line:
+               params: ShapeParams | None = None) -> "Line":
     return cls(x, y1, x, y2, params or ShapeParams())
 
   @classmethod
@@ -47,7 +47,7 @@ class Line:
                  x1: float,
                  x2: float,
                  y: float,
-                 params: ShapeParams | None = None) -> Line:
+                 params: ShapeParams | None = None) -> "Line":
     return cls(x1, y, x2, y, params or ShapeParams())
 
 
