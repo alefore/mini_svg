@@ -10,7 +10,7 @@ from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Proto
 
 from point_transformer import PointTransformer, MoveAndScale
 from box import Margins, Box, simple_box
-from shape import Circle, Line, ParamsDict, Rect, Shape, ShapeStream, Text, shape_generator
+from shape import Circle, Line, Rect, Shape, ShapeParams, ShapeStream, Text, shape_generator
 
 
 class ShapeTransformer:
@@ -215,21 +215,20 @@ class _XYPlot:
     for i, key in enumerate(sorted(self.labels)):
       lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
-      yield Rect(lx, ly, 10, 10, ParamsDict({"class": key}))
+      yield Rect(lx, ly, 10, 10, ShapeParams(css_class=key))
       yield Text(key, lx + 15, ly + 9)
 
     if self.x_label:
       yield Text(self.x_label,
                  self.output_range.width() / 2, self.output_range.height(),
-                 ParamsDict({"class": "label-x"}))
+                 ShapeParams(css_class="label-x"))
     if self.y_label:
       yield Text(
           self.y_label, 15,
           self.output_range.height() / 2,
-          ParamsDict({
-              "class": "label-y",
-              "transform": f"rotate(-90 15,{self.output_range.height()/2})"
-          }))
+          ShapeParams(
+              css_class="label-y",
+              transform=f"rotate(-90 15,{self.output_range.height()/2})"))
 
   @shape_generator
   def _draw(self) -> Iterator[Shape]:
@@ -238,28 +237,28 @@ class _XYPlot:
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
       yield Line.vertical(x, self.domain.y1, self.domain.y2,
-                          ParamsDict({"class": "tic"}))
+                          ShapeParams(css_class="tic"))
       span = (self.domain.height() / 50) * (
           self.output_range.width() / self.output_range.height())
       yield Line.vertical(x, -span, 0)
       yield Text(f"{x:{x_values.value_format}}", x, 2 * -span,
-                 ParamsDict({"class": "tic-value-x"}))
+                 ShapeParams(css_class="tic-value-x"))
 
     y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
       yield Line.horizontal(self.domain.x1, self.domain.x2, y,
-                            ParamsDict({"class": "tic"}))
+                            ShapeParams(css_class="tic"))
       span = self.domain.width() / 50
       yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y)
       yield Text(f"{y:{y_values.value_format}}", self.domain.x1 - 2 * span, y,
-                 ParamsDict({"class": "tic-value-y"}))
+                 ShapeParams(css_class="tic-value-y"))
 
     yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2)
     yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1)
 
     if self.identity_line:
       clip = min(self.domain.x2, self.domain.y2)
-      yield Line(0, 0, clip, clip, ParamsDict({"style": "stroke: var(--text)"}))
+      yield Line(0, 0, clip, clip, ShapeParams(css_class="identity-line"))
 
 
 C = TypeVar("C")
@@ -312,14 +311,6 @@ class SvgWriter:
   def get_box(self) -> Box:
     return simple_box(self.width, self.height)
 
-  def _get_extra(self, params: ParamsDict) -> str:
-    extra_params = ""
-    for keyword in ['style', 'class', 'transform']:
-      value = params.get(keyword)
-      if value:
-        extra_params += f" {keyword}='{value}'"
-    return extra_params
-
   def consume(self, shapes: Iterable[Shape]) -> None:
     lines = [
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
@@ -345,28 +336,24 @@ class SvgWriter:
 
   @_write_shape.register
   def _(self, line: Line) -> str:
-    extra_params = self._get_extra(line.params)
-    return f'<line x1="{line.x1:.1f}" y1="{line.y1:.1f}" x2="{line.x2:.1f}" y2="{line.y2:.1f}"{extra_params}/>'
+    return f'<line x1="{line.x1:.1f}" y1="{line.y1:.1f}" x2="{line.x2:.1f}" y2="{line.y2:.1f}"{line.params.as_text()}/>'
 
   @_write_shape.register
   def _(self, rect: Rect) -> str:
-    extra_params = self._get_extra(rect.params)
-    return f'<rect x="{rect.x:.1f}" y="{rect.y:.1f}" width="{rect.w:.1f}" height="{rect.h:.1f}"{extra_params}/>'
+    return f'<rect x="{rect.x:.1f}" y="{rect.y:.1f}" width="{rect.w:.1f}" height="{rect.h:.1f}"{rect.params.as_text()}/>'
 
   @_write_shape.register
   def _(self, circle: Circle) -> str:
-    extra_params = self._get_extra(circle.params)
-    contents = f"circle cx='{circle.cx:.1f}' cy='{circle.cy:.1f}' r='{circle.r:.1f}'{extra_params}"
-    title = circle.params.get("title")
-    if title:
+    contents = f"circle cx='{circle.cx:.1f}' cy='{circle.cy:.1f}' r='{circle.r:.1f}'{circle.params.as_text()}"
+    title = circle.params.title
+    if title is not None:
       return f"<{contents}><title>{title}</title></circle>"
     else:
       return f"<{contents}/>"
 
   @_write_shape.register
   def _(self, text: Text) -> str:
-    extra_params = self._get_extra(text.params)
-    return f"<text x='{text.x}' y='{text.y}'{extra_params}>{text.text}</text>"
+    return f"<text x='{text.x}' y='{text.y}'{text.params.as_text()}>{text.text}</text>"
 
 
 with_svg_writer = with_config(SvgWriter)
@@ -385,10 +372,7 @@ class _Scatterplot(ShapeProducer):
     for key, points in self.data.items():
       for x, y in points:
         yield Circle(x, y, radius,
-                     ParamsDict({
-                         "class": key,
-                         "title": f"{key}: ({x}, {y})"
-                     }))
+                     ShapeParams(css_class=key, title=f"{key}: ({x}, {y})"))
 
   def produce(self, plot: _XYPlot) -> ShapeStream:
     plot = plot.with_defaults(
@@ -434,7 +418,7 @@ class _Histogram(ShapeProducer):
           yield Rect(
               self.min_value + self.bin_size *
               (bin_index + 0.1 + 0.8 * group_index / len(self.binned_data)), 0,
-              individual_bin_width, count, ParamsDict({"class": label.lower()}))
+              individual_bin_width, count, ShapeParams(css_class=label.lower()))
 
   def produce(self, plot: _XYPlot) -> ShapeStream:
     bin_count = max(len(bins) for bins in self.binned_data.values())
@@ -505,7 +489,7 @@ class _BoxPlotOne:
     return plot.transformer(self._shapes(index)) + [
         Text(self.label, x,
              plot.output_range.height() - plot.margins.bottom - 20,
-             ParamsDict({"class": "boxplot-label"}))
+             ShapeParams(css_class="boxplot-label"))
     ]
 
   @shape_generator
@@ -516,9 +500,9 @@ class _BoxPlotOne:
     for y in [self.min_whisker, self.max_whisker]:
       yield Line.horizontal(index - box_w / 2, index + box_w / 2, y)
     yield Rect(index - box_w / 2, q1, box_w, q3 - q1,
-               ParamsDict({"style": "fill: var(--text)"}))
+               ShapeParams(css_class="boxplot"))
     yield Line.horizontal(index - box_w / 2, index + box_w / 2, median,
-                          ParamsDict({"style": "stroke: var(--bg-mild)"}))
+                          ShapeParams(css_class="boxplot-median"))
 
 
 @dataclass(frozen=True)

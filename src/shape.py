@@ -3,7 +3,18 @@ from functools import wraps
 import itertools
 from typing import Any, Callable, Iterable, Iterator, NewType
 
-ParamsDict = NewType("ParamsDict", dict[str, str])
+
+@dataclass(frozen=True)
+class ShapeParams:
+  css_class: str | None = None
+  title: str | None = None
+  transform: str | None = None
+
+  def as_text(self) -> str:
+    # title must be handled separately.
+    data = {"class": self.css_class, "transform": self.transform}
+    return " ".join(
+        "{key}='{value}'" for key, value in data.items() if value is not None)
 
 
 @dataclass(frozen=True)
@@ -12,7 +23,7 @@ class Rect:
   y: float
   w: float
   h: float
-  params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
+  params: ShapeParams = ShapeParams()
 
 
 @dataclass(frozen=True)
@@ -21,23 +32,23 @@ class Line:
   y1: float
   x2: float
   y2: float
-  params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
+  params: ShapeParams = ShapeParams()
 
   @classmethod
   def vertical(cls,
                x: float,
                y1: float,
                y2: float,
-               params: ParamsDict | None = None) -> Line:
-    return cls(x, y1, x, y2, params or ParamsDict({}))
+               params: ShapeParams | None = None) -> Line:
+    return cls(x, y1, x, y2, params or ShapeParams())
 
   @classmethod
   def horizontal(cls,
                  x1: float,
                  x2: float,
                  y: float,
-                 params: ParamsDict | None = None) -> Line:
-    return cls(x1, y, x2, y, params or ParamsDict({}))
+                 params: ShapeParams | None = None) -> Line:
+    return cls(x1, y, x2, y, params or ShapeParams())
 
 
 @dataclass(frozen=True)
@@ -45,7 +56,7 @@ class Circle:
   cx: float
   cy: float
   r: float
-  params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
+  params: ShapeParams = ShapeParams()
 
 
 @dataclass(frozen=True)
@@ -53,7 +64,7 @@ class Text:
   text: str
   x: float
   y: float
-  params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
+  params: ShapeParams = ShapeParams()
 
 
 Shape = Rect | Line | Circle | Text
