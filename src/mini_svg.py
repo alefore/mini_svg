@@ -9,113 +9,16 @@ import statistics
 from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, TypeVar, cast
 
 from meta import value_with_default, with_config
-from point_transformer import PointTransformer, MoveAndScale
 from plot_ticks import PlotTicks, PlotTicksConfig
 from box import Margins, Box, simple_box
 from shape import Circle, Line, Rect, Shape, ShapeParams, ShapeStream, Text, shape_generator
-from shape_transformer import ShapeTransformer
-
-
-@dataclass(frozen=True, kw_only=True)
-class _XYPlot:
-  domain: Box | None = None
-  output_range: Box | None = None
-  margins: Margins | None = None
-
-  x_axis_values: PlotTicksConfig = PlotTicksConfig()
-  y_axis_values: PlotTicksConfig = PlotTicksConfig()
-
-  x_label: str | None = None
-  y_label: str | None = None
-
-  labels: frozenset[str] = frozenset()
-
-  identity_line: bool | None = None
-
-  @property
-  def transformer(self) -> ShapeTransformer:
-    assert self.domain
-    assert self.output_range
-    assert self.margins
-    return ShapeTransformer(
-        MoveAndScale(
-            self.domain,
-            self.output_range.with_y_reversed().with_margins(self.margins)))
-
-  def with_defaults(self, defaults: "_XYPlot") -> "_XYPlot":
-    return _XYPlot(
-        domain=self.domain or defaults.domain,
-        output_range=self.output_range or defaults.output_range,
-        margins=self.margins or defaults.margins,
-        x_axis_values=self.x_axis_values.with_defaults(defaults.x_axis_values),
-        y_axis_values=self.y_axis_values.with_defaults(defaults.y_axis_values),
-        x_label=self.x_label or defaults.x_label,
-        y_label=self.y_label or defaults.y_label,
-        labels=self.labels or defaults.labels,
-        identity_line=value_with_default(self.identity_line,
-                                         defaults.identity_line))
-
-  def produce(self) -> ShapeStream:
-    return self.transformer(self._draw()) + self._legend()
-
-  def _legend(self) -> Iterator[Shape]:
-    assert self.output_range
-    for i, key in enumerate(sorted(self.labels)):
-      lx = self.output_range.width() - 60
-      ly = 20 + (i * 20)
-      yield Rect(lx, ly, 10, 10, ShapeParams(css_class=key))
-      yield Text(key, lx + 15, ly + 9)
-
-    if self.x_label:
-      yield Text(self.x_label,
-                 self.output_range.width() / 2, self.output_range.height(),
-                 ShapeParams(css_class="label-x"))
-    if self.y_label:
-      yield Text(
-          self.y_label, 15,
-          self.output_range.height() / 2,
-          ShapeParams(
-              css_class="label-y",
-              transform=f"rotate(-90 15,{self.output_range.height()/2})"))
-
-  @shape_generator
-  def _draw(self) -> Iterator[Shape]:
-    assert self.domain
-    assert self.output_range
-    x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
-    for x in x_values.values:
-      yield Line.vertical(x, self.domain.y1, self.domain.y2,
-                          ShapeParams(css_class="tic"))
-      span = (self.domain.height() / 50) * (
-          self.output_range.width() / self.output_range.height())
-      yield Line.vertical(x, -span, 0)
-      yield Text(f"{x:{x_values.value_format}}", x, 2 * -span,
-                 ShapeParams(css_class="tic-value-x"))
-
-    y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
-    for y in y_values.values:
-      yield Line.horizontal(self.domain.x1, self.domain.x2, y,
-                            ShapeParams(css_class="tic"))
-      span = self.domain.width() / 50
-      yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y)
-      yield Text(f"{y:{y_values.value_format}}", self.domain.x1 - 2 * span, y,
-                 ShapeParams(css_class="tic-value-y"))
-
-    yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2)
-    yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1)
-
-    if self.identity_line:
-      clip = min(self.domain.x2, self.domain.y2)
-      yield Line(0, 0, clip, clip, ShapeParams(css_class="identity-line"))
-
-
-with_plot_config = with_config(_XYPlot)
+from xyplot import XYPlot, with_plot_config
 
 
 class ShapeProducer(ABC):
 
   @abstractmethod
-  def produce(self, plot: _XYPlot) -> ShapeStream:
+  def produce(self, plot: XYPlot) -> ShapeStream:
     pass
 
 
@@ -193,16 +96,16 @@ class _Scatterplot(ShapeProducer):
         yield Circle(x, y, radius,
                      ShapeParams(css_class=key, title=f"{key}: ({x}, {y})"))
 
-  def produce(self, plot: _XYPlot) -> ShapeStream:
+  def produce(self, plot: XYPlot) -> ShapeStream:
     plot = plot.with_defaults(
-        _XYPlot(domain=self.domain, labels=frozenset(self.data)))
+        XYPlot(domain=self.domain, labels=frozenset(self.data)))
     print(plot)
     return plot.produce() + plot.transformer(self._draw())
 
 
 @with_svg_writer
 @with_plot_config
-def scatterplot(writer: SvgWriter, plot: _XYPlot,
+def scatterplot(writer: SvgWriter, plot: XYPlot,
                 data: dict[str, list[tuple[float, float]]]) -> None:
   all_points = [pt for pts in data.values() for pt in pts]
   all_x = [pt[0] for pt in all_points]
@@ -213,7 +116,7 @@ def scatterplot(writer: SvgWriter, plot: _XYPlot,
           domain=Box(
               min(0, min(all_x)), min(0, min(all_y)), max(all_x),
               max(all_y))).produce(
-                  plot.with_defaults(_XYPlot(output_range=writer.get_box()))))
+                  plot.with_defaults(XYPlot(output_range=writer.get_box()))))
 
 
 BinElements = NewType("BinElements", int)
@@ -239,10 +142,10 @@ class _Histogram(ShapeProducer):
               (bin_index + 0.1 + 0.8 * group_index / len(self.binned_data)), 0,
               individual_bin_width, count, ShapeParams(css_class=label.lower()))
 
-  def produce(self, plot: _XYPlot) -> ShapeStream:
+  def produce(self, plot: XYPlot) -> ShapeStream:
     bin_count = max(len(bins) for bins in self.binned_data.values())
     plot = plot.with_defaults(
-        _XYPlot(
+        XYPlot(
             domain=Box(self.min_value, 0, self.max_value, self.max_count),
             y_label="Histogram",
             x_axis_values=PlotTicksConfig(
@@ -255,7 +158,7 @@ class _Histogram(ShapeProducer):
 
 @with_svg_writer
 @with_plot_config
-def histogram(writer: SvgWriter, plot: _XYPlot, bins: int,
+def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
               data: dict[str, list[float]]) -> None:
   print(writer)
   print(plot)
@@ -275,9 +178,9 @@ def histogram(writer: SvgWriter, plot: _XYPlot, bins: int,
 
   max_count = max(max(bins) for bins in binned_data.values())
   writer.consume(
-      _Histogram(
-          binned_data, bin_size, min_value, max_value, max_count).produce(
-              plot.with_defaults(_XYPlot(output_range=writer.get_box()))))
+      _Histogram(binned_data, bin_size, min_value, max_value,
+                 max_count).produce(
+                     plot.with_defaults(XYPlot(output_range=writer.get_box()))))
 
 
 @dataclass(frozen=True)
@@ -301,7 +204,7 @@ class _BoxPlotOne:
     return cls(label, min(data), max(data), (q1, median, q3), min_whisker,
                max_whisker)
 
-  def draw(self, index: int, plot: _XYPlot) -> Iterable[Shape]:
+  def draw(self, index: int, plot: XYPlot) -> Iterable[Shape]:
     x = plot.transformer.transformer.transform(index, 0)[0]
     assert plot.output_range
     assert plot.margins
@@ -332,14 +235,14 @@ class _BoxPlot(ShapeProducer):
   y_max: float
 
   @shape_generator
-  def _draw(self, plot: _XYPlot) -> Iterable[Shape]:
+  def _draw(self, plot: XYPlot) -> Iterable[Shape]:
     return itertools.chain.from_iterable(
         self.data[key].draw(index, plot)
         for index, key in enumerate(sorted(self.data)))
 
-  def produce(self, plot: _XYPlot) -> ShapeStream:
+  def produce(self, plot: XYPlot) -> ShapeStream:
     plot = plot.with_defaults(
-        _XYPlot(
+        XYPlot(
             domain=Box(-1, math.floor(self.y_min), len(self.data),
                        math.ceil(self.y_max)),
             x_axis_values=PlotTicksConfig(max_count=0)))
@@ -348,10 +251,10 @@ class _BoxPlot(ShapeProducer):
 
 @with_svg_writer
 @with_plot_config
-def boxplot(writer: SvgWriter, plot: _XYPlot, data: dict[str,
-                                                         list[float]]) -> None:
+def boxplot(writer: SvgWriter, plot: XYPlot, data: dict[str,
+                                                        list[float]]) -> None:
   box_data = {k: _BoxPlotOne.create(k, v) for k, v in data.items()}
   writer.consume(
       _BoxPlot(box_data, min(d.y_min for d in box_data.values()),
                max(d.y_max for d in box_data.values())).produce(
-                   plot.with_defaults(_XYPlot(output_range=writer.get_box()))))
+                   plot.with_defaults(XYPlot(output_range=writer.get_box()))))
