@@ -193,7 +193,7 @@ class _BoxPlotOne:
   max_whisker: float
 
   @classmethod
-  def create(cls, label: str, data: list[float]) -> _BoxPlotOne:
+  def create(cls, label: str, data: list[float]) -> "_BoxPlotOne":
     data = sorted(data)
     q1, median, q3 = statistics.quantiles(data, n=4, method='inclusive')
     iqr = q3 - q1
