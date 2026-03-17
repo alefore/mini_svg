@@ -6,8 +6,9 @@ import math
 import pathlib
 import re
 import statistics
-from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, Type, TypeVar, cast, overload
+from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, Type, TypeVar, cast
 
+from meta import value_with_default
 from point_transformer import PointTransformer, MoveAndScale
 from box import Margins, Box, simple_box
 from shape import Circle, Line, Rect, Shape, ShapeParams, ShapeStream, Text, shape_generator
@@ -61,25 +62,6 @@ class ShapeTransformer:
 class PlotTicks:
   values: frozenset[float]
   value_format: str
-
-
-T = TypeVar("T")
-
-
-@overload
-def value_with_default(value: T | None, default: None) -> T | None:
-  ...
-
-
-@overload
-def value_with_default(value: T | None, default: T) -> T:
-  ...
-
-
-def value_with_default(value: T | None, default: T | None) -> T | None:
-  if value is not None:
-    return value
-  return default
 
 
 @dataclass(frozen=True)
