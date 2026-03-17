@@ -10,7 +10,7 @@ from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Proto
 
 from point_transformer import PointTransformer, MoveAndScale
 from box import Margins, Box, simple_box
-from shape import Circle, Line, ParamsDict, Rect, Shape, ShapeStream, Text, shape_generator, vertical_line, horizontal_line
+from shape import Circle, Line, ParamsDict, Rect, Shape, ShapeStream, Text, shape_generator
 
 
 class ShapeTransformer:
@@ -237,25 +237,25 @@ class _XYPlot:
     assert self.output_range
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
-      yield vertical_line(x, self.domain.y1, self.domain.y2,
+      yield Line.vertical(x, self.domain.y1, self.domain.y2,
                           ParamsDict({"class": "tic"}))
       span = (self.domain.height() / 50) * (
           self.output_range.width() / self.output_range.height())
-      yield vertical_line(x, -span, 0)
+      yield Line.vertical(x, -span, 0)
       yield Text(f"{x:{x_values.value_format}}", x, 2 * -span,
                  ParamsDict({"class": "tic-value-x"}))
 
     y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
-      yield horizontal_line(self.domain.x1, self.domain.x2, y,
+      yield Line.horizontal(self.domain.x1, self.domain.x2, y,
                             ParamsDict({"class": "tic"}))
       span = self.domain.width() / 50
-      yield horizontal_line(self.domain.x1 - span, self.domain.x1, y)
+      yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y)
       yield Text(f"{y:{y_values.value_format}}", self.domain.x1 - 2 * span, y,
                  ParamsDict({"class": "tic-value-y"}))
 
-    yield vertical_line(self.domain.x1, self.domain.y1, self.domain.y2)
-    yield horizontal_line(self.domain.x1, self.domain.x2, self.domain.y1)
+    yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2)
+    yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1)
 
     if self.identity_line:
       clip = min(self.domain.x2, self.domain.y2)
@@ -512,12 +512,12 @@ class _BoxPlotOne:
   def _shapes(self, index: int) -> Iterable[Shape]:
     q1, median, q3 = self.quantiles
     box_w = 0.7
-    yield vertical_line(index, self.min_whisker, self.max_whisker)
+    yield Line.vertical(index, self.min_whisker, self.max_whisker)
     for y in [self.min_whisker, self.max_whisker]:
-      yield horizontal_line(index - box_w / 2, index + box_w / 2, y)
+      yield Line.horizontal(index - box_w / 2, index + box_w / 2, y)
     yield Rect(index - box_w / 2, q1, box_w, q3 - q1,
                ParamsDict({"style": "fill: var(--text)"}))
-    yield horizontal_line(index - box_w / 2, index + box_w / 2, median,
+    yield Line.horizontal(index - box_w / 2, index + box_w / 2, median,
                           ParamsDict({"style": "stroke: var(--bg-mild)"}))
 
 

@@ -23,19 +23,21 @@ class Line:
   y2: float
   params: ParamsDict = field(default_factory=lambda: ParamsDict({}))
 
+  @classmethod
+  def vertical(cls,
+               x: float,
+               y1: float,
+               y2: float,
+               params: ParamsDict | None = None) -> Line:
+    return cls(x, y1, x, y2, params or ParamsDict({}))
 
-def vertical_line(x: float,
-                  y1: float,
-                  y2: float,
-                  params: ParamsDict | None = None) -> Line:
-  return Line(x, y1, x, y2, params or ParamsDict({}))
-
-
-def horizontal_line(x1: float,
-                    x2: float,
-                    y: float,
-                    params: ParamsDict | None = None) -> Line:
-  return Line(x1, y, x2, y, params or ParamsDict({}))
+  @classmethod
+  def horizontal(cls,
+                 x1: float,
+                 x2: float,
+                 y: float,
+                 params: ParamsDict | None = None) -> Line:
+    return cls(x1, y, x2, y, params or ParamsDict({}))
 
 
 @dataclass(frozen=True)
