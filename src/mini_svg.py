@@ -6,7 +6,7 @@ import math
 import pathlib
 import re
 import statistics
-from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType
+from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Protocol, Type, TypeVar, cast, overload
 
 
 class PointTransformer(ABC):
@@ -149,7 +149,7 @@ class ShapeStream:
   def __init__(self, iterable: Iterable[Shape]) -> None:
     self._it = iterable
 
-  def __iter__(self):
+  def __iter__(self) -> Iterator[Shape]:
     yield from self._it
 
   def __add__(self, other: Iterable[Shape]) -> "ShapeStream":
@@ -231,7 +231,20 @@ class PlotTicks:
   value_format: str
 
 
-def value_with_default(value, default):
+T = TypeVar("T")
+
+
+@overload
+def value_with_default(value: T | None, default: None) -> T | None:
+  ...
+
+
+@overload
+def value_with_default(value: T | None, default: T) -> T:
+  ...
+
+
+def value_with_default(value: T | None, default: T | None) -> T | None:
   if value is not None:
     return value
   return default
@@ -264,6 +277,7 @@ class PlotTicksConfig:
     """Returns the ideal distance between tics."""
     assert low < high
     max_count = value_with_default(self.max_count, 10)
+    assert max_count
     assert max_count > 0
     assert not self.values
     rough_distance = (high - low) / max_count
@@ -289,6 +303,7 @@ class PlotTicksConfig:
     if self.values is not None:
       return self.values
     max_count = value_with_default(self.max_count, 10)
+    assert max_count
     if max_count <= 0:
       return frozenset()
     assert base != 0
@@ -307,6 +322,7 @@ class PlotTicksConfig:
 
   def build(self, low: float, high: float) -> PlotTicks:
     max_count = value_with_default(self.max_count, 10)
+    assert max_count
     if max_count <= 0:
       return PlotTicks(values=frozenset(), value_format="ignored")
     if self.values:
@@ -413,13 +429,18 @@ class _XYPlot:
       yield Line(0, 0, clip, clip, ParamsDict({"style": "stroke: var(--text)"}))
 
 
-def with_config(config_class):
-  config_fields = {f.name for f in fields(config_class)}
+C = TypeVar("C")
+R = TypeVar("R")
 
-  def decorator(func):
+
+def with_config(
+    config_class: Type[C]) -> Callable[[Callable[..., R]], Callable[..., R]]:
+  config_fields = {f.name for f in fields(cast(Any, config_class))}
+
+  def decorator(func: Callable[..., R]) -> Callable[..., R]:
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> R:
       relevant_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
       remaining_kwargs = {
           k: v for k, v in kwargs.items() if k not in config_fields
@@ -633,7 +654,7 @@ class _BoxPlotOne:
   max_whisker: float
 
   @classmethod
-  def create(cls, label: str, data: list[float]):
+  def create(cls, label: str, data: list[float]) -> _BoxPlotOne:
     data = sorted(data)
     q1, median, q3 = statistics.quantiles(data, n=4, method='inclusive')
     iqr = q3 - q1
@@ -655,7 +676,7 @@ class _BoxPlotOne:
     ]
 
   @shape_generator
-  def _shapes(self, index) -> Iterable[Shape]:
+  def _shapes(self, index: int) -> Iterable[Shape]:
     q1, median, q3 = self.quantiles
     box_w = 0.7
     yield vertical_line(index, self.min_whisker, self.max_whisker)
