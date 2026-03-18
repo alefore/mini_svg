@@ -4,7 +4,7 @@ import pathlib
 from src.meta import create_from_json_data  # This import will initially fail
 
 
-@dataclass
+@dataclass(frozen=True)
 class SimpleConfig:
   name: str
   age: int
@@ -17,20 +17,20 @@ class AllOptionalConfig:
   age: int = 20
 
 
-@dataclass
+@dataclass(frozen=True)
 class NestedConfig:
   id: str
   simple: SimpleConfig
   all_optional: AllOptionalConfig = AllOptionalConfig()
 
 
-@dataclass
+@dataclass(frozen=True)
 class OptionalPathConfig:
   path: pathlib.Path | None
   description: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class OptionalNestedConfig:
   id: str
   optional_simple: SimpleConfig | None
@@ -74,7 +74,7 @@ class TestCreateFromJsonData(unittest.TestCase):
 
   def test_union_type_optional_field(self):
 
-    @dataclass
+    @dataclass(frozen=True)
     class OptionalStringConfig:
       value: str | None
       id: int
@@ -150,32 +150,31 @@ class TestCreateFromJsonData(unittest.TestCase):
 
   def test_list_of_primitives(self):
 
-    @dataclass
+    @dataclass(frozen=True)
     class ListConfig:
-      items: list[int]
+      items: tuple[int, ...]
 
     data = {"items": [1, 2, 3]}
     config = create_from_json_data(ListConfig, data)
-    self.assertEqual(config, ListConfig(items=[1, 2, 3]))
+    self.assertEqual(config, ListConfig(items=(1, 2, 3)))
     self.assertEqual(data, {})
 
   def test_list_of_paths(self):
 
-    @dataclass
+    @dataclass(frozen=True)
     class ListPathConfig:
-      paths: list[pathlib.Path]
+      paths: tuple[pathlib.Path, ...]
 
     data = {"paths": ["/a/b", "/c/d"]}
     config = create_from_json_data(ListPathConfig, data)
     self.assertEqual(
         config,
-        ListPathConfig(paths=[pathlib.Path("/a/b"),
-                              pathlib.Path("/c/d")]))
+        ListPathConfig(paths=(pathlib.Path("/a/b"), pathlib.Path("/c/d"))))
     self.assertEqual(data, {})
 
   def test_frozenset_of_strings(self):
 
-    @dataclass
+    @dataclass(frozen=True)
     class FrozensetConfig:
       tags: frozenset[str]
 
@@ -186,7 +185,7 @@ class TestCreateFromJsonData(unittest.TestCase):
 
   def test_boolean_from_string(self):
 
-    @dataclass
+    @dataclass(frozen=True)
     class BooleanConfig:
       enabled: bool
 
@@ -199,3 +198,15 @@ class TestCreateFromJsonData(unittest.TestCase):
     config = create_from_json_data(BooleanConfig, data)
     self.assertFalse(config.enabled)
     self.assertEqual(data, {})
+
+  def test_tuple_path(self):
+
+    @dataclass(frozen=True)
+    class TupleConfig:
+      paths: tuple[pathlib.Path, ...] = ()
+
+    self.assertEqual(create_from_json_data(TupleConfig, {}), TupleConfig())
+
+    self.assertEqual(
+        create_from_json_data(TupleConfig, {"paths": ["foo", "bar"]}),
+        TupleConfig(paths=(pathlib.Path("foo"), pathlib.Path("bar"))))
