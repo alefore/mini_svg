@@ -11,10 +11,17 @@ class SimpleConfig:
   is_active: bool = False
 
 
+@dataclass(frozen=True)
+class AllOptionalConfig:
+  name: str = "foo"
+  age: int = 20
+
+
 @dataclass
 class NestedConfig:
   id: str
   simple: SimpleConfig
+  all_optional: AllOptionalConfig = AllOptionalConfig()
 
 
 @dataclass
