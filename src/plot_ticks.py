@@ -77,7 +77,7 @@ class PlotTicksConfig:
   def _get_fmt(self, low: float, high: float, base: float) -> str:
     if self.value_format:
       return self.value_format
-    return "d" if base > 1 else f".{abs(math.floor(math.log10(base)))}f"
+    return ".0f" if base > 1 else f".{abs(math.floor(math.log10(base)))}f"
 
   def build(self, low: float, high: float) -> PlotTicks:
     max_count = value_with_default(self.max_count, 10)
