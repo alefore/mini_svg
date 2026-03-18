@@ -81,7 +81,7 @@ class PlotTicksConfig:
 
   def build(self, low: float, high: float) -> PlotTicks:
     max_count = value_with_default(self.max_count, 10)
-    assert max_count
+    assert max_count is not None
     if max_count <= 0:
       return PlotTicks(values=frozenset(), value_format="ignored")
     if self.values:
