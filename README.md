@@ -4,7 +4,9 @@ Simple py library to generate SVG visualizations of scientific data
 
 # Plot types
 
-* [doc/boxplot.md]
+* [BoxPlot](doc/boxplot.md)
+* Scatterplot
+* Histograms
 
 # Examples
 

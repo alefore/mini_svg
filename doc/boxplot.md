@@ -1,18 +1,21 @@
 # BoxPlot
 
+## Introduction
+
 Creates a series of BoxPlot graphs, visualizing distributions at a glance:
 
 ![BoxPlot example](/examples/boxplot.svg?raw=true "BoxPlot example")
 
+## Parameters
+
 ### plot.domain (optional)
 
-Defaults to setting the y-axis to the min/max values in the data.
+Optional parameter that can be used to control the y-axis setting.
+If absent, y-axis values are inferred from the data.
 
-One can specify it to constrain the y axis;
-in this case, x1 should be set to -1 and x2 to 1 + the number of plots.
-See [examples/boxplot.sh]
+If set, x1 should be set to -1 and x2 to the number of plots.
 
-### Python
+## Python
 
 ```
 mini_svg.boxplot(
@@ -25,5 +28,3 @@ mini_svg.boxplot(
     height=300,
     css=productivity_tasks.SVG_STYLES)
 ```
-
-## Scatterplot
