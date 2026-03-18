@@ -1,8 +1,9 @@
 import argparse
-from dataclasses import dataclass
 import collections
-import sys
+from dataclasses import dataclass
 import json
+import pathlib
+import sys
 
 from meta import create_from_json_data
 from mini_svg import SvgWriter, boxplot
@@ -12,7 +13,8 @@ from xyplot import XYPlot
 @dataclass(frozen=True)
 class WriterAndPlot:
   writer: SvgWriter
-  plot: XYPlot
+  plot: XYPlot = XYPlot()
+  data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
 
 def json_file(path):
@@ -39,10 +41,11 @@ def main():
   if args.command == "boxplot":
     plot = create_from_json_data(WriterAndPlot, args.config)
     data = collections.defaultdict(list)
-    for line in sys.stdin:
-      parts = line.split()
-      assert len(parts) == 2
-      data[parts[0]].append(float(parts[1]))
+    with open(plot.data_path, 'r') as f:
+      for line in f:
+        parts = line.split()
+        assert len(parts) == 2
+        data[parts[0]].append(float(parts[1]))
     boxplot(plot.writer, plot.plot, data)
 
 
