@@ -29,11 +29,10 @@ class XYPlot:
   def transformer(self) -> ShapeTransformer:
     assert self.domain
     assert self.output_range
-    assert self.margins
-    return ShapeTransformer(
-        MoveAndScale(
-            self.domain,
-            self.output_range.with_y_reversed().with_margins(self.margins)))
+    output = self.output_range.with_y_reversed()
+    if self.margins:
+      output = output.with_margins(self.margins)
+    return ShapeTransformer(MoveAndScale(self.domain, output))
 
   def with_defaults(self, defaults: "XYPlot") -> "XYPlot":
     return XYPlot(
