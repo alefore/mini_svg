@@ -99,7 +99,6 @@ class _Scatterplot(ShapeProducer):
   def produce(self, plot: XYPlot) -> ShapeStream:
     plot = plot.with_defaults(
         XYPlot(domain=self.domain, labels=frozenset(self.data)))
-    print(plot)
     return plot.produce() + plot.transformer(self._draw())
 
 
@@ -160,8 +159,6 @@ class _Histogram(ShapeProducer):
 @with_plot_config
 def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
               data: dict[str, list[float]]) -> None:
-  print(writer)
-  print(plot)
   all_values = [v for obs in data.values() for v in obs]
   min_value, max_value = min(all_values), max(all_values)
   bin_size = (max_value - min_value) / bins
