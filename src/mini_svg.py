@@ -243,11 +243,13 @@ class _BoxPlot(ShapeProducer):
         for index, key in enumerate(sorted(self.data)))
 
   def produce(self, plot: XYPlot) -> ShapeStream:
+    default_box = Box(-1, math.floor(self.y_min), len(self.data),
+                      math.ceil(self.y_max))
     plot = plot.with_defaults(
-        XYPlot(
-            domain=Box(-1, math.floor(self.y_min), len(self.data),
-                       math.ceil(self.y_max)),
-            x_axis_values=PlotTicksConfig(max_count=0)))
+        XYPlot(domain=default_box, x_axis_values=PlotTicksConfig(max_count=0)))
+    assert plot.domain
+    assert plot.domain.x1 == default_box.x1
+    assert plot.domain.x2 == default_box.x2
     return plot.produce() + self._draw(plot)
 
 
