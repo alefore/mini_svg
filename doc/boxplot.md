@@ -13,8 +13,6 @@ Creates a series of BoxPlot graphs, visualizing distributions at a glance:
 Optional parameter that can be used to control the y-axis setting.
 If absent, y-axis values are inferred from the data.
 
-If set, x1 should be set to -1 and x2 to the number of plots.
-
 ## Python
 
 ```

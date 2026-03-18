@@ -39,15 +39,23 @@ class _Compose(PointTransformer):
     return x, y
 
 
-def MoveAndScale(domain: Box, range: Box) -> PointTransformer:
+def MoveAndScale(domain: Box, output_range: Box) -> PointTransformer:
   "Returns a new delegate where drawing is constrained to the box given."
 
+  assert domain.x1 is not None
+  assert domain.x2 is not None
+  assert domain.y1 is not None
+  assert domain.y2 is not None
+  assert output_range.x1 is not None
+  assert output_range.x2 is not None
+  assert output_range.y1 is not None
+  assert output_range.y2 is not None
   to_origin = _Translate(-domain.x1, -domain.y1)
 
-  sx = (range.x2 - range.x1) / (domain.x2 - domain.x1)
-  sy = (range.y2 - range.y1) / (domain.y2 - domain.y1)
+  sx = (output_range.x2 - output_range.x1) / (domain.x2 - domain.x1)
+  sy = (output_range.y2 - output_range.y1) / (domain.y2 - domain.y1)
   scale = _Scale(sx, sy)
 
-  to_output = _Translate(range.x1, range.y1)
+  to_output = _Translate(output_range.x1, output_range.y1)
 
   return _Compose([to_origin, scale, to_output])

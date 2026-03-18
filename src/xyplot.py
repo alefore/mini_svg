@@ -11,8 +11,8 @@ from shape_transformer import ShapeTransformer
 
 @dataclass(frozen=True, kw_only=True)
 class XYPlot:
-  domain: Box | None = None
-  output_range: Box | None = None
+  domain: Box = Box()
+  output_range: Box = Box()
   margins: Margins | None = None
 
   x_axis_values: PlotTicksConfig = PlotTicksConfig()
@@ -27,8 +27,8 @@ class XYPlot:
 
   @property
   def transformer(self) -> ShapeTransformer:
-    assert self.domain
-    assert self.output_range
+    assert self.domain is not None
+    assert self.output_range is not None
     output = self.output_range.with_y_reversed()
     if self.margins:
       output = output.with_margins(self.margins)
@@ -36,8 +36,8 @@ class XYPlot:
 
   def with_defaults(self, defaults: "XYPlot") -> "XYPlot":
     return XYPlot(
-        domain=self.domain or defaults.domain,
-        output_range=self.output_range or defaults.output_range,
+        domain=self.domain.with_defaults(defaults.domain),
+        output_range=self.output_range.with_defaults(defaults.output_range),
         margins=self.margins or defaults.margins,
         x_axis_values=self.x_axis_values.with_defaults(defaults.x_axis_values),
         y_axis_values=self.y_axis_values.with_defaults(defaults.y_axis_values),
@@ -51,7 +51,7 @@ class XYPlot:
     return self.transformer(self._draw()) + self._legend()
 
   def _legend(self) -> Iterator[Shape]:
-    assert self.output_range
+    assert self.output_range is not None
     for i, key in enumerate(sorted(self.labels)):
       lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
@@ -72,8 +72,12 @@ class XYPlot:
 
   @shape_generator
   def _draw(self) -> Iterator[Shape]:
-    assert self.domain
-    assert self.output_range
+    assert self.domain is not None
+    assert self.output_range is not None
+    assert self.domain.x1 is not None
+    assert self.domain.x2 is not None
+    assert self.domain.y1 is not None
+    assert self.domain.y2 is not None
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
       yield Line.vertical(x, self.domain.y1, self.domain.y2,

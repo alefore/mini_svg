@@ -17,7 +17,7 @@ cat >$CONFIG_PATH <<EOF
     "margins": { "top": 10, "bottom": 10, "left": 50 },
     "y_axis_values": { "max_count": 5 },
     "y_label": "ln(actual / estimate)",
-    "domain": { "x1": -1, "x2": 3, "y1": 0, "y2": 20 }
+    "domain": { "y1": 0, "y2": 20 }
   },
   "data_path": "$DATA_PATH"
 }
