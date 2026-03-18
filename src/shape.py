@@ -13,8 +13,8 @@ class ShapeParams:
   def as_text(self) -> str:
     # title must be handled separately.
     data = {"class": self.css_class, "transform": self.transform}
-    return " ".join(
-        "{key}='{value}'" for key, value in data.items() if value is not None)
+    return "".join(
+        f" {key}='{value}'" for key, value in data.items() if value is not None)
 
 
 @dataclass(frozen=True)
