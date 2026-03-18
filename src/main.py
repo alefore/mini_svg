@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import json
 import pathlib
 import sys
+from typing import Any, cast
 
 from meta import create_from_json_data
 from mini_svg import SvgWriter, boxplot
@@ -17,16 +18,26 @@ class WriterAndPlot:
   data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
 
-def json_file(path):
+def json_file(path: str) -> dict[str, Any]:
   try:
     with open(path, 'r') as f:
-      return json.load(f)
+      return cast(dict[str, Any], json.load(f))
   except json.JSONDecodeError as e:
     raise argparse.ArgumentTypeError(
         f"{path} contains invalid JSON: {e}") from e
 
 
-def main():
+def read_distributions(data_path: pathlib.Path) -> dict[str, list[float]]:
+  data = collections.defaultdict(list)
+  with open(data_path, 'r') as f:
+    for line in f:
+      parts = line.split()
+      assert len(parts) == 2
+      data[parts[0]].append(float(parts[1]))
+  return data
+
+
+def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
   subparsers = parser.add_subparsers(
@@ -40,13 +51,7 @@ def main():
 
   if args.command == "boxplot":
     plot = create_from_json_data(WriterAndPlot, args.config)
-    data = collections.defaultdict(list)
-    with open(plot.data_path, 'r') as f:
-      for line in f:
-        parts = line.split()
-        assert len(parts) == 2
-        data[parts[0]].append(float(parts[1]))
-    boxplot(plot.writer, plot.plot, data)
+    boxplot(plot.writer, plot.plot, data=read_distributions(plot.data_path))
 
 
 if __name__ == "__main__":
