@@ -164,17 +164,32 @@ def _convert_json_value(value: Any, target_type: Type[Any],
       )
     return output
 
+  if origin is tuple:
+    assert len(args) == 2
+    assert args[1] == Ellipsis
+    list_item_type = args[0]
+    if not isinstance(value, list):
+      raise ValueError(
+          f"Expected list for field `{field_name}`, got {type(value).__name__}")
+    processed_list = []
+    for item in value:
+      processed_list.append(
+          _convert_json_value(item, list_item_type, field_name))
+    return tuple(processed_list)
+
   if target_type is pathlib.Path:
     if not isinstance(value, str):
       raise ValueError(f"Expected string for Path field ", {field_name},
                        ", got ", {type(value).__name__})
     return pathlib.Path(value)
-  elif origin is frozenset and args == (str,):
+
+  if origin in [frozenset, tuple] and args == (str,):
     if not isinstance(value, list):
       raise ValueError(f"Expected list for frozenset field ", {field_name},
                        ", got ", {type(value).__name__})
-    return frozenset(value)
-  elif target_type is bool:
+    return origin(value)
+
+  if target_type is bool:
     if not isinstance(value, bool):
       if isinstance(value, str) and value.lower() in ("true", "false"):
         return value.lower() == "true"
@@ -182,7 +197,8 @@ def _convert_json_value(value: Any, target_type: Type[Any],
           f"Invalid type for field `{field_name}`. Expected bool, got {type(value).__name__} with value `{value}`"
       )
     return value
-  elif target_type in [str, int, float]:
+
+  if target_type in [str, int, float]:
     if not isinstance(value, target_type):
       try:
         return target_type(value)
@@ -191,9 +207,10 @@ def _convert_json_value(value: Any, target_type: Type[Any],
             f"Invalid type for field `{field_name}`. Expected {target_type.__name__}, got {type(value).__name__} with value `{value}`"
         )
     return value
-  else:
-    raise ValueError(f"Unsupported type for conversion ", {field_name}, ": ",
-                     {target_type})
+
+  raise ValueError(
+      f"Unsupported type for field `{field_name}` ({origin=}): {target_type=}, found {type(value).__name__}"
+  )
 
 
 def create_from_json_data(config_class: Type[C], data: dict[str, Any]) -> C:
@@ -230,19 +247,6 @@ def create_from_json_data(config_class: Type[C], data: dict[str, Any]) -> C:
         continue
 
       value = data.pop(field_name)
-
-      if origin is list and len(type_args) == 1:
-        list_item_type = type_args[0]
-        if not isinstance(value, list):
-          raise ValueError(
-              f"Expected list for field `{field_name}`, got {type(value).__name__}"
-          )
-        processed_list = []
-        for item in value:
-          processed_list.append(
-              _convert_json_value(item, list_item_type, field_name))
-        kwargs[field_name] = processed_list
-        continue
 
       kwargs[field_name] = _convert_json_value(value, field_type, field_name)
     except ValueError as e:
