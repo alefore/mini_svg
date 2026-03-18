@@ -28,7 +28,7 @@ class SvgWriter:
   output_path: pathlib.Path
   width: float
   height: float
-  css: list[pathlib.Path]
+  css: tuple[pathlib.Path, ...] = ()
 
   def get_box(self) -> Box:
     return simple_box(self.width, self.height)
@@ -207,10 +207,12 @@ class _BoxPlotOne:
   def draw(self, index: int, plot: XYPlot) -> Iterable[Shape]:
     x = plot.transformer.transformer.transform(index, 0)[0]
     assert plot.output_range
-    assert plot.margins
+    margins_bottom: float = 0
+    if plot.margins:
+      margins_bottom = plot.margins.bottom
     return plot.transformer(self._shapes(index)) + [
         Text(self.label, x,
-             plot.output_range.height() - plot.margins.bottom - 20,
+             plot.output_range.height() - margins_bottom - 20,
              ShapeParams(css_class="boxplot-label"))
     ]
 
