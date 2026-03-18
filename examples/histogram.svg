@@ -82,36 +82,27 @@ rect.boxplot {
 }
 
 </style>
-<line x1="50.0" y1="290.0" x2="50.0" y2="10.0" class='tic'/>
-<line x1="50.0" y1="297.5" x2="50.0" y2="290.0"/>
-<text x='50.0' y='304.93333333333334' class='tic-value-x'>3</text>
-<line x1="120.0" y1="290.0" x2="120.0" y2="10.0" class='tic'/>
-<line x1="120.0" y1="297.5" x2="120.0" y2="290.0"/>
-<text x='120.0' y='304.93333333333334' class='tic-value-x'>6</text>
 <line x1="190.0" y1="290.0" x2="190.0" y2="10.0" class='tic'/>
 <line x1="190.0" y1="297.5" x2="190.0" y2="290.0"/>
 <text x='190.0' y='304.93333333333334' class='tic-value-x'>9</text>
-<line x1="260.0" y1="290.0" x2="260.0" y2="10.0" class='tic'/>
-<line x1="260.0" y1="297.5" x2="260.0" y2="290.0"/>
-<text x='260.0' y='304.93333333333334' class='tic-value-x'>13</text>
+<line x1="50.0" y1="290.0" x2="50.0" y2="10.0" class='tic'/>
+<line x1="50.0" y1="297.5" x2="50.0" y2="290.0"/>
+<text x='50.0' y='304.93333333333334' class='tic-value-x'>3</text>
 <line x1="330.0" y1="290.0" x2="330.0" y2="10.0" class='tic'/>
 <line x1="330.0" y1="297.5" x2="330.0" y2="290.0"/>
 <text x='330.0' y='304.93333333333334' class='tic-value-x'>16</text>
 <line x1="50.0" y1="290.0" x2="400.0" y2="290.0" class='tic'/>
 <line x1="43.0" y1="290.0" x2="50.0" y2="290.0"/>
 <text x='36.0' y='290.0' class='tic-value-y'>0</text>
-<line x1="50.0" y1="220.0" x2="400.0" y2="220.0" class='tic'/>
-<line x1="43.0" y1="220.0" x2="50.0" y2="220.0"/>
-<text x='36.0' y='220.0' class='tic-value-y'>5</text>
-<line x1="50.0" y1="150.0" x2="400.0" y2="150.0" class='tic'/>
-<line x1="43.0" y1="150.0" x2="50.0" y2="150.0"/>
-<text x='36.0' y='150.0' class='tic-value-y'>10</text>
-<line x1="50.0" y1="80.0" x2="400.0" y2="80.0" class='tic'/>
-<line x1="43.0" y1="80.0" x2="50.0" y2="80.0"/>
-<text x='36.0' y='80.0' class='tic-value-y'>15</text>
+<line x1="50.0" y1="196.7" x2="400.0" y2="196.7" class='tic'/>
+<line x1="43.0" y1="196.7" x2="50.0" y2="196.7"/>
+<text x='36.0' y='196.66666666666669' class='tic-value-y'>1</text>
+<line x1="50.0" y1="103.3" x2="400.0" y2="103.3" class='tic'/>
+<line x1="43.0" y1="103.3" x2="50.0" y2="103.3"/>
+<text x='36.0' y='103.33333333333334' class='tic-value-y'>2</text>
 <line x1="50.0" y1="10.0" x2="400.0" y2="10.0" class='tic'/>
 <line x1="43.0" y1="10.0" x2="50.0" y2="10.0"/>
-<text x='36.0' y='10.0' class='tic-value-y'>20</text>
+<text x='36.0' y='10.0' class='tic-value-y'>3</text>
 <line x1="50.0" y1="290.0" x2="50.0" y2="10.0"/>
 <line x1="50.0" y1="290.0" x2="400.0" y2="290.0"/>
 <rect x="340.0" y="20.0" width="10.0" height="10.0" class='ai'/>
@@ -121,17 +112,15 @@ rect.boxplot {
 <rect x="340.0" y="60.0" width="10.0" height="10.0" class='monkey'/>
 <text x='355.0' y='69'>monkey</text>
 <text x='200.0' y='300.0' class='label-x'>ln(actual / estimate)</text>
-<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>ln(actual / estimate)</text>
-<rect x="158.5" y="276.0" width="9.3" height="14.0" class='ai'/>
-<rect x="193.5" y="262.0" width="9.3" height="28.0" class='ai'/>
-<rect x="228.5" y="276.0" width="9.3" height="14.0" class='ai'/>
-<rect x="298.5" y="276.0" width="9.3" height="14.0" class='ai'/>
-<rect x="368.5" y="276.0" width="9.3" height="14.0" class='ai'/>
-<rect x="237.8" y="262.0" width="9.3" height="28.0" class='human'/>
-<rect x="307.8" y="276.0" width="9.3" height="14.0" class='human'/>
-<rect x="377.8" y="276.0" width="9.3" height="14.0" class='human'/>
-<rect x="72.2" y="276.0" width="9.3" height="14.0" class='monkey'/>
-<rect x="107.2" y="276.0" width="9.3" height="14.0" class='monkey'/>
-<rect x="177.2" y="276.0" width="9.3" height="14.0" class='monkey'/>
-<rect x="247.2" y="276.0" width="9.3" height="14.0" class='monkey'/>
+<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>Histogram</text>
+<rect x="127.0" y="196.7" width="18.7" height="93.3" class='ai'/>
+<rect x="197.0" y="10.0" width="18.7" height="280.0" class='ai'/>
+<rect x="267.0" y="196.7" width="18.7" height="93.3" class='ai'/>
+<rect x="337.0" y="196.7" width="18.7" height="93.3" class='ai'/>
+<rect x="215.7" y="103.3" width="18.7" height="186.7" class='human'/>
+<rect x="285.7" y="196.7" width="18.7" height="93.3" class='human'/>
+<rect x="355.7" y="196.7" width="18.7" height="93.3" class='human'/>
+<rect x="94.3" y="103.3" width="18.7" height="186.7" class='monkey'/>
+<rect x="164.3" y="196.7" width="18.7" height="93.3" class='monkey'/>
+<rect x="234.3" y="196.7" width="18.7" height="93.3" class='monkey'/>
 </svg>
