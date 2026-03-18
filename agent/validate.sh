@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-ENTRY_POINTS="src/mini_svg.py"
+ENTRY_POINTS="src/mini_svg.py src/main.py"
 
 TESTS="src/meta_test.py"
 
