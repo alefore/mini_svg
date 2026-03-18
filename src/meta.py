@@ -40,7 +40,7 @@ def with_config(
       remaining_kwargs = {
           k: v for k, v in kwargs.items() if k not in config_fields
       }
-      if args and isinstance(args[0], config_class):
+      if args and any(isinstance(arg, config_class) for arg in args):
         return func(*args, **remaining_kwargs)
       config = config_class(**relevant_kwargs)
       if args and not isinstance(args[0], config_class):
@@ -100,7 +100,7 @@ def extend_argparse(config_class: Type[C],
 
 def create_from_args(args: argparse.Namespace,
                      config_class: Type[C],
-                     prefix: str = "") -> C:
+                     prefix: str = "") -> C | None:
   kwargs: dict[str, Any] = {}
   type_hints = get_type_hints(config_class)
   for f in fields(cast(Any, config_class)):
@@ -109,7 +109,7 @@ def create_from_args(args: argparse.Namespace,
     origin = get_origin(field_type)
     type_args = get_args(field_type)
 
-    value = getattr(args, arg_name, MISSING)
+    value = getattr(args, arg_name, None)
     is_required = True
 
     if origin is UnionType:
@@ -123,20 +123,23 @@ def create_from_args(args: argparse.Namespace,
     if is_dataclass(field_type):
       nested_config = create_from_args(args, cast(Type[C], field_type),
                                        f"{arg_name}_")
-      kwargs[f.name] = nested_config
+      if nested_config:
+        kwargs[f.name] = nested_config
     elif origin is list and len(type_args) == 1:
-      if value is not MISSING:
+      if value is not None:
         kwargs[f.name] = value
 
     elif field_type is frozenset[str]:
-      if value is not MISSING:
+      if value is not None:
         kwargs[f.name] = frozenset(cast(list[str], value))
 
     elif field_type is pathlib.Path:
-      if value is not MISSING:
+      if value is not None:
         kwargs[f.name] = pathlib.Path(cast(str, value))
 
-    elif value is not MISSING:
+    elif value is not None:
       kwargs[f.name] = value
 
+  if not kwargs:
+    return None
   return config_class(**kwargs)
