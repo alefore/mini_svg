@@ -1,0 +1,14 @@
+ai 12
+ai 15
+ai 19
+ai 10
+ai 9
+human 12
+human 15
+human 18
+human 12
+monkey 5
+monkey 3
+monkey 12
+monkey 9
+ai 10

@@ -1,0 +1,20 @@
+{
+  "histogram": {
+    "bins": 10,
+    "writer": {
+      "width": 400,
+      "height": 300,
+      "output_path": "examples/histogram.svg",
+      "css": ["examples/style.css"]
+    },
+    "plot": {
+      "margins": { "top": 10, "bottom": 10, "left": 50 },
+      "x_label": "ln(actual / estimate)",
+
+      "y_axis_values": { "max_count": 5 },
+      "y_label": "ln(actual / estimate)",
+      "domain": { "y1": 0, "y2": 20 }
+    },
+    "data_path": "examples/distribution.txt"
+  }
+}

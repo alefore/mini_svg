@@ -7,15 +7,8 @@ import sys
 from typing import Any, cast
 
 from meta import create_from_json_data
-from mini_svg import SvgWriter, boxplot
+from mini_svg import SvgWriter, histogram, boxplot
 from xyplot import XYPlot
-
-
-@dataclass(frozen=True)
-class WriterAndPlot:
-  writer: SvgWriter
-  plot: XYPlot = XYPlot()
-  data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
 
 def json_file(path: str) -> dict[str, Any]:
@@ -37,21 +30,47 @@ def read_distributions(data_path: pathlib.Path) -> dict[str, list[float]]:
   return data
 
 
+def _boxplot(config_data: Any) -> None:
+
+  @dataclass(frozen=True)
+  class Config:
+    writer: SvgWriter
+    plot: XYPlot = XYPlot()
+    data_path: pathlib.Path = pathlib.Path("/dev/stdin")
+
+  config = create_from_json_data(Config, config_data)
+  boxplot(config.writer, config.plot, data=read_distributions(config.data_path))
+
+
+def _histogram(config_data: Any) -> None:
+
+  @dataclass(frozen=True)
+  class HistogramConfig:
+    writer: SvgWriter | None
+    plot: XYPlot = XYPlot()
+    bins: int = 10
+    data_path: pathlib.Path = pathlib.Path("/dev/stdin")
+
+  config = create_from_json_data(HistogramConfig, config_data)
+  histogram(
+      config.writer,
+      config.plot,
+      data=read_distributions(config.data_path),
+      bins=config.bins)
+
+
 def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
-  subparsers = parser.add_subparsers(
-      dest="command", required=True, help="Type of plot")
-
-  boxplot_parser = subparsers.add_parser("boxplot", help="Generate a boxplot")
-  boxplot_parser.add_argument(
+  parser.add_argument(
       '--config', type=json_file, help="Path to JSON config.", required=True)
 
   args = parser.parse_args()
 
-  if args.command == "boxplot":
-    plot = create_from_json_data(WriterAndPlot, args.config)
-    boxplot(plot.writer, plot.plot, data=read_distributions(plot.data_path))
+  HANDLERS = {"boxplot": _boxplot, "histogram": _histogram}
+  for key, value in HANDLERS.items():
+    if key in args.config:
+      value(args.config[key])
 
 
 if __name__ == "__main__":
