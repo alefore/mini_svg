@@ -1,6 +1,10 @@
 # mini_svg
 
-Py library to generate SVG visualizations of scientific data
+Simple py library to generate SVG visualizations of scientific data
+
+# Plot types
+
+* [doc/boxplot.md]
 
 # Examples
 
@@ -49,3 +53,6 @@ mini_svg.boxplot(
 
 (`SVG_STYLES` are just local paths containing the styles you can see
 in the SVG sources.)
+
+See the [examples/] directory for shell scripts
+that configure the plots through JSON.
