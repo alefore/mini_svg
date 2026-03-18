@@ -2,7 +2,7 @@
 
 ENTRY_POINTS="src/mini_svg.py"
 
-TESTS=""
+TESTS="src/meta_test.py"
 
 if [ -z "$ENTRY_POINTS" ]; then
   echo "Must define entry points (in agent/validate.sh)."

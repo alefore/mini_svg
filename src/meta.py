@@ -1,4 +1,5 @@
 import argparse
+import json
 from dataclasses import MISSING, fields, is_dataclass, field
 from functools import wraps
 import pathlib
@@ -79,7 +80,7 @@ def _extend_argparse_field(var_type: Type[Any], name: str, default: Any,
 def extend_argparse(config_class: Type[C],
                     parser: argparse.ArgumentParser,
                     is_required: bool = True,
-                    prefix: str = '') -> None:
+                    prefix: str = "") -> None:
   type_hints = get_type_hints(config_class)
   for f in fields(cast(Any, config_class)):
     origin = get_origin(f.type)
@@ -142,4 +143,116 @@ def create_from_args(args: argparse.Namespace,
 
   if not kwargs:
     return None
+  return config_class(**kwargs)
+
+
+def _convert_json_value(value: Any, target_type: Type[Any],
+                        field_name: str) -> Any:
+  """Converts a raw JSON value to the target Python type."""
+  origin = get_origin(target_type)
+  args = get_args(target_type)
+
+  if is_dataclass(target_type):
+    if not isinstance(value, dict):
+      raise ValueError(
+          f"Expected dictionary for nested dataclass field `{field_name}`, got {type(value).__name__}"
+      )
+    output = create_from_json_data(target_type, value)
+    if value:
+      raise ValueError(
+          f"Unknown fields in nested configuration `{field_name}`: {', '.join(value)}"
+      )
+    return output
+
+  if target_type is pathlib.Path:
+    if not isinstance(value, str):
+      raise ValueError(f"Expected string for Path field ", {field_name},
+                       ", got ", {type(value).__name__})
+    return pathlib.Path(value)
+  elif origin is frozenset and args == (str,):
+    if not isinstance(value, list):
+      raise ValueError(f"Expected list for frozenset field ", {field_name},
+                       ", got ", {type(value).__name__})
+    return frozenset(value)
+  elif target_type is bool:
+    if not isinstance(value, bool):
+      if isinstance(value, str) and value.lower() in ("true", "false"):
+        return value.lower() == "true"
+      raise ValueError(
+          f"Invalid type for field `{field_name}`. Expected bool, got {type(value).__name__} with value `{value}`"
+      )
+    return value
+  elif target_type in [str, int, float]:
+    if not isinstance(value, target_type):
+      try:
+        return target_type(value)
+      except (TypeError, ValueError):
+        raise ValueError(
+            f"Invalid type for field `{field_name}`. Expected {target_type.__name__}, got {type(value).__name__} with value `{value}`"
+        )
+    return value
+  else:
+    raise ValueError(f"Unsupported type for conversion ", {field_name}, ": ",
+                     {target_type})
+
+
+def create_from_json_data(config_class: Type[C], data: dict[str, Any]) -> C:
+  kwargs: dict[str, Any] = {}
+  type_hints = get_type_hints(config_class)
+
+  errors: list[str] = []
+  for f in fields(cast(Any, config_class)):
+    field_name = f.name
+    field_type = type_hints.get(field_name, f.type)
+    origin = get_origin(field_type)
+    type_args = get_args(field_type)
+
+    try:
+      if origin is UnionType:
+        filtered_args = [a for a in type_args if a is not type(None)]
+        if len(filtered_args) != 1:
+          raise ValueError(
+              f"Unsupported Union type for field `{field_name}`: {field_type}")
+        field_type = filtered_args[0]
+        default_value = None
+      elif f.default is not MISSING:
+        default_value = f.default
+      else:
+        default_value = MISSING
+
+      if field_name not in data:
+        if default_value is MISSING:
+          raise ValueError(
+              f"Missing required field `{field_name}` for {config_class.__name__}"
+          )
+        else:
+          kwargs[field_name] = default_value
+        continue
+
+      value = data.pop(field_name)
+
+      if origin is list and len(type_args) == 1:
+        list_item_type = type_args[0]
+        if not isinstance(value, list):
+          raise ValueError(
+              f"Expected list for field `{field_name}`, got {type(value).__name__}"
+          )
+        processed_list = []
+        for item in value:
+          processed_list.append(
+              _convert_json_value(item, list_item_type, field_name))
+        kwargs[field_name] = processed_list
+        continue
+
+      kwargs[field_name] = _convert_json_value(value, field_type, field_name)
+    except ValueError as e:
+      errors.append(str(e))
+
+  if data:
+    errors.append(
+        f"Unknown field(s) for {config_class.__name__}: {', '.join(data)}")
+
+  if errors:
+    raise ValueError("\n".join(errors))
+
   return config_class(**kwargs)
