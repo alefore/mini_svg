@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import collections
 from dataclasses import dataclass, field, fields
 from functools import singledispatchmethod
 import itertools
@@ -278,6 +279,13 @@ class _LinePlotOne:
   data: tuple[tuple[float, float], ...]
 
   def draw(self, plot: XYPlot) -> Iterable[Shape]:
+    count_by_x: dict[float, int] = collections.defaultdict(int)
+    for d in set(self.data):
+      count_by_x[d[0]] += 1
+    repeated_values = {x for (x, count) in count_by_x.items() if count > 1}
+    if repeated_values:
+      raise ValueError(
+          f"{self.label}: Multiple y values for x values: {repeated_values}")
     points: list[PathPoint] = []
     points.append(PathPoint("M", self.data[0][0], self.data[0][1]))
     for point in self.data[1:]:
@@ -289,7 +297,7 @@ class _LinePlotOne:
 @with_plot_config
 def lineplot(writer: SvgWriter, plot: XYPlot,
              data: dict[str, list[tuple[float, float]]]) -> None:
-  line_data = {k: _LinePlotOne(k, tuple(v)) for k, v in data.items()}
+  line_data = {k: _LinePlotOne(k, tuple(sorted(v))) for k, v in data.items()}
   plot = plot.with_defaults(
       XYPlot(
           output_range=writer.get_box(),
