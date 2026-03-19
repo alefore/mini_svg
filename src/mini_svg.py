@@ -293,6 +293,7 @@ def lineplot(writer: SvgWriter, plot: XYPlot,
   plot = plot.with_defaults(
       XYPlot(
           output_range=writer.get_box(),
+          labels=frozenset(line_data),
           domain=get_domain(itertools.chain.from_iterable(data.values()))))
   writer.consume(plot.produce() + itertools.chain.from_iterable(
       plot.transformer(line_data[key].draw(plot)) for key in sorted(line_data)))
