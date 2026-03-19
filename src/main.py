@@ -7,7 +7,7 @@ import sys
 from typing import Any, cast
 
 from meta import create_from_json_data
-from mini_svg import SvgWriter, histogram, boxplot
+from mini_svg import SvgWriter, boxplot, histogram, lineplot
 from xyplot import XYPlot
 
 
@@ -27,6 +27,17 @@ def read_distributions(data_path: pathlib.Path) -> dict[str, list[float]]:
       parts = line.split()
       assert len(parts) == 2
       data[parts[0]].append(float(parts[1]))
+  return data
+
+
+def read_functions(
+    data_path: pathlib.Path) -> dict[str, list[tuple[float, float]]]:
+  data: dict[str, list[tuple[float, float]]] = collections.defaultdict(list)
+  with open(data_path, 'r') as f:
+    for line in f:
+      parts = line.split()
+      assert len(parts) == 3
+      data[parts[0]].append((float(parts[1]), float(parts[2])))
   return data
 
 
@@ -59,6 +70,18 @@ def _histogram(config_data: Any) -> None:
       bins=config.bins)
 
 
+def _lineplot(config_data: Any) -> None:
+
+  @dataclass(frozen=True)
+  class Config:
+    writer: SvgWriter | None
+    plot: XYPlot = XYPlot()
+    data_path: pathlib.Path = pathlib.Path("/dev/stdin")
+
+  config = create_from_json_data(Config, config_data)
+  lineplot(config.writer, config.plot, read_functions(config.data_path))
+
+
 def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
@@ -67,7 +90,11 @@ def main() -> None:
 
   args = parser.parse_args()
 
-  HANDLERS = {"boxplot": _boxplot, "histogram": _histogram}
+  HANDLERS = {
+      "boxplot": _boxplot,
+      "histogram": _histogram,
+      "lineplot": _lineplot
+  }
   for key, value in HANDLERS.items():
     if key in args.config:
       value(args.config[key])

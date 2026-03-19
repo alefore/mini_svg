@@ -11,7 +11,7 @@ from typing import Any, Callable, Iterable, Iterator, NamedTuple, NewType, Proto
 from meta import value_with_default, with_config
 from plot_ticks import PlotTicks, PlotTicksConfig
 from box import Margins, Box, simple_box
-from shape import Circle, Line, Rect, Shape, ShapeParams, ShapeStream, Text, shape_generator
+from shape import Circle, Line, Rect, Path, PathPoint, Shape, ShapeParams, ShapeStream, Text, shape_generator
 from xyplot import XYPlot, with_plot_config
 
 
@@ -20,6 +20,13 @@ class ShapeProducer(ABC):
   @abstractmethod
   def produce(self, plot: XYPlot) -> ShapeStream:
     pass
+
+
+def get_domain(points_it: Iterable[tuple[float, float]]) -> Box:
+  all_points = list(points_it)
+  all_x = [pt[0] for pt in all_points]
+  all_y = [pt[1] for pt in all_points]
+  return Box(x1=min(all_x), y1=min(all_y), x2=max(all_x), y2=max(all_y))
 
 
 @dataclass(frozen=True)
@@ -76,6 +83,10 @@ class SvgWriter:
   @_write_shape.register
   def _(self, text: Text) -> str:
     return f"<text x='{text.x}' y='{text.y}'{text.params.as_text()}>{text.text}</text>"
+
+  @_write_shape.register
+  def _(self, path: Path) -> str:
+    return f"<path d='{' '.join(str(p) for p in path.points)}' {path.params.as_text()}/>"
 
 
 with_svg_writer = with_config(SvgWriter)
@@ -259,3 +270,29 @@ def boxplot(writer: SvgWriter, plot: XYPlot, data: dict[str,
       _BoxPlot(box_data, min(d.y_min for d in box_data.values()),
                max(d.y_max for d in box_data.values())).produce(
                    plot.with_defaults(XYPlot(output_range=writer.get_box()))))
+
+
+@dataclass(frozen=True)
+class _LinePlotOne:
+  label: str
+  data: tuple[tuple[float, float], ...]
+
+  def draw(self, plot: XYPlot) -> Iterable[Shape]:
+    points: list[PathPoint] = []
+    points.append(PathPoint("M", self.data[0][0], self.data[0][1]))
+    for point in self.data[1:]:
+      points.append(PathPoint("L", point[0], point[1]))
+    yield Path(tuple(points), ShapeParams(css_class="lineplot-line"))
+
+
+@with_svg_writer
+@with_plot_config
+def lineplot(writer: SvgWriter, plot: XYPlot,
+             data: dict[str, list[tuple[float, float]]]) -> None:
+  line_data = {k: _LinePlotOne(k, tuple(v)) for k, v in data.items()}
+  plot = plot.with_defaults(
+      XYPlot(
+          output_range=writer.get_box(),
+          domain=get_domain(itertools.chain.from_iterable(data.values()))))
+  writer.consume(plot.produce() + itertools.chain.from_iterable(
+      plot.transformer(line_data[key].draw(plot)) for key in sorted(line_data)))

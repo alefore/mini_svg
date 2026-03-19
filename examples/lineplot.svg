@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="300.0" height="400.0" viewBox="0 0 300.0 400.0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<style>
+:root {
+  --bg: #121212;
+  --bg-mild: #282828;
+  --text: #e0e0e0;
+  --text-accent-strong: #b9e0e1;
+  --text-accent: #93e0e3;
+  --text-dim: #63898b;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --bg-mild: #eee;
+    --text: #333333;
+    --text-accent-strong: #76898a;
+    --text-accent: #63898b;
+    --text-dim: #999;
+  }
+}
+svg {
+  background-color: var(--bg);
+}
+text {
+  fill: var(--text);
+  font-family: monospace;
+}
+polygon, path, circle {
+  stroke: var(--text);
+  fill: var(--bg-mild);
+}
+line {
+  stroke: var(--text-accent);
+}
+line.tic {
+  stroke: var(--bg-mild);
+}
+.ai {
+  fill: rgba(173, 216, 230, 0.7);
+  stroke-width: 0;
+}
+.human {
+  fill: rgba(255, 182, 193, 0.7);
+  stroke-width: 0;
+}
+rect.ai {
+  stroke: var(--text-dim);
+  stroke-width: 0.5;
+}
+rect.human {
+  stroke: var(--text-dim);
+  stroke-width: 0.5;
+}
+text.tic-value-x, text.tic-value-y {
+  fill: var(--text-dim);
+  font-family: monospace;
+}
+text.tic-value-x {
+  text-anchor: middle;
+  dominant-baseline: hanging;
+}
+text.tic-value-y {
+  text-anchor: end;
+  dominant-baseline: central;
+}
+text.label-x, text.label-y {
+  text-anchor: middle;
+}
+text.boxplot-label {
+  text-anchor: middle;
+  dominant-baseline: hanging;
+}
+text.label-x {
+  transform: rotate(-90 15,200);
+}
+rect.boxplot {
+  fill: var(--text-dim);
+}
+.lineplot-line {
+  fill: none;
+}
+</style>
+<line x1="50.0" y1="350.0" x2="50.0" y2="10.0" class='tic'/>
+<line x1="50.0" y1="355.1" x2="50.0" y2="350.0"/>
+<text x='50.0' y='360.2' class='tic-value-x'>0</text>
+<line x1="100.0" y1="350.0" x2="100.0" y2="10.0" class='tic'/>
+<line x1="100.0" y1="355.1" x2="100.0" y2="350.0"/>
+<text x='100.0' y='360.2' class='tic-value-x'>1</text>
+<line x1="150.0" y1="350.0" x2="150.0" y2="10.0" class='tic'/>
+<line x1="150.0" y1="355.1" x2="150.0" y2="350.0"/>
+<text x='150.0' y='360.2' class='tic-value-x'>2</text>
+<line x1="200.0" y1="350.0" x2="200.0" y2="10.0" class='tic'/>
+<line x1="200.0" y1="355.1" x2="200.0" y2="350.0"/>
+<text x='200.0' y='360.2' class='tic-value-x'>3</text>
+<line x1="250.0" y1="350.0" x2="250.0" y2="10.0" class='tic'/>
+<line x1="250.0" y1="355.1" x2="250.0" y2="350.0"/>
+<text x='250.0' y='360.2' class='tic-value-x'>4</text>
+<line x1="300.0" y1="350.0" x2="300.0" y2="10.0" class='tic'/>
+<line x1="300.0" y1="355.1" x2="300.0" y2="350.0"/>
+<text x='300.0' y='360.2' class='tic-value-x'>5</text>
+<line x1="50.0" y1="350.0" x2="300.0" y2="350.0" class='tic'/>
+<line x1="45.0" y1="350.0" x2="50.0" y2="350.0"/>
+<text x='40.0' y='350.0' class='tic-value-y'>0</text>
+<line x1="50.0" y1="282.0" x2="300.0" y2="282.0" class='tic'/>
+<line x1="45.0" y1="282.0" x2="50.0" y2="282.0"/>
+<text x='40.0' y='282.0' class='tic-value-y'>5</text>
+<line x1="50.0" y1="214.0" x2="300.0" y2="214.0" class='tic'/>
+<line x1="45.0" y1="214.0" x2="50.0" y2="214.0"/>
+<text x='40.0' y='214.0' class='tic-value-y'>10</text>
+<line x1="50.0" y1="146.0" x2="300.0" y2="146.0" class='tic'/>
+<line x1="45.0" y1="146.0" x2="50.0" y2="146.0"/>
+<text x='40.0' y='146.0' class='tic-value-y'>15</text>
+<line x1="50.0" y1="78.0" x2="300.0" y2="78.0" class='tic'/>
+<line x1="45.0" y1="78.0" x2="50.0" y2="78.0"/>
+<text x='40.0' y='78.0' class='tic-value-y'>20</text>
+<line x1="50.0" y1="10.0" x2="300.0" y2="10.0" class='tic'/>
+<line x1="45.0" y1="10.0" x2="50.0" y2="10.0"/>
+<text x='40.0' y='10.0' class='tic-value-y'>25</text>
+<line x1="50.0" y1="350.0" x2="50.0" y2="10.0"/>
+<line x1="50.0" y1="350.0" x2="300.0" y2="350.0"/>
+<text x='150.0' y='400.0' class='label-x'>time</text>
+<text x='15' y='200.0' class='label-y' transform='rotate(-90 15,200.0)'>effort</text>
+<path d='M 50.0 350.0 L 100.0 336.4 L 150.0 295.6 L 200.0 227.6 L 250.0 132.4 L 300.0 10.0'  class='lineplot-line'/>
+</svg>

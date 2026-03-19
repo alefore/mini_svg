@@ -67,7 +67,23 @@ class Text:
   params: ShapeParams = ShapeParams()
 
 
-Shape = Rect | Line | Circle | Text
+@dataclass(frozen=True)
+class PathPoint:
+  path_type: str
+  x: float
+  y: float
+
+  def __str__(self):
+    return f"{self.path_type} {self.x:.1f} {self.y:.1f}"
+
+
+@dataclass(frozen=True)
+class Path:
+  points: tuple[PathPoint, ...]
+  params: ShapeParams = ShapeParams()
+
+
+Shape = Rect | Line | Circle | Text | Path
 
 
 class ShapeStream:

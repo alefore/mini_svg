@@ -2,7 +2,7 @@ from functools import singledispatchmethod
 from typing import Any, Iterable
 
 from point_transformer import PointTransformer
-from shape import Circle, Line, Rect, Shape, ShapeStream, Text
+from shape import Circle, Line, Path, PathPoint, Rect, Shape, ShapeStream, Text
 
 
 class ShapeTransformer:
@@ -47,3 +47,12 @@ class ShapeTransformer:
   def _(self, text: Text) -> Text:
     tx, ty = self.transformer.transform(text.x, text.y)
     return Text(text.text, tx, ty, text.params)
+
+  def _transform_path_point(self, p: PathPoint) -> PathPoint:
+    output = self.transformer.transform(p.x, p.y)
+    return PathPoint(path_type=p.path_type, x=output[0], y=output[1])
+
+  @_handle.register
+  def _(self, path: Path) -> Path:
+    return Path(
+        tuple(map(self._transform_path_point, path.points)), path.params)
