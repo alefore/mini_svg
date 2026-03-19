@@ -1,14 +1,24 @@
 # mini_svg
 
-Simple py library to generate SVG visualizations of scientific data
+Simple py logic to generate SVG visualizations of scientific data
 
 # Plot types
 
 * [BoxPlot](doc/boxplot.md)
 * Scatterplot
-* Histograms
+* [Histogram](doc/histogram.md)
+* [Lineplot](doc/lineplot.md)
 
-# Examples
+# Usage
+
+There's two main interfaces:
+
+* From Python (in-process) through the functions exposed in `mini_svg`.
+
+* As a command-line which receives parameters from a json file.
+  See `.sh` files in [the examples directory](examples/).
+
+# Python examples
 
 I've generated the images in http://alejo.ch/3jj with:
 

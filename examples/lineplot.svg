@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="300.0" height="400.0" viewBox="0 0 300.0 400.0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="400.0" height="300.0" viewBox="0 0 400.0 300.0" xmlns="http://www.w3.org/2000/svg" version="1.1">
 <style>
 :root {
   --bg: #121212;
@@ -84,45 +84,50 @@ rect.boxplot {
   fill: none;
 }
 </style>
-<line x1="50.0" y1="350.0" x2="50.0" y2="10.0" class='tic'/>
-<line x1="50.0" y1="355.1" x2="50.0" y2="350.0"/>
-<text x='50.0' y='360.2' class='tic-value-x'>0</text>
-<line x1="100.0" y1="350.0" x2="100.0" y2="10.0" class='tic'/>
-<line x1="100.0" y1="355.1" x2="100.0" y2="350.0"/>
-<text x='100.0' y='360.2' class='tic-value-x'>1</text>
-<line x1="150.0" y1="350.0" x2="150.0" y2="10.0" class='tic'/>
-<line x1="150.0" y1="355.1" x2="150.0" y2="350.0"/>
-<text x='150.0' y='360.2' class='tic-value-x'>2</text>
-<line x1="200.0" y1="350.0" x2="200.0" y2="10.0" class='tic'/>
-<line x1="200.0" y1="355.1" x2="200.0" y2="350.0"/>
-<text x='200.0' y='360.2' class='tic-value-x'>3</text>
-<line x1="250.0" y1="350.0" x2="250.0" y2="10.0" class='tic'/>
-<line x1="250.0" y1="355.1" x2="250.0" y2="350.0"/>
-<text x='250.0' y='360.2' class='tic-value-x'>4</text>
-<line x1="300.0" y1="350.0" x2="300.0" y2="10.0" class='tic'/>
-<line x1="300.0" y1="355.1" x2="300.0" y2="350.0"/>
-<text x='300.0' y='360.2' class='tic-value-x'>5</text>
-<line x1="50.0" y1="350.0" x2="300.0" y2="350.0" class='tic'/>
-<line x1="45.0" y1="350.0" x2="50.0" y2="350.0"/>
-<text x='40.0' y='350.0' class='tic-value-y'>0</text>
-<line x1="50.0" y1="282.0" x2="300.0" y2="282.0" class='tic'/>
-<line x1="45.0" y1="282.0" x2="50.0" y2="282.0"/>
-<text x='40.0' y='282.0' class='tic-value-y'>5</text>
-<line x1="50.0" y1="214.0" x2="300.0" y2="214.0" class='tic'/>
-<line x1="45.0" y1="214.0" x2="50.0" y2="214.0"/>
-<text x='40.0' y='214.0' class='tic-value-y'>10</text>
-<line x1="50.0" y1="146.0" x2="300.0" y2="146.0" class='tic'/>
-<line x1="45.0" y1="146.0" x2="50.0" y2="146.0"/>
-<text x='40.0' y='146.0' class='tic-value-y'>15</text>
-<line x1="50.0" y1="78.0" x2="300.0" y2="78.0" class='tic'/>
-<line x1="45.0" y1="78.0" x2="50.0" y2="78.0"/>
-<text x='40.0' y='78.0' class='tic-value-y'>20</text>
-<line x1="50.0" y1="10.0" x2="300.0" y2="10.0" class='tic'/>
-<line x1="45.0" y1="10.0" x2="50.0" y2="10.0"/>
-<text x='40.0' y='10.0' class='tic-value-y'>25</text>
-<line x1="50.0" y1="350.0" x2="50.0" y2="10.0"/>
-<line x1="50.0" y1="350.0" x2="300.0" y2="350.0"/>
-<text x='150.0' y='400.0' class='label-x'>time</text>
-<text x='15' y='200.0' class='label-y' transform='rotate(-90 15,200.0)'>effort</text>
-<path d='M 50.0 350.0 L 100.0 336.4 L 150.0 295.6 L 200.0 227.6 L 250.0 132.4 L 300.0 10.0'  class='lineplot-line'/>
+<line x1="50.0" y1="250.0" x2="50.0" y2="10.0" class='tic'/>
+<line x1="50.0" y1="256.4" x2="50.0" y2="250.0"/>
+<text x='50.0' y='262.8' class='tic-value-x'>0</text>
+<line x1="118.0" y1="250.0" x2="118.0" y2="10.0" class='tic'/>
+<line x1="118.0" y1="256.4" x2="118.0" y2="250.0"/>
+<text x='118.0' y='262.8' class='tic-value-x'>1</text>
+<line x1="186.0" y1="250.0" x2="186.0" y2="10.0" class='tic'/>
+<line x1="186.0" y1="256.4" x2="186.0" y2="250.0"/>
+<text x='186.0' y='262.8' class='tic-value-x'>2</text>
+<line x1="254.0" y1="250.0" x2="254.0" y2="10.0" class='tic'/>
+<line x1="254.0" y1="256.4" x2="254.0" y2="250.0"/>
+<text x='254.0' y='262.8' class='tic-value-x'>3</text>
+<line x1="322.0" y1="250.0" x2="322.0" y2="10.0" class='tic'/>
+<line x1="322.0" y1="256.4" x2="322.0" y2="250.0"/>
+<text x='322.0' y='262.8' class='tic-value-x'>4</text>
+<line x1="390.0" y1="250.0" x2="390.0" y2="10.0" class='tic'/>
+<line x1="390.0" y1="256.4" x2="390.0" y2="250.0"/>
+<text x='390.0' y='262.8' class='tic-value-x'>5</text>
+<line x1="50.0" y1="250.0" x2="390.0" y2="250.0" class='tic'/>
+<line x1="43.2" y1="250.0" x2="50.0" y2="250.0"/>
+<text x='36.4' y='250.0' class='tic-value-y'>0</text>
+<line x1="50.0" y1="202.0" x2="390.0" y2="202.0" class='tic'/>
+<line x1="43.2" y1="202.0" x2="50.0" y2="202.0"/>
+<text x='36.4' y='202.0' class='tic-value-y'>5</text>
+<line x1="50.0" y1="154.0" x2="390.0" y2="154.0" class='tic'/>
+<line x1="43.2" y1="154.0" x2="50.0" y2="154.0"/>
+<text x='36.4' y='154.0' class='tic-value-y'>10</text>
+<line x1="50.0" y1="106.0" x2="390.0" y2="106.0" class='tic'/>
+<line x1="43.2" y1="106.0" x2="50.0" y2="106.0"/>
+<text x='36.4' y='106.0' class='tic-value-y'>15</text>
+<line x1="50.0" y1="58.0" x2="390.0" y2="58.0" class='tic'/>
+<line x1="43.2" y1="58.0" x2="50.0" y2="58.0"/>
+<text x='36.4' y='58.0' class='tic-value-y'>20</text>
+<line x1="50.0" y1="10.0" x2="390.0" y2="10.0" class='tic'/>
+<line x1="43.2" y1="10.0" x2="50.0" y2="10.0"/>
+<text x='36.4' y='10.0' class='tic-value-y'>25</text>
+<line x1="50.0" y1="250.0" x2="50.0" y2="10.0"/>
+<line x1="50.0" y1="250.0" x2="390.0" y2="250.0"/>
+<rect x="340.0" y="20.0" width="10.0" height="10.0" class='exp'/>
+<text x='355.0' y='29'>exp</text>
+<rect x="340.0" y="40.0" width="10.0" height="10.0" class='lin'/>
+<text x='355.0' y='49'>lin</text>
+<text x='200.0' y='300.0' class='label-x'>time</text>
+<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>effort</text>
+<path d='M 50.0 250.0 L 118.0 240.4 L 186.0 211.6 L 254.0 163.6 L 322.0 96.4 L 390.0 10.0'  class='lineplot-line'/>
+<path d='M 50.0 250.0 L 118.0 240.4 L 186.0 230.8 L 254.0 221.2 L 322.0 211.6 L 390.0 202.0'  class='lineplot-line'/>
 </svg>

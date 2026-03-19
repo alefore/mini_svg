@@ -6,6 +6,8 @@ Creates a series of BoxPlot graphs, visualizing distributions at a glance:
 
 ![BoxPlot example](/examples/boxplot.svg?raw=true "BoxPlot example")
 
+[source](/examples/boxplot.json)
+
 ## Parameters
 
 ### plot.domain (optional)
