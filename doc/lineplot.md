@@ -9,3 +9,5 @@ Currently it does just linear extrapolation across all samples.
 ![LinePlot example](/examples/lineplot.svg?raw=true "LinePlot example")
 
 [source](/examples/lineplot.json)
+
+This is very rudimentary right now.
