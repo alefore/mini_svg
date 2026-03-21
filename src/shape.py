@@ -73,7 +73,7 @@ class PathPoint:
   x: float
   y: float
 
-  def __str__(self):
+  def __str__(self) -> str:
     return f"{self.path_type} {self.x:.1f} {self.y:.1f}"
 
 
