@@ -7,7 +7,7 @@ import sys
 from typing import Any, cast
 
 from meta import create_from_json_data
-from mini_svg import SvgWriter, boxplot, histogram, lineplot
+from mini_svg import SvgWriter, boxplot, histogram, lineplot, scatterplot
 from xyplot import XYPlot
 
 
@@ -82,6 +82,18 @@ def _lineplot(config_data: Any) -> None:
   lineplot(config.writer, config.plot, read_functions(config.data_path))
 
 
+def _scatterplot(config_data: Any) -> None:
+
+  @dataclass(frozen=True)
+  class ScatterplotConfig:
+    writer: SvgWriter | None
+    plot: XYPlot = XYPlot()
+    data_path: pathlib.Path = pathlib.Path("/dev/stdin")
+
+  config = create_from_json_data(ScatterplotConfig, config_data)
+  scatterplot(config.writer, config.plot, data=read_functions(config.data_path))
+
+
 def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
@@ -93,7 +105,8 @@ def main() -> None:
   HANDLERS = {
       "boxplot": _boxplot,
       "histogram": _histogram,
-      "lineplot": _lineplot
+      "lineplot": _lineplot,
+      "scatterplot": _scatterplot
   }
   for key, value in HANDLERS.items():
     if key in args.config:
