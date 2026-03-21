@@ -83,59 +83,65 @@ rect.boxplot {
 .lineplot-line {
   fill: none;
 }
+rect.exp, circle.exp {
+  fill: rgba(173, 216, 230, 0.7);
+  stroke-width: 0;
+}
+rect.lin, circle.lin {
+  fill: rgba(255, 182, 193, 0.7);
+  stroke-width: 0;
+}
+
 </style>
 <line x1="50.0" y1="250.0" x2="50.0" y2="20.0" class='tic'/>
 <line x1="50.0" y1="256.1" x2="50.0" y2="250.0"/>
 <text x='50.0' y='262.26666666666665' class='tic-value-x'>0</text>
-<line x1="116.0" y1="250.0" x2="116.0" y2="20.0" class='tic'/>
-<line x1="116.0" y1="256.1" x2="116.0" y2="250.0"/>
-<text x='116.0' y='262.26666666666665' class='tic-value-x'>1</text>
-<line x1="182.0" y1="250.0" x2="182.0" y2="20.0" class='tic'/>
-<line x1="182.0" y1="256.1" x2="182.0" y2="250.0"/>
-<text x='182.0' y='262.26666666666665' class='tic-value-x'>2</text>
-<line x1="248.0" y1="250.0" x2="248.0" y2="20.0" class='tic'/>
-<line x1="248.0" y1="256.1" x2="248.0" y2="250.0"/>
-<text x='248.0' y='262.26666666666665' class='tic-value-x'>3</text>
-<line x1="314.0" y1="250.0" x2="314.0" y2="20.0" class='tic'/>
-<line x1="314.0" y1="256.1" x2="314.0" y2="250.0"/>
-<text x='314.0' y='262.26666666666665' class='tic-value-x'>4</text>
+<line x1="160.0" y1="250.0" x2="160.0" y2="20.0" class='tic'/>
+<line x1="160.0" y1="256.1" x2="160.0" y2="250.0"/>
+<text x='160.0' y='262.26666666666665' class='tic-value-x'>2</text>
+<line x1="270.0" y1="250.0" x2="270.0" y2="20.0" class='tic'/>
+<line x1="270.0" y1="256.1" x2="270.0" y2="250.0"/>
+<text x='270.0' y='262.26666666666665' class='tic-value-x'>4</text>
 <line x1="380.0" y1="250.0" x2="380.0" y2="20.0" class='tic'/>
 <line x1="380.0" y1="256.1" x2="380.0" y2="250.0"/>
-<text x='380.0' y='262.26666666666665' class='tic-value-x'>5</text>
+<text x='380.0' y='262.26666666666665' class='tic-value-x'>6</text>
 <line x1="50.0" y1="250.0" x2="380.0" y2="250.0" class='tic'/>
 <line x1="43.4" y1="250.0" x2="50.0" y2="250.0"/>
 <text x='36.8' y='250.0' class='tic-value-y'>0</text>
-<line x1="50.0" y1="204.0" x2="380.0" y2="204.0" class='tic'/>
-<line x1="43.4" y1="204.0" x2="50.0" y2="204.0"/>
-<text x='36.8' y='204.0' class='tic-value-y'>5</text>
-<line x1="50.0" y1="158.0" x2="380.0" y2="158.0" class='tic'/>
-<line x1="43.4" y1="158.0" x2="50.0" y2="158.0"/>
-<text x='36.8' y='158.0' class='tic-value-y'>10</text>
-<line x1="50.0" y1="112.0" x2="380.0" y2="112.0" class='tic'/>
-<line x1="43.4" y1="112.0" x2="50.0" y2="112.0"/>
-<text x='36.8' y='112.0' class='tic-value-y'>15</text>
-<line x1="50.0" y1="66.0" x2="380.0" y2="66.0" class='tic'/>
-<line x1="43.4" y1="66.0" x2="50.0" y2="66.0"/>
-<text x='36.8' y='66.0' class='tic-value-y'>20</text>
+<line x1="50.0" y1="211.7" x2="380.0" y2="211.7" class='tic'/>
+<line x1="43.4" y1="211.7" x2="50.0" y2="211.7"/>
+<text x='36.8' y='211.66666666666666' class='tic-value-y'>5</text>
+<line x1="50.0" y1="173.3" x2="380.0" y2="173.3" class='tic'/>
+<line x1="43.4" y1="173.3" x2="50.0" y2="173.3"/>
+<text x='36.8' y='173.33333333333331' class='tic-value-y'>10</text>
+<line x1="50.0" y1="135.0" x2="380.0" y2="135.0" class='tic'/>
+<line x1="43.4" y1="135.0" x2="50.0" y2="135.0"/>
+<text x='36.8' y='135.0' class='tic-value-y'>15</text>
+<line x1="50.0" y1="96.7" x2="380.0" y2="96.7" class='tic'/>
+<line x1="43.4" y1="96.7" x2="50.0" y2="96.7"/>
+<text x='36.8' y='96.66666666666666' class='tic-value-y'>20</text>
+<line x1="50.0" y1="58.3" x2="380.0" y2="58.3" class='tic'/>
+<line x1="43.4" y1="58.3" x2="50.0" y2="58.3"/>
+<text x='36.8' y='58.333333333333314' class='tic-value-y'>25</text>
 <line x1="50.0" y1="20.0" x2="380.0" y2="20.0" class='tic'/>
 <line x1="43.4" y1="20.0" x2="50.0" y2="20.0"/>
-<text x='36.8' y='20.00000000000003' class='tic-value-y'>25</text>
+<text x='36.8' y='20.0' class='tic-value-y'>30</text>
 <line x1="50.0" y1="250.0" x2="50.0" y2="20.0"/>
 <line x1="50.0" y1="250.0" x2="380.0" y2="250.0"/>
 <rect x="340.0" y="20.0" width="10.0" height="10.0" class='exp'/>
 <text x='355.0' y='29'>exp</text>
 <rect x="340.0" y="40.0" width="10.0" height="10.0" class='lin'/>
 <text x='355.0' y='49'>lin</text>
-<text x='200.0' y='300.0' class='label-x'>cost</text>
-<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>benefit</text>
-<circle cx='50.0' cy='250.0' r='11.0' class='exp'><title>exp: (0.0, 0.0)</title></circle>
-<circle cx='116.0' cy='240.8' r='11.0' class='exp'><title>exp: (1.0, 1.0)</title></circle>
-<circle cx='314.0' cy='102.8' r='11.0' class='exp'><title>exp: (4.0, 16.0)</title></circle>
-<circle cx='248.0' cy='167.2' r='11.0' class='exp'><title>exp: (3.0, 9.0)</title></circle>
-<circle cx='380.0' cy='20.0' r='11.0' class='exp'><title>exp: (5.0, 25.0)</title></circle>
-<circle cx='182.0' cy='213.2' r='11.0' class='exp'><title>exp: (2.0, 4.0)</title></circle>
-<circle cx='50.0' cy='250.0' r='11.0' class='lin'><title>lin: (0.0, 0.0)</title></circle>
-<circle cx='116.0' cy='240.8' r='11.0' class='lin'><title>lin: (1.0, 1.0)</title></circle>
-<circle cx='248.0' cy='222.4' r='11.0' class='lin'><title>lin: (3.0, 3.0)</title></circle>
-<circle cx='380.0' cy='204.0' r='11.0' class='lin'><title>lin: (5.0, 5.0)</title></circle>
+<text x='200.0' y='300.0' class='label-x'>Cost</text>
+<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>Benefit</text>
+<circle cx='50.0' cy='250.0' r='9.2' class='exp'><title>exp: (0.0, 0.0)</title></circle>
+<circle cx='105.0' cy='242.3' r='9.2' class='exp'><title>exp: (1.0, 1.0)</title></circle>
+<circle cx='270.0' cy='127.3' r='9.2' class='exp'><title>exp: (4.0, 16.0)</title></circle>
+<circle cx='215.0' cy='181.0' r='9.2' class='exp'><title>exp: (3.0, 9.0)</title></circle>
+<circle cx='325.0' cy='58.3' r='9.2' class='exp'><title>exp: (5.0, 25.0)</title></circle>
+<circle cx='160.0' cy='219.3' r='9.2' class='exp'><title>exp: (2.0, 4.0)</title></circle>
+<circle cx='50.0' cy='250.0' r='9.2' class='lin'><title>lin: (0.0, 0.0)</title></circle>
+<circle cx='105.0' cy='234.7' r='9.2' class='lin'><title>lin: (1.0, 2.0)</title></circle>
+<circle cx='215.0' cy='204.0' r='9.2' class='lin'><title>lin: (3.0, 6.0)</title></circle>
+<circle cx='325.0' cy='173.3' r='9.2' class='lin'><title>lin: (5.0, 10.0)</title></circle>
 </svg>
