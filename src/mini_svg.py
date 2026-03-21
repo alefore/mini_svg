@@ -46,7 +46,7 @@ class SvgWriter:
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>',
         '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"',
         '  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
-        f'<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}" xmlns="http://www.w3.org/2000/svg" version="1.1">',
+        f'<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}" xmlns="http://www.w3.org/2000/svg" version="1.1">'
     ]
 
     if self.css:
@@ -238,39 +238,22 @@ class _BoxPlotOne:
                           ShapeParams(css_class="boxplot-median"))
 
 
-@dataclass(frozen=True)
-class _BoxPlot(ShapeProducer):
-
-  data: dict[str, _BoxPlotOne]
-  y_min: float
-  y_max: float
-
-  @shape_generator
-  def _draw(self, plot: XYPlot) -> Iterable[Shape]:
-    return itertools.chain.from_iterable(
-        self.data[key].draw(index, plot)
-        for index, key in enumerate(sorted(self.data)))
-
-  def produce(self, plot: XYPlot) -> ShapeStream:
-    plot = plot.with_defaults(
-        XYPlot(
-            domain=Box(-1, math.floor(self.y_min), len(self.data),
-                       math.ceil(self.y_max)),
-            x_axis_values=PlotTicksConfig(max_count=0)))
-    assert plot.domain.x1 == -1
-    assert plot.domain.x2 == len(self.data)
-    return plot.produce() + self._draw(plot)
-
-
 @with_svg_writer
 @with_plot_config
 def boxplot(writer: SvgWriter, plot: XYPlot, data: dict[str,
                                                         list[float]]) -> None:
   box_data = {k: _BoxPlotOne.create(k, v) for k, v in data.items()}
-  writer.consume(
-      _BoxPlot(box_data, min(d.y_min for d in box_data.values()),
-               max(d.y_max for d in box_data.values())).produce(
-                   plot.with_defaults(XYPlot(output_range=writer.get_box()))))
+
+  plot = plot.with_defaults(
+      XYPlot(
+          output_range=writer.get_box(),
+          domain=Box(-1, min(d.y_min for d in box_data.values()), len(box_data),
+                     max(d.y_max for d in box_data.values())),
+          x_axis_values=PlotTicksConfig(max_count=0)))
+
+  writer.consume(plot.produce() + itertools.chain.from_iterable(
+      box_data[key].draw(index, plot)
+      for index, key in enumerate(sorted(box_data))))
 
 
 @dataclass(frozen=True)
