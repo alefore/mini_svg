@@ -129,5 +129,5 @@ rect.boxplot {
 <text x='200.0' y='300.0' class='label-x'>time</text>
 <text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>effort</text>
 <path d='M 50.0 250.0 L 118.0 240.4 L 186.0 211.6 L 254.0 163.6 L 322.0 96.4 L 390.0 10.0'  class='lineplot-line'/>
-<path d='M 50.0 250.0 L 118.0 240.4 L 254.0 221.2 L 390.0 202.0'  class='lineplot-line'/>
+<path d='M 50.0 250.0 L 118.0 230.8 L 254.0 192.4 L 390.0 154.0'  class='lineplot-line'/>
 </svg>

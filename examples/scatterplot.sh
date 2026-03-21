@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 src/main.py --config examples/scatterplot.json
+python3 src/main.py examples/scatterplot.json

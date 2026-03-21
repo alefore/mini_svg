@@ -80,7 +80,9 @@ text.label-x {
 rect.boxplot {
   fill: var(--text-dim);
 }
-
+.lineplot-line {
+  fill: none;
+}
 </style>
 <line x1="190.0" y1="290.0" x2="190.0" y2="10.0" class='tic'/>
 <line x1="190.0" y1="297.5" x2="190.0" y2="290.0"/>

@@ -11,15 +11,6 @@ from mini_svg import SvgWriter, boxplot, histogram, lineplot, scatterplot
 from xyplot import XYPlot
 
 
-def json_file(path: str) -> dict[str, Any]:
-  try:
-    with open(path, 'r') as f:
-      return cast(dict[str, Any], json.load(f))
-  except json.JSONDecodeError as e:
-    raise argparse.ArgumentTypeError(
-        f"{path} contains invalid JSON: {e}") from e
-
-
 def read_distributions(data_path: pathlib.Path) -> dict[str, list[float]]:
   data = collections.defaultdict(list)
   with open(data_path, 'r') as f:
@@ -98,9 +89,19 @@ def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
   parser.add_argument(
-      '--config', type=json_file, help="Path to JSON config.", required=True)
+      "config",
+      nargs="?",
+      type=argparse.FileType('r'),
+      help="Path to JSON config.",
+      default=sys.stdin)
 
   args = parser.parse_args()
+
+  with args.config as f:
+    try:
+      config_data = json.loads(f.read())
+    except json.JSONDecodeError as e:
+      parser.error(f"{f.name}: Invalid JSON in config: {e}")
 
   HANDLERS = {
       "boxplot": _boxplot,
@@ -109,8 +110,8 @@ def main() -> None:
       "scatterplot": _scatterplot
   }
   for key, value in HANDLERS.items():
-    if key in args.config:
-      value(args.config[key])
+    if key in config_data:
+      value(config_data[key])
 
 
 if __name__ == "__main__":
