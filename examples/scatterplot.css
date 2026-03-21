@@ -1,0 +1,8 @@
+rect.exp, circle.exp {
+  fill: rgba(173, 216, 230, 0.7);
+  stroke-width: 0;
+}
+rect.lin, circle.lin {
+  fill: rgba(255, 182, 193, 0.7);
+  stroke-width: 0;
+}
