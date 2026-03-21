@@ -53,11 +53,11 @@ class SvgWriter:
       lines += ["<style>"]
       for path in self.css:
         lines += [path.read_text()]
-      lines += ['</style>']
+      lines += ["</style>"]
 
     lines += map(self._write_shape, shapes)
     lines += ["</svg>"]
-    with open(self.output_path, 'w') as f:
+    with open(self.output_path, "w") as f:
       f.write("\n".join(lines))
 
   @singledispatchmethod
@@ -92,27 +92,6 @@ class SvgWriter:
 
 with_svg_writer = with_config(SvgWriter)
 
-DataDict = NewType("DataDict", dict[str, list[tuple[float, float]]])
-
-
-@dataclass(frozen=True)
-class _Scatterplot(ShapeProducer):
-  data: DataDict
-  domain: Box
-
-  @shape_generator
-  def _draw(self) -> Iterable[Shape]:
-    radius = min(self.domain.width(), self.domain.height()) / 30
-    for key, points in self.data.items():
-      for x, y in points:
-        yield Circle(x, y, radius,
-                     ShapeParams(css_class=key, title=f"{key}: ({x}, {y})"))
-
-  def produce(self, plot: XYPlot) -> ShapeStream:
-    plot = plot.with_defaults(
-        XYPlot(domain=self.domain, labels=frozenset(self.data)))
-    return plot.produce() + plot.transformer(self._draw())
-
 
 @with_svg_writer
 @with_plot_config
@@ -121,13 +100,22 @@ def scatterplot(writer: SvgWriter, plot: XYPlot,
   all_points = [pt for pts in data.values() for pt in pts]
   all_x = [pt[0] for pt in all_points]
   all_y = [pt[1] for pt in all_points]
-  writer.consume(
-      _Scatterplot(
-          DataDict(data),
+  plot = plot.with_defaults(
+      XYPlot(
+          output_range=writer.get_box(),
           domain=Box(
-              min(0, min(all_x)), min(0, min(all_y)), max(all_x),
-              max(all_y))).produce(
-                  plot.with_defaults(XYPlot(output_range=writer.get_box()))))
+              min(0, min(all_x)), min(0, min(all_y)), max(all_x), max(all_y)),
+          labels=frozenset(data)))
+
+  shapes: list[Shape] = []
+  radius = min(plot.domain.width(), plot.domain.height()) / 30
+  for key, points in data.items():
+    for x, y in points:
+      shapes.append(
+          Circle(x, y, radius,
+                 ShapeParams(css_class=key, title=f"{key}: ({x}, {y})")))
+
+  writer.consume(plot.produce() + plot.transformer(shapes))
 
 
 BinElements = NewType("BinElements", int)

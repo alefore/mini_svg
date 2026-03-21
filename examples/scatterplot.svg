@@ -134,14 +134,14 @@ rect.lin, circle.lin {
 <text x='355.0' y='49'>lin</text>
 <text x='200.0' y='300.0' class='label-x'>Cost</text>
 <text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>Benefit</text>
-<circle cx='50.0' cy='250.0' r='9.2' class='exp'><title>exp: (0.0, 0.0)</title></circle>
-<circle cx='105.0' cy='242.3' r='9.2' class='exp'><title>exp: (1.0, 1.0)</title></circle>
-<circle cx='270.0' cy='127.3' r='9.2' class='exp'><title>exp: (4.0, 16.0)</title></circle>
-<circle cx='215.0' cy='181.0' r='9.2' class='exp'><title>exp: (3.0, 9.0)</title></circle>
-<circle cx='325.0' cy='58.3' r='9.2' class='exp'><title>exp: (5.0, 25.0)</title></circle>
-<circle cx='160.0' cy='219.3' r='9.2' class='exp'><title>exp: (2.0, 4.0)</title></circle>
-<circle cx='50.0' cy='250.0' r='9.2' class='lin'><title>lin: (0.0, 0.0)</title></circle>
-<circle cx='105.0' cy='234.7' r='9.2' class='lin'><title>lin: (1.0, 2.0)</title></circle>
-<circle cx='215.0' cy='204.0' r='9.2' class='lin'><title>lin: (3.0, 6.0)</title></circle>
-<circle cx='325.0' cy='173.3' r='9.2' class='lin'><title>lin: (5.0, 10.0)</title></circle>
+<circle cx='50.0' cy='250.0' r='11.0' class='exp'><title>exp: (0.0, 0.0)</title></circle>
+<circle cx='105.0' cy='242.3' r='11.0' class='exp'><title>exp: (1.0, 1.0)</title></circle>
+<circle cx='270.0' cy='127.3' r='11.0' class='exp'><title>exp: (4.0, 16.0)</title></circle>
+<circle cx='215.0' cy='181.0' r='11.0' class='exp'><title>exp: (3.0, 9.0)</title></circle>
+<circle cx='325.0' cy='58.3' r='11.0' class='exp'><title>exp: (5.0, 25.0)</title></circle>
+<circle cx='160.0' cy='219.3' r='11.0' class='exp'><title>exp: (2.0, 4.0)</title></circle>
+<circle cx='50.0' cy='250.0' r='11.0' class='lin'><title>lin: (0.0, 0.0)</title></circle>
+<circle cx='105.0' cy='234.7' r='11.0' class='lin'><title>lin: (1.0, 2.0)</title></circle>
+<circle cx='215.0' cy='204.0' r='11.0' class='lin'><title>lin: (3.0, 6.0)</title></circle>
+<circle cx='325.0' cy='173.3' r='11.0' class='lin'><title>lin: (5.0, 10.0)</title></circle>
 </svg>
