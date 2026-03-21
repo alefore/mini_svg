@@ -133,40 +133,6 @@ def scatterplot(writer: SvgWriter, plot: XYPlot,
 BinElements = NewType("BinElements", int)
 
 
-@dataclass(frozen=True)
-class _Histogram(ShapeProducer):
-  binned_data: dict[str, list[BinElements]]
-
-  bin_size: float
-  min_value: float
-  max_value: float
-  max_count: BinElements
-
-  def _draw(self) -> Iterable[Shape]:
-    individual_bin_width = self.bin_size * 0.8 / len(self.binned_data)
-    for group_index, (label, counts) in enumerate(self.binned_data.items()):
-      for bin_index, count in enumerate(counts):
-        if count > 0:
-          start_range = self.bin_size * bin_index
-          yield Rect(
-              self.min_value + self.bin_size *
-              (bin_index + 0.1 + 0.8 * group_index / len(self.binned_data)), 0,
-              individual_bin_width, count, ShapeParams(css_class=label.lower()))
-
-  def produce(self, plot: XYPlot) -> ShapeStream:
-    bin_count = max(len(bins) for bins in self.binned_data.values())
-    plot = plot.with_defaults(
-        XYPlot(
-            domain=Box(self.min_value, 0, self.max_value, self.max_count),
-            y_label="Histogram",
-            x_axis_values=PlotTicksConfig(
-                values=frozenset(self.min_value + i * self.bin_size
-                                 for i in range(0, bin_count, 2))),
-            y_axis_values=PlotTicksConfig(min_distance=1),
-            labels=frozenset(self.binned_data)))
-    return plot.produce() + plot.transformer(self._draw())
-
-
 @with_svg_writer
 @with_plot_config
 def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
@@ -185,11 +151,33 @@ def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
       counts[index] = BinElements(counts[index] + 1)
     binned_data[label] = counts
 
-  max_count = max(max(bins) for bins in binned_data.values())
-  writer.consume(
-      _Histogram(binned_data, bin_size, min_value, max_value,
-                 max_count).produce(
-                     plot.with_defaults(XYPlot(output_range=writer.get_box()))))
+  max_count = max(max(bins_list) for bins_list in binned_data.values())
+
+  bin_count = max(len(bins_list) for bins_list in binned_data.values())
+  plot = plot.with_defaults(
+      XYPlot(
+          output_range=writer.get_box(),
+          domain=Box(min_value, 0, max_value, max_count),
+          y_label="Histogram",
+          x_axis_values=PlotTicksConfig(
+              values=frozenset(
+                  min_value + i * bin_size for i in range(0, bin_count, 2))),
+          y_axis_values=PlotTicksConfig(min_distance=1),
+          labels=frozenset(binned_data)))
+
+  shapes: list[Shape] = []
+  individual_bin_width = bin_size * 0.8 / len(binned_data)
+  for group_index, (label, counts) in enumerate(binned_data.items()):
+    for bin_index, count in enumerate(counts):
+      if count > 0:
+        shapes.append(
+            Rect(
+                min_value + bin_size *
+                (bin_index + 0.1 + 0.8 * group_index / len(binned_data)),
+                0, individual_bin_width, count,
+                ShapeParams(css_class=label.lower())))
+
+  writer.consume(plot.produce() + plot.transformer(shapes))
 
 
 @dataclass(frozen=True)
