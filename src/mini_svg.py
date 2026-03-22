@@ -77,7 +77,6 @@ def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
     binned_data[label] = counts
 
   max_count = max(max(bins_list) for bins_list in binned_data.values())
-
   bin_count = max(len(bins_list) for bins_list in binned_data.values())
   plot = plot.with_defaults(
       XYPlot(
@@ -86,7 +85,7 @@ def histogram(writer: SvgWriter, plot: XYPlot, bins: int,
           y_label="Histogram",
           x_axis_values=PlotTicksConfig(
               values=frozenset(
-                  min_value + i * bin_size for i in range(0, bin_count, 2))),
+                  min_value + i * bin_size for i in range(bin_count))),
           y_axis_values=PlotTicksConfig(min_distance=1),
           labels=frozenset(binned_data)))
 
