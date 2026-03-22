@@ -8,6 +8,12 @@ Creates a histogram, visualizing distributions at a glance:
 
 [source](/examples/histogram.json)
 
+## Parameters
+
+### Common Parameters
+
+Parameters for `SvgWriter` and `XYPlot` are documented in [Common Parameters](../docs/parameters.md).
+
 ## Python
 
 ```
@@ -16,7 +22,7 @@ mini_svg.boxplot(
     margins=mini_svg.Margins(top=10, bottom=10, left=50),
     y_axis_values=mini_svg.PlotTicksConfig(max_count=5),
     y_label="ln(actual / estimate)",
-    output_path=pathlib.Path('images/065.svg'),
+    output_path=pathlib.Path("images/065.svg"),
     width=200,
     height=300,
     css=productivity_tasks.SVG_STYLES)
