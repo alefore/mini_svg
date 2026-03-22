@@ -8,6 +8,9 @@ Creates a histogram, visualizing distributions at a glance:
 
 [source](/examples/histogram.json)
 
+* Input data format:
+  distributions ([details](docs/data_formats.md#Distributions))
+
 ## Parameters
 
 ### Common Parameters

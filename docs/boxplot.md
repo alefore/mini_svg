@@ -8,16 +8,15 @@ Creates a series of BoxPlot graphs, visualizing distributions at a glance:
 
 [source](/examples/boxplot.json)
 
-## Parameters
+* Input data format:
+  distributions ([details](docs/data_formats.md#Distributions))
 
-### Common Parameters
+## Defaults
 
-Parameters for `SvgWriter` and `XYPlot` are documented in [Common Parameters](../docs/parameters.md).
+### plot.domain
 
-### plot.domain (optional)
-
-Optional parameter that can be used to control the y-axis setting.
-If absent, y-axis values are inferred from the data.
+x-axis values must be set.
+y-axis values are inferred from the data.
 
 ## Python
 
