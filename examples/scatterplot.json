@@ -1,8 +1,6 @@
 {
   "scatterplot": {
     "writer": {
-      "width": 400,
-      "height": 300,
       "output_path": "examples/scatterplot.svg",
       "css": ["examples/style.css", "examples/scatterplot.css"]
     },

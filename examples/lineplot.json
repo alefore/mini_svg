@@ -1,8 +1,6 @@
 {
   "lineplot": {
     "writer": {
-      "width": 400,
-      "height": 300,
       "output_path": "examples/lineplot.svg",
       "css": ["examples/style.css"]
     },
