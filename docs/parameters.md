@@ -16,10 +16,11 @@
 All plot types (e.g., histogram, scatterplot, etc.)
 take the following parameters:
 
-| Parameter   | Type               |
-|:------------|:-------------------|
-| `writer`    | `SvgWriter`        |
-| `plot`      | `XYPlot`           |
+| Parameter   | Type               | Notes |
+|:------------|:-------------------|:------
+| `writer`    | `SvgWriter`        | |
+| `plot`      | `XYPlot`           | |
+| `data`      | `path`             | Defaults to `/dev/stdin`. The format depends on the plot type. |
 
 Plots may also take additional plot-specific parameters .
 They override the logic that computes various defaults.
@@ -32,7 +33,7 @@ For example, they will typically set the `XYPlot`'s
 
 | Parameter   | Type               | Description                                            | Default Value |
 |:------------|:-------------------|:-------------------------------------------------------|:--------------|
-| `output_path` | `path`     | The path where the SVG output will be written.         | Required      |
+| `output_path` | `path`     | The path where the SVG output will be written.         | `/dev/stdout`  |
 | `width`       | `float`            | The width of the SVG image in pixels.                  | 400           |
 | `height`      | `float`            | The height of the SVG image in pixels.                 | 300           |
 | `css`         | `list[path]` | CSS files to be included (inline) in the SVG. | `[]`          |
@@ -41,17 +42,17 @@ For example, they will typically set the `XYPlot`'s
 
 `XYPlot` is a dataclass that configures an XY plot.
 
-| Parameter       | Type                       | Description                                            | Default Value       |
-|:----------------|:---------------------------|:-------------------------------------------------------|:--------------------|
-| `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. | Inferred from data. |
-| `output_range`  | `Box`                      | Defines the canvas area where the plot is rendered.    | Values are set to the origin `(0, height)` and `(width, -height)` based on the values in the `SvgWriter`. |
-| `margins`       | `Margins`                  | Optional margins around the plot.                      |  |
-| `x_axis_values` | `PlotTicksConfig`        | Configuration for X axis ticks.                       |  |
-| `y_axis_values` | `PlotTicksConfig`        | Configurations for Y axis ticks.                       |  |
-| `x_label`       | `str`                      | Optional label for the x-axis.                         | No X label.          |
-| `y_label`       | `str`                      | Optional label for the y-axis.                         | No Y label.          |
-| `labels`        | `list[str]`           | Labels to display on the plot.                         | Inferred from data.             |
-| `identity_line` | `bool`              | Whether to draw an identity line (y=x).                | Don't draw it.          |
+| Parameter       | Type                       | Notes |
+|:----------------|:---------------------------|:-------------------------------------------------------|
+| `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. If not provided, will be inferred from data. |
+| `output_range`  | `Box`                      | Defines the canvas area where the plot is rendered. You'll rarely want to set this: it defaults to the points `(0, height)` and `(width, 0)` (based on the values in the `SvgWriter`). |
+| `margins`       | `Margins`                  | Optional margins around the plot. |
+| `x_axis_values` | `PlotTicksConfig`        | Configuration for X axis ticks. |
+| `y_axis_values` | `PlotTicksConfig`        | Configurations for Y axis ticks. |
+| `x_label`       | `str`                      | Optional label for the x-axis. None by default. |
+| `y_label`       | `str`                      | Optional label for the y-axis. None by default.          |
+| `labels`        | `list[str]`           | Labels (legends) to display on the plot. If not sent, they are inferred from data.  |
+| `identity_line` | `bool`              | Whether to draw an identity line (y=x).  Defaults to no line. |
 
 ## Box Parameters
 
@@ -67,11 +68,11 @@ For example, they will typically set the `XYPlot`'s
 If the JSON file doesn't provide values,
 defaults are typically set
 by the class containing the box
-(depending on the variable).
+(depending on the specific box variable).
 
 ## Margins Parameters
 
-`Margins` is a dataclass defining the margins around a box.
+`Margins` defines the margins around a box.
 
 | Parameter | Type    | Default Value |
 |:----------|:--------|:--------------|
@@ -82,11 +83,11 @@ by the class containing the box
 
 ## Plot Ticks Parameters
 
-`PlotTicksConfig` is a dataclass for configuring plot ticks.
+`PlotTicksConfig` represents the configuration for plot ticks.
 
 | Parameter | Type | Description | Default Value |
 |:----------|:-----|:------------|:--------------|
-| `values` | `list[float]` | List of values where ticks should be drawn. If given, all other fields are ignored. | `None` |
-| `max_count` | `int` | Do not draw more than this number of ticks. | 10 |
-| `min_distance` | `float` or `None` | Minimum distance between ticks. | `None` |
-| `value_format` | `str` or `None` | Format string for the tick values. | `None` |
+| `values` | `list[float]` | List of values where ticks should be drawn. If given, `max_count` and `mim__distance` are ignored. |
+| `max_count` | `int` | Do not draw more than this number of ticks. Defaults to 10. |
+| `min_distance` | `float` | Minimum distance between ticks. By default, no minimum is used. |
+| `value_format` | `str` or `None` | Format string for the tick values (e.g., `.4f`). By default, the number of decimal points is inferred from the values. |
