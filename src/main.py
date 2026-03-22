@@ -7,7 +7,8 @@ import sys
 from typing import Any, cast
 
 from meta import create_from_json_data
-from mini_svg import SvgWriter, boxplot, histogram, lineplot, scatterplot
+from mini_svg import boxplot, histogram, lineplot, scatterplot
+from svg_writer import SvgWriter
 from xyplot import XYPlot
 
 
