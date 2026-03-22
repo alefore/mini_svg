@@ -16,10 +16,10 @@
 All plot types (e.g., histogram, scatterplot, etc.)
 take the following parameters:
 
-| Parameter   | Type               | Notes |
+| Parameter   | Type               | Description |
 |:------------|:-------------------|:------
-| `writer`    | `SvgWriter`        | |
-| `plot`      | `XYPlot`           | |
+| `writer`    | `SvgWriter`        | Configures the SVG output. See below. |
+| `plot`      | `XYPlot`           | Configures the XY plot. See below. |
 | `data`      | `path`             | Defaults to `/dev/stdin`. The format of the file (data) depends on the plot type. |
 
 Plots may also take additional plot-specific parameters .
@@ -40,9 +40,9 @@ For example, they will typically set the `XYPlot`'s
 
 ## XYPlot Parameters
 
-`XYPlot` is a dataclass that configures an XY plot.
+`XYPlot` configures an XY plot.
 
-| Parameter       | Type                       | Notes |
+| Parameter       | Type                       | Description |
 |:----------------|:---------------------------|:-------------------------------------------------------|
 | `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. If not provided, will be inferred from data. |
 | `margins`       | `Margins`                  | Optional margins around the plot. |
@@ -85,8 +85,8 @@ by the class containing the box
 
 `PlotTicksConfig` represents the configuration for plot ticks.
 
-| Parameter | Type | Description | Default Value |
-|:----------|:-----|:------------|:--------------|
+| Parameter | Type | Description |
+|:----------|:-----|:------------|
 | `max_count` | `int` | Do not draw more than this number of ticks. Defaults to 10. |
 | `min_distance` | `float` | Minimum distance between ticks. By default, no minimum is used. |
 | `values` | `list[float]` | List of values where ticks should be drawn. If given, `max_count` and `mim__distance` are ignored. |
