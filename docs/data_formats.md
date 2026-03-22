@@ -8,7 +8,7 @@ with a data point per line.
 A distributions file contains various distributions.
 Each distribution is a sample of numbers (which may be repeated).
 
-Each line contains the name of a set and a single value ([example](examples/distribution.txt)).
+Each line contains the name of a set and a single value ([example](/examples/distribution.txt)).
 
 Used by:
 
@@ -21,7 +21,7 @@ A XY-samples file contains various samples of points on the XY plane.
 
 Each line contains the name of a sample
 followed by the x and y values
-([example](examples/function_sample.txt)).
+([example](/examples/function_sample.txt)).
 
 Used by:
 
