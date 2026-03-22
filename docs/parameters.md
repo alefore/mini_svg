@@ -21,7 +21,10 @@ take the following parameters:
 | `writer`    | `SvgWriter`        |
 | `plot`      | `XYPlot`           |
 
-Plots may also take additional plot-specific parameters.
+Plots may also take additional plot-specific parameters
+and they may override the logic that computes the defaults.
+For example, they will typically set the `XYPlot`'s
+`labels` based on the input data.
 
 ## SvgWriter Parameters
 
