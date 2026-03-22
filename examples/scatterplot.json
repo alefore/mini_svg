@@ -1,7 +1,6 @@
 {
   "scatterplot": {
     "writer": {
-      "output_path": "examples/scatterplot.svg",
       "css": ["examples/style.css", "examples/scatterplot.css"]
     },
     "plot": {
@@ -10,7 +9,6 @@
       "x_label": "Cost",
       "y_label": "Benefit",
       "domain": { "x2": 6, "y2": 30 }
-    },
-    "data_path": "examples/function_sample.txt"
+    }
   }
 }

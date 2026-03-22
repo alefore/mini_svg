@@ -3,7 +3,6 @@
     "writer": {
       "width": 300,
       "height": 400,
-      "output_path": "examples/boxplot.svg",
       "css": ["examples/style.css"]
     },
     "plot": {
@@ -11,7 +10,6 @@
       "y_axis_values": { "max_count": 5 },
       "y_label": "ln(actual / estimate)",
       "domain": { "y1": 0, "y2": 20 }
-    },
-    "data_path": "examples/distribution.txt"
+    }
   }
 }

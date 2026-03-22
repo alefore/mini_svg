@@ -89,11 +89,7 @@ def main() -> None:
   parser = argparse.ArgumentParser(description="Generate SVG plots.")
 
   parser.add_argument(
-      "config",
-      nargs="?",
-      type=argparse.FileType('r'),
-      help="Path to JSON config.",
-      default=sys.stdin)
+      "config", type=argparse.FileType('r'), help="Path to JSON config.")
 
   args = parser.parse_args()
 

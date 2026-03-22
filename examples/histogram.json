@@ -2,13 +2,11 @@
   "histogram": {
     "bins": 5,
     "writer": {
-      "output_path": "examples/histogram.svg",
       "css": ["examples/style.css"]
     },
     "plot": {
       "margins": { "top": 10, "bottom": 10, "left": 50 },
       "x_label": "ln(actual / estimate)"
-    },
-    "data_path": "examples/distribution.txt"
+    }
   }
 }

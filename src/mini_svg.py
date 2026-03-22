@@ -33,7 +33,7 @@ def get_domain(points_it: Iterable[tuple[float, float]]) -> Box:
 @dataclass(frozen=True)
 class SvgWriter:
 
-  output_path: pathlib.Path
+  output_path: pathlib.Path = pathlib.Path('/dev/stdout')
   width: float = 400.0
   height: float = 300.0
   css: tuple[pathlib.Path, ...] = ()
