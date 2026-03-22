@@ -5,9 +5,7 @@
 * Simple types (`float`, `str`, `bool`, `path`)
   take a corresponding "simple" JSON value
   (path takes a string).
-
 * `list` takes JSON lists of their corresponding values.
-
 * The other values expect a JSON dictionary
   with the parameters described below.
 

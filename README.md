@@ -14,7 +14,6 @@ Simple py logic to generate SVG visualizations of scientific data
 There's two main interfaces:
 
 * From Python (in-process) through the functions exposed in `mini_svg`.
-
 * As a command-line which receives parameters from a json file.
   See `.sh` files in [the examples directory](examples/).
 
