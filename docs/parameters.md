@@ -78,7 +78,7 @@ Plots may also take additional plot-specific parameters.
 
 | Parameter | Type | Description | Default Value |
 |:----------|:-----|:------------|:--------------|
-| `values` | `frozenset[float] | None` | List of values where ticks should be drawn. If given, all other fields are ignored. | `None` |
-| `max_count` | `int | None` | Do not draw more than this number of ticks. | `None` |
-| `min_distance` | `float | None` | Minimum distance between ticks. | `None` |
-| `value_format` | `str | None` | Format string for the tick values. | `None` |
+| `values` | `frozenset[float] &#124; None` | List of values where ticks should be drawn. If given, all other fields are ignored. | `None` |
+| `max_count` | `int &#124; None` | Do not draw more than this number of ticks. | `None` |
+| `min_distance` | `float &#124; None` | Minimum distance between ticks. | `None` |
+| `value_format` | `str &#124; None` | Format string for the tick values. | `None` |
