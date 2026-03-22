@@ -1,5 +1,28 @@
 # Parameters
 
+## Providing JSON values
+
+* Simple types (`float`, `str`, `bool`, `pathlib.Path`)
+  take a corresponding "simple" JSON value
+  (Path takes a string).
+
+* `tuple` or `frozenset` take JSON lists of their corresponding values.
+
+* The other values expect a JSON dictionary
+  with the parameters described below.
+
+## Plot Parameters
+
+All plot types (e.g., histogram, scatterplot, etc.)
+take the following parameters:
+
+| Parameter   | Type               |
+|:------------|:-------------------|
+| `writer`    | `SvgWriter`        |
+| `plot`      | `XYPlot`           |
+
+Plots may also take additional plot-specific parameters.
+
 ## SvgWriter Parameters
 
 `SvgWriter` is a dataclass that configures the SVG output.
@@ -33,10 +56,10 @@
 
 | Parameter | Type | Description | Default Value |
 |:----------|:-----|:------------|:--------------|
-| `x1` | `float | None` | The x-coordinate of the first corner. | `None` |
-| `y1` | `float | None` | The y-coordinate of the first corner. | `None` |
-| `x2` | `float | None` | The x-coordinate of the second corner. | `None` |
-| `y2` | `float | None` | The y-coordinate of the second corner. | `None` |
+| `x1` | `float` | `None` | The x-coordinate of the first corner. | `None` |
+| `y1` | `float` | `None` | The y-coordinate of the first corner. | `None` |
+| `x2` | `float` | `None` | The x-coordinate of the second corner. | `None` |
+| `y2` | `float` | `None` | The y-coordinate of the second corner. | `None` |
 
 ## Margins Parameters
 
@@ -59,4 +82,3 @@
 | `max_count` | `int | None` | Do not draw more than this number of ticks. | `None` |
 | `min_distance` | `float | None` | Minimum distance between ticks. | `None` |
 | `value_format` | `str | None` | Format string for the tick values. | `None` |
-
