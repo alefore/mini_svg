@@ -106,9 +106,10 @@ def main() -> None:
       "lineplot": _lineplot,
       "scatterplot": _scatterplot
   }
-  for key, value in HANDLERS.items():
-    if key in config_data:
-      value(config_data[key])
+  if len(config_data) != 1:
+    parser.error(f"{f.name}: Too many entries in config (expected at most 1).")
+  plot_type = list(config_data)[0]
+  HANDLERS[plot_type](config_data[plot_type])
 
 
 if __name__ == "__main__":
