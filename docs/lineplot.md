@@ -10,4 +10,4 @@ Does linear extrapolation across all samples.
 [source](/examples/lineplot.json)
 
 * Input data format:
-  XY samples ([details](docs/data_formats.md#xy-samples))
+  XY samples ([details](data_formats.md#xy-samples))
