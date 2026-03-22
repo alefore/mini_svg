@@ -17,15 +17,15 @@
 
 | Parameter       | Type                       | Description                                            | Default Value       |
 |:----------------|:---------------------------|:-------------------------------------------------------|:--------------------|
-| `domain`        | `Box`                      | The domain of the plot (min, max).                     | Inferred from data  |
-| `output_range`  | `Box`                      | The output range of the plot (min, max).               | Set by SvgWriter    |
-| `margins`       | `Margins`                  | Margins for the plot.                                  | `Margins()`         |
-| `x_axis_values` | `tuple[float, ...]`        | Specific values to mark on the x-axis.                 | `()`                |
-| `y_axis_values` | `tuple[float, ...]`        | Specific values to mark on the y-axis.                 | `()`                |
-| `x_label`       | `str`                      | Label for the x-axis.                                  | `""`                |
-| `y_label`       | `str`                      | Label for the y-axis.                                  | `""`                |
-| `labels`        | `tuple[Label, ...]`        | Labels to display on the plot.                         | `()`                |
-| `identity_line` | `bool`                     | Whether to draw an identity line (y=x).                | `False`             |
+| `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. | Inferred from data  |
+| `output_range`  | `Box`                      | Defines the canvas area where the plot is rendered.    | Set by SvgWriter    |
+| `margins`       | `Margins`                  | Optional margins around the plot.                      | `Margins()`         |
+| `x_axis_values` | `tuple[float, ...]`        | Configurations for X axis ticks.                       | `PlotTicksConfig()` |
+| `y_axis_values` | `tuple[float, ...]`        | Configurations for Y axis ticks.                       | `PlotTicksConfig()` |
+| `x_label`       | `str`                      | Optional label for the x-axis.                         | `None`              |
+| `y_label`       | `str`                      | Optional label for the y-axis.                         | `None`              |
+| `labels`        | `frozenset[str]`           | Labels to display on the plot.                         | `()`                |
+| `identity_line` | `bool | None`              | Whether to draw an identity line (y=x).                | `None`              |
 
 ## Box Parameters
 
@@ -42,12 +42,12 @@
 
 `Margins` is a dataclass defining the margins around a box.
 
-| Parameter | Type | Description | Default Value |
-|:----------|:-----|:------------|:--------------|
-| `top` | `float` | The top margin. | `0` |
-| `right` | `float` | The right margin. | `0` |
-| `bottom` | `float` | The bottom margin. | `0` |
-| `left` | `float` | The left margin. | `0` |
+| Parameter | Type    | Default Value |
+|:----------|:--------|:--------------|
+| `top`     | `float` | `0` |
+| `right`   | `float` | `0` |
+| `bottom`  | `float` | `0` |
+| `left`    | `float` | `0` |
 
 ## Plot Ticks Parameters
 
