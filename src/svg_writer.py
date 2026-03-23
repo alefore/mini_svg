@@ -61,7 +61,7 @@ class SvgWriter:
 
   @_write_shape.register
   def _(self, text: Text) -> str:
-    return f"<text x='{text.x:.1f}' y='{text.y}:.1f'{text.params.as_text()}>{text.text}</text>"
+    return f"<text x='{text.x:.1f}' y='{text.y:.1f}'{text.params.as_text()}>{text.text}</text>"
 
   @_write_shape.register
   def _(self, path: Path) -> str:
