@@ -39,25 +39,25 @@ def read_functions(
 def _boxplot(config_data: Any) -> None:
 
   @dataclass(frozen=True)
-  class Config:
+  class BoxPlot:
     writer: SvgWriter
     plot: XYPlot = XYPlot()
     data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
-  config = create_from_json_data(Config, config_data)
+  config = create_from_json_data(BoxPlot, config_data)
   boxplot(config.writer, config.plot, data=read_distributions(config.data_path))
 
 
 def _histogram(config_data: Any) -> None:
 
   @dataclass(frozen=True)
-  class HistogramConfig:
+  class Histogram:
     writer: SvgWriter | None
     plot: XYPlot = XYPlot()
     bins: int = 10
     data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
-  config = create_from_json_data(HistogramConfig, config_data)
+  config = create_from_json_data(Histogram, config_data)
   histogram(
       config.writer,
       config.plot,
@@ -68,24 +68,24 @@ def _histogram(config_data: Any) -> None:
 def _lineplot(config_data: Any) -> None:
 
   @dataclass(frozen=True)
-  class Config:
+  class LinePlot:
     writer: SvgWriter | None
     plot: XYPlot = XYPlot()
     data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
-  config = create_from_json_data(Config, config_data)
+  config = create_from_json_data(LinePlot, config_data)
   lineplot(config.writer, config.plot, read_functions(config.data_path))
 
 
 def _scatterplot(config_data: Any) -> None:
 
   @dataclass(frozen=True)
-  class ScatterplotConfig:
+  class Scatterplot:
     writer: SvgWriter | None
     plot: XYPlot = XYPlot()
     data_path: pathlib.Path = pathlib.Path("/dev/stdin")
 
-  config = create_from_json_data(ScatterplotConfig, config_data)
+  config = create_from_json_data(Scatterplot, config_data)
   scatterplot(config.writer, config.plot, data=read_functions(config.data_path))
 
 
