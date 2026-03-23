@@ -4,12 +4,14 @@
 
 Draws two-dimensional distributions.
 
+Input data format:
+[XY samples](data_formats.md#xy-samples)
+
+## Examples
+
 ![ScatterPlot example](/examples/scatterplot.svg?raw=true "ScatterPlot example")
 
 [source](/examples/scatterplot.json)
-
-* Input data format:
-  XY samples ([details](data_formats.md#xy-samples))
 
 ## CSS
 

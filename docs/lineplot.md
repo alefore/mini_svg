@@ -5,8 +5,8 @@
 Creates a chart plotting various functions.
 Does linear extrapolation across all samples.
 
-* Input data format:
-  XY samples ([details](data_formats.md#xy-samples))
+Input data format:
+[XY samples](data_formats.md#xy-samples)
 
 ## Examples
 

@@ -4,12 +4,14 @@
 
 Creates a histogram, visualizing distributions at a glance:
 
+Input data format:
+[distributions](data_formats.md#Distributions)
+
+## Examples
+
 ![Histogram example](/examples/histogram.svg?raw=true "Histogram example")
 
 [source](/examples/histogram.json)
-
-Input data format:
-distributions ([details](data_formats.md#Distributions))
 
 ## Custom Parameters
 

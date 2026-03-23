@@ -4,12 +4,14 @@
 
 Creates a series of BoxPlot graphs, visualizing distributions at a glance:
 
+Input data format:
+[distributions](data_formats.md#Distributions)
+
+## Examples
+
 ![BoxPlot example](/examples/boxplot.svg?raw=true "BoxPlot example")
 
 [source](/examples/boxplot.json)
-
-Input data format:
-distributions ([details](data_formats.md#Distributions))
 
 ## Default values
 
