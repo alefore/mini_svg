@@ -16,13 +16,6 @@ from xyplot import XYPlot, with_plot_config
 from svg_writer import SvgWriter, with_svg_writer
 
 
-class ShapeProducer(ABC):
-
-  @abstractmethod
-  def produce(self, plot: XYPlot) -> ShapeStream:
-    pass
-
-
 def get_domain(points_it: Iterable[tuple[float, float]]) -> Box:
   all_points = list(points_it)
   all_x = [pt[0] for pt in all_points]
