@@ -88,4 +88,7 @@ by the class containing the box
 | `max_count` | `int` | Do not draw more than this number of ticks. Defaults to 10. |
 | `min_distance` | `float` | Minimum distance between ticks. By default, no minimum is used. |
 | `values` | `list[float]` | List of values where ticks should be drawn. If given, `max_count` and `mim__distance` are ignored. |
-| `value_format` | `str` or `None` | Format string for the tick values (e.g., `.4f`). By default, the number of decimal points is inferred from the values. |
+| `time_format` | `str` | Format string for time values. The values are consumed by `datetime.datetime.fromtimestamp` and the format string is given to `strftime`. |
+| `value_format` | `str` | Format string for the tick values (e.g., `.4f`). By default, the number of decimal points is inferred from the values. |
+
+It is an error to give values to both `time_format` and `value_format`.
