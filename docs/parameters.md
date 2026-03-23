@@ -42,7 +42,7 @@ For example, they will typically set the `XYPlot`'s
 
 | Parameter       | Type                       | Description |
 |:----------------|:---------------------------|:-------------------------------------------------------|
-| `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. If not provided, will be inferred from data. |
+| `domain`        | `Box`                      | Defines the data range (min/max x and y) for the plot. If not provided, will be inferred from data. Different plot types compute compute it differently. |
 | `margins`       | `Margins`                  | Optional margins around the plot. |
 | `x_axis_values` | `PlotTicksConfig`        | Configuration for X axis ticks. |
 | `y_axis_values` | `PlotTicksConfig`        | Configurations for Y axis ticks. |
