@@ -3,7 +3,6 @@ import collections
 from dataclasses import dataclass
 import json
 import pathlib
-import sys
 from typing import Any, cast
 
 from meta import create_from_json_data
@@ -26,10 +25,14 @@ def read_functions(
     data_path: pathlib.Path) -> dict[str, list[tuple[float, float]]]:
   data: dict[str, list[tuple[float, float]]] = collections.defaultdict(list)
   with open(data_path, 'r') as f:
-    for line in f:
-      parts = line.split()
-      assert len(parts) == 3
-      data[parts[0]].append((float(parts[1]), float(parts[2])))
+    for index, line in enumerate(f):
+      try:
+        parts = line.split()
+        if len(parts) != 3:
+          raise ValueError(f"Unable to break into 3 parts")
+        data[parts[0]].append((float(parts[1]), float(parts[2])))
+      except Exception as e:
+        raise ValueError(f"{data_path}:{index+1}: Invalid line: {e}") from e
   return data
 
 
