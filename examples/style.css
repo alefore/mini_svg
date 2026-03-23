@@ -34,15 +34,15 @@ line {
 line.tic {
   stroke: var(--bg-mild);
 }
-.ai {
+.ai, .labels-ai {
   fill: rgba(173, 216, 230, 0.7);
   stroke-width: 0;
 }
-.human {
+.human, .labels-human {
   fill: rgba(255, 182, 193, 0.7);
   stroke-width: 0;
 }
-.monkey {
+.monkey, .labels-monkey {
   fill: rgba(216, 230, 173, 0.7);
   stroke-width: 0;
 }

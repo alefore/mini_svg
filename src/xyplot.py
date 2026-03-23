@@ -55,7 +55,7 @@ class XYPlot:
     for i, key in enumerate(sorted(self.labels)):
       lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
-      yield Rect(lx, ly, 10, 10, ShapeParams(css_class=key))
+      yield Rect(lx, ly, 10, 10, ShapeParams(css_class=f"labels-{key}"))
       yield Text(key, lx + 15, ly + 9)
 
     if self.x_label:
@@ -85,8 +85,9 @@ class XYPlot:
       span = (self.domain.height() / 50) * (
           self.output_range.width() / self.output_range.height())
       yield Line.vertical(x, -span, 0)
-      yield Text(f"{x:{x_values.value_format}}", x, 2 * -span,
-                 ShapeParams(css_class="tic-value-x"))
+      yield Text(
+          x_values.format_function(x), x, 2 * -span,
+          ShapeParams(css_class="tic-value-x"))
 
     y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
@@ -94,8 +95,9 @@ class XYPlot:
                             ShapeParams(css_class="tic"))
       span = self.domain.width() / 50
       yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y)
-      yield Text(f"{y:{y_values.value_format}}", self.domain.x1 - 2 * span, y,
-                 ShapeParams(css_class="tic-value-y"))
+      yield Text(
+          y_values.format_function(y), self.domain.x1 - 2 * span, y,
+          ShapeParams(css_class="tic-value-y"))
 
     yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2)
     yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1)

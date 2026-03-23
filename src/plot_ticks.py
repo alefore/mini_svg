@@ -1,12 +1,15 @@
 import math
 from dataclasses import dataclass
+import datetime
+from typing import Callable
+
 from meta import value_with_default
 
 
 @dataclass(frozen=True)
 class PlotTicks:
   values: frozenset[float]
-  value_format: str
+  format_function: Callable[[float], str]
 
 
 @dataclass(frozen=True)
@@ -21,6 +24,7 @@ class PlotTicksConfig:
   # Minimum distance between tics.
   min_distance: float | None = None
 
+  time_format: str | None = None
   value_format: str | None = None
 
   def with_defaults(self, defaults: "PlotTicksConfig") -> "PlotTicksConfig":
@@ -30,7 +34,8 @@ class PlotTicksConfig:
         min_distance=value_with_default(self.min_distance,
                                         defaults.min_distance),
         value_format=value_with_default(self.value_format,
-                                        defaults.value_format))
+                                        defaults.value_format),
+        time_format=value_with_default(self.time_format, defaults.time_format))
 
   def _find_base(self, low: float, high: float) -> float:
     """Returns the ideal distance between tics."""
@@ -74,22 +79,41 @@ class PlotTicksConfig:
         for k in range(min(max_count,
                            int((high - first_tic) / base) + 1)))
 
-  def _get_fmt(self, low: float, high: float, base: float) -> str:
+  def _fmt_time(self, t: float):
+    time = datetime.datetime.fromtimestamp(t)
+    assert time
+    assert self.time_format
+    return time.strftime(self.time_format)
+
+  def _get_fmt(self, base: float) -> Callable[[float], str]:
+    assert self.time_format is None or self.value_format is None
+    if self.time_format is not None:
+      return self._fmt_time
+
     if self.value_format:
-      return self.value_format
-    return ".0f" if base > 1 else f".{abs(math.floor(math.log10(base)))}f"
+      value_format = self.value_format
+    elif base > 1:
+      value_format = ".0f"
+    else:
+      value_format = f".{abs(math.floor(math.log10(base)))}f"
+    return lambda v: format(v, value_format)
 
   def build(self, low: float, high: float) -> PlotTicks:
     max_count = value_with_default(self.max_count, 10)
     assert max_count is not None
     if max_count <= 0:
-      return PlotTicks(values=frozenset(), value_format="ignored")
+
+      def fail(_: float):
+        raise ValueError("Unexpected call to PlotTicks.format_function.")
+
+      return PlotTicks(values=frozenset(), format_function=fail)
+
     if self.values:
       sorted_values = sorted(self.values)
       base = sorted_values[1] - sorted_values[0]
-      return PlotTicks(
-          values=self.values, value_format=self._get_fmt(low, high, base))
+      return PlotTicks(values=self.values, format_function=self._get_fmt(base))
+
     base = self._find_base(low, high)
     return PlotTicks(
         values=self._get_values(low, high, base),
-        value_format=self._get_fmt(low, high, base))
+        format_function=self._get_fmt(base))

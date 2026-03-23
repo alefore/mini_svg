@@ -39,12 +39,16 @@ line {
 line.tic {
   stroke: var(--bg-mild);
 }
-.ai {
+.ai, .labels-ai {
   fill: rgba(173, 216, 230, 0.7);
   stroke-width: 0;
 }
-.human {
+.human, .labels-human {
   fill: rgba(255, 182, 193, 0.7);
+  stroke-width: 0;
+}
+.monkey, .labels-monkey {
+  fill: rgba(216, 230, 173, 0.7);
   stroke-width: 0;
 }
 rect.ai {
@@ -52,6 +56,10 @@ rect.ai {
   stroke-width: 0.5;
 }
 rect.human {
+  stroke: var(--text-dim);
+  stroke-width: 0.5;
+}
+rect.monkey {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
@@ -143,12 +151,12 @@ rect.exp {
 <text x='36.4' y='10.0' class='tic-value-y'>25</text>
 <line x1="50.0" y1="250.0" x2="50.0" y2="10.0"/>
 <line x1="50.0" y1="250.0" x2="390.0" y2="250.0"/>
-<rect x="340.0" y="20.0" width="10.0" height="10.0" class='exp'/>
-<text x='355.0' y='29'>exp</text>
-<rect x="340.0" y="40.0" width="10.0" height="10.0" class='lin'/>
-<text x='355.0' y='49'>lin</text>
+<rect x="340.0" y="20.0" width="10.0" height="10.0" class='labels-exp'/>
+<text x='355.0' y='29.0'>exp</text>
+<rect x="340.0" y="40.0" width="10.0" height="10.0" class='labels-lin'/>
+<text x='355.0' y='49.0'>lin</text>
 <text x='200.0' y='300.0' class='label-x'>time</text>
-<text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>effort</text>
+<text x='15.0' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>effort</text>
 <path d='M 50.0 250.0 L 118.0 240.4 L 186.0 211.6 L 254.0 163.6 L 322.0 96.4 L 390.0 10.0'  class='lineplot-exp'/>
 <path d='M 50.0 250.0 L 118.0 230.8 L 254.0 192.4 L 390.0 154.0'  class='lineplot-lin'/>
 </svg>
