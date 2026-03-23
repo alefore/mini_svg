@@ -14,11 +14,12 @@ distributions ([details](data_formats.md#Distributions))
 ## Default values
 
 * `x_axis_values.max_count`: Defaults to 0 (don't show any ticks on X).
-* `domain.x1` and `domain.x2`: Will be set dynamically based on the number
-  of distributions. You probably won't want to set them.
-* `domain.y1` and `domain.y2`: Will be inferred from the data
-  (min and max sample values).
-  You may want to overule them to pin the Y axis.
+* `domain.x1` and `domain.x2`:
+  Computed from the number of distributions.
+  You probably won't want to set these parameters.
+* `domain.y1` and `domain.y2`:
+  Computed from the distributions' min and max values.
+  Set them if you want a different Y axis.
 
 ## CSS
 
