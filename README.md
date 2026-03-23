@@ -2,14 +2,14 @@
 
 Simple py logic to generate SVG visualizations of scientific data
 
-# Plot types
+## Plot types
 
 * [BoxPlot](docs/boxplot.md)
 * [Scatterplot](docs/scatterplot.md)
 * [Histogram](docs/histogram.md)
 * [Lineplot](docs/lineplot.md)
 
-# Usage
+## Usage
 
 There's two main interfaces:
 
