@@ -38,7 +38,9 @@ def scatterplot(writer: SvgWriter, plot: XYPlot,
           labels=frozenset(data)))
 
   shapes: list[Shape] = []
-  radius = min(plot.domain.width(), plot.domain.height()) / 30
+  # There's a subtlety here: the radius will get transformed by ShapeTransformer
+  # based on the `x` axis. So we use the `width`.
+  radius = plot.domain.width() / 60
   for key, points in data.items():
     for x, y in points:
       shapes.append(
