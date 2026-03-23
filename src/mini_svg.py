@@ -185,7 +185,7 @@ class _LinePlotOne:
     points.append(PathPoint("M", self.data[0][0], self.data[0][1]))
     for point in self.data[1:]:
       points.append(PathPoint("L", point[0], point[1]))
-    yield Path(tuple(points), ShapeParams(css_class="lineplot-line"))
+    yield Path(tuple(points), ShapeParams(css_class=f"lineplot-{self.label}"))
 
 
 @with_svg_writer

@@ -75,6 +75,3 @@ text.label-x {
 rect.boxplot {
   fill: var(--text-dim);
 }
-.lineplot-line {
-  fill: none;
-}

@@ -1,0 +1,22 @@
+:root {
+  --color-lin: rgba(173, 216, 230, 0.7);
+  --color-exp: rgba(255, 182, 193, 0.7);
+}
+path.lineplot-lin {
+  fill: none;
+  stroke: var(--color-lin);
+  stroke-width: 3;
+}
+path.lineplot-exp {
+  fill: none;
+  stroke: var(--color-exp);
+  stroke-width: 3;
+}
+rect.lin {
+  fill: var(--color-lin);
+  stroke-width: 0;
+}
+rect.exp {
+  fill: var(--color-exp);
+  stroke-width: 0;
+}

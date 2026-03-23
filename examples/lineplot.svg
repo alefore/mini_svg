@@ -80,9 +80,30 @@ text.label-x {
 rect.boxplot {
   fill: var(--text-dim);
 }
-.lineplot-line {
-  fill: none;
+
+:root {
+  --color-lin: rgba(173, 216, 230, 0.7);
+  --color-exp: rgba(255, 182, 193, 0.7);
 }
+path.lineplot-lin {
+  fill: none;
+  stroke: var(--color-lin);
+  stroke-width: 3;
+}
+path.lineplot-exp {
+  fill: none;
+  stroke: var(--color-exp);
+  stroke-width: 3;
+}
+rect.lin {
+  fill: var(--color-lin);
+  stroke-width: 0;
+}
+rect.exp {
+  fill: var(--color-exp);
+  stroke-width: 0;
+}
+
 </style>
 <line x1="50.0" y1="250.0" x2="50.0" y2="10.0" class='tic'/>
 <line x1="50.0" y1="256.4" x2="50.0" y2="250.0"/>
@@ -128,6 +149,6 @@ rect.boxplot {
 <text x='355.0' y='49'>lin</text>
 <text x='200.0' y='300.0' class='label-x'>time</text>
 <text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>effort</text>
-<path d='M 50.0 250.0 L 118.0 240.4 L 186.0 211.6 L 254.0 163.6 L 322.0 96.4 L 390.0 10.0'  class='lineplot-line'/>
-<path d='M 50.0 250.0 L 118.0 230.8 L 254.0 192.4 L 390.0 154.0'  class='lineplot-line'/>
+<path d='M 50.0 250.0 L 118.0 240.4 L 186.0 211.6 L 254.0 163.6 L 322.0 96.4 L 390.0 10.0'  class='lineplot-exp'/>
+<path d='M 50.0 250.0 L 118.0 230.8 L 254.0 192.4 L 390.0 154.0'  class='lineplot-lin'/>
 </svg>
