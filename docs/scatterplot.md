@@ -10,3 +10,8 @@ Draws two-dimensional distributions.
 
 * Input data format:
   XY samples ([details](data_formats.md#xy-samples))
+
+## CSS
+
+* Circles for the scatterplot set their `class`
+  to the name of their corresponding distribution.
