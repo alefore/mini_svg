@@ -12,11 +12,11 @@ path.lineplot-exp {
   stroke: var(--color-exp);
   stroke-width: 3;
 }
-rect.lin {
+rect.labels-lin {
   fill: var(--color-lin);
   stroke-width: 0;
 }
-rect.exp {
+rect.labels-exp {
   fill: var(--color-exp);
   stroke-width: 0;
 }
