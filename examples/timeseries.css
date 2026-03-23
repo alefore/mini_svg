@@ -1,0 +1,21 @@
+:root {
+  --color-7d: #f4cae4;
+  --color-30d: #b3e2cd;
+  --color-90d: #fdcdac;
+  --color-365d: #cbd5e8;
+
+path {
+  fill: none;
+  stroke-width: 1;
+}
+path.lineplot-7d { stroke: var(--color-7d); }
+path.lineplot-30d { stroke: var(--color-30d); }
+path.lineplot-90d { stroke: var(--color-90d); }
+path.lineplot-365d {
+  stroke: var(--color-365d);
+  stroke-width: 3;
+}
+rect.labels-7d { fill: var(--color-7d); }
+rect.labels-30d { fill: var(--color-30d); }
+rect.labels-90d { fill: var(--color-90d); }
+rect.labels-365d { fill: var(--color-365d); }

@@ -1,0 +1,18 @@
+{
+  "lineplot": {
+    "writer": {
+      "css": ["examples/style.css", "examples/timeseries.css"],
+      "width": 800,
+      "height": 600
+    },
+    "plot": {
+      "margins": { "top": 10, "bottom": 60, "left": 60, "right": 10 },
+      "x_label": "time",
+      "y_label": "commits per day",
+      "x_axis_values": {
+        "max_count": 6,
+        "time_format": "%Y-%m-%d"
+      }
+    }
+  }
+}
