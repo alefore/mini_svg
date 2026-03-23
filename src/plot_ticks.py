@@ -79,7 +79,7 @@ class PlotTicksConfig:
         for k in range(min(max_count,
                            int((high - first_tic) / base) + 1)))
 
-  def _fmt_time(self, t: float):
+  def _fmt_time(self, t: float) -> str:
     time = datetime.datetime.fromtimestamp(t)
     assert time
     assert self.time_format
@@ -103,7 +103,7 @@ class PlotTicksConfig:
     assert max_count is not None
     if max_count <= 0:
 
-      def fail(_: float):
+      def fail(_: float) -> str:
         raise ValueError("Unexpected call to PlotTicks.format_function.")
 
       return PlotTicks(values=frozenset(), format_function=fail)
