@@ -47,11 +47,19 @@ line.tic {
   fill: rgba(255, 182, 193, 0.7);
   stroke-width: 0;
 }
+.monkey {
+  fill: rgba(216, 230, 173, 0.7);
+  stroke-width: 0;
+}
 rect.ai {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
 rect.human {
+  stroke: var(--text-dim);
+  stroke-width: 0.5;
+}
+rect.monkey {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
@@ -80,39 +88,37 @@ text.label-x {
 rect.boxplot {
   fill: var(--text-dim);
 }
-.lineplot-line {
-  fill: none;
-}
+
 </style>
-<line x1="50.0" y1="290.0" x2="50.0" y2="10.0" class='tic'/>
-<line x1="50.0" y1="297.5" x2="50.0" y2="290.0"/>
-<text x='50.0' y='304.93333333333334' class='tic-value-x'>3</text>
-<line x1="120.0" y1="290.0" x2="120.0" y2="10.0" class='tic'/>
-<line x1="120.0" y1="297.5" x2="120.0" y2="290.0"/>
-<text x='120.0' y='304.93333333333334' class='tic-value-x'>6</text>
-<line x1="190.0" y1="290.0" x2="190.0" y2="10.0" class='tic'/>
-<line x1="190.0" y1="297.5" x2="190.0" y2="290.0"/>
-<text x='190.0' y='304.93333333333334' class='tic-value-x'>9</text>
-<line x1="260.0" y1="290.0" x2="260.0" y2="10.0" class='tic'/>
-<line x1="260.0" y1="297.5" x2="260.0" y2="290.0"/>
-<text x='260.0' y='304.93333333333334' class='tic-value-x'>13</text>
-<line x1="330.0" y1="290.0" x2="330.0" y2="10.0" class='tic'/>
-<line x1="330.0" y1="297.5" x2="330.0" y2="290.0"/>
-<text x='330.0' y='304.93333333333334' class='tic-value-x'>16</text>
-<line x1="50.0" y1="290.0" x2="400.0" y2="290.0" class='tic'/>
-<line x1="43.0" y1="290.0" x2="50.0" y2="290.0"/>
-<text x='36.0' y='290.0' class='tic-value-y'>0</text>
-<line x1="50.0" y1="196.7" x2="400.0" y2="196.7" class='tic'/>
-<line x1="43.0" y1="196.7" x2="50.0" y2="196.7"/>
-<text x='36.0' y='196.66666666666669' class='tic-value-y'>1</text>
-<line x1="50.0" y1="103.3" x2="400.0" y2="103.3" class='tic'/>
-<line x1="43.0" y1="103.3" x2="50.0" y2="103.3"/>
-<text x='36.0' y='103.33333333333334' class='tic-value-y'>2</text>
+<line x1="50.0" y1="260.0" x2="50.0" y2="10.0" class='tic'/>
+<line x1="50.0" y1="266.7" x2="50.0" y2="260.0"/>
+<text x='50.0' y='273.3333333333333' class='tic-value-x'>3</text>
+<line x1="120.0" y1="260.0" x2="120.0" y2="10.0" class='tic'/>
+<line x1="120.0" y1="266.7" x2="120.0" y2="260.0"/>
+<text x='120.0' y='273.3333333333333' class='tic-value-x'>6</text>
+<line x1="190.0" y1="260.0" x2="190.0" y2="10.0" class='tic'/>
+<line x1="190.0" y1="266.7" x2="190.0" y2="260.0"/>
+<text x='190.0' y='273.3333333333333' class='tic-value-x'>9</text>
+<line x1="260.0" y1="260.0" x2="260.0" y2="10.0" class='tic'/>
+<line x1="260.0" y1="266.7" x2="260.0" y2="260.0"/>
+<text x='260.0' y='273.3333333333333' class='tic-value-x'>13</text>
+<line x1="330.0" y1="260.0" x2="330.0" y2="10.0" class='tic'/>
+<line x1="330.0" y1="266.7" x2="330.0" y2="260.0"/>
+<text x='330.0' y='273.3333333333333' class='tic-value-x'>16</text>
+<line x1="50.0" y1="260.0" x2="400.0" y2="260.0" class='tic'/>
+<line x1="43.0" y1="260.0" x2="50.0" y2="260.0"/>
+<text x='36.0' y='260.0' class='tic-value-y'>0</text>
+<line x1="50.0" y1="176.7" x2="400.0" y2="176.7" class='tic'/>
+<line x1="43.0" y1="176.7" x2="50.0" y2="176.7"/>
+<text x='36.0' y='176.66666666666669' class='tic-value-y'>1</text>
+<line x1="50.0" y1="93.3" x2="400.0" y2="93.3" class='tic'/>
+<line x1="43.0" y1="93.3" x2="50.0" y2="93.3"/>
+<text x='36.0' y='93.33333333333334' class='tic-value-y'>2</text>
 <line x1="50.0" y1="10.0" x2="400.0" y2="10.0" class='tic'/>
 <line x1="43.0" y1="10.0" x2="50.0" y2="10.0"/>
 <text x='36.0' y='10.0' class='tic-value-y'>3</text>
-<line x1="50.0" y1="290.0" x2="50.0" y2="10.0"/>
-<line x1="50.0" y1="290.0" x2="400.0" y2="290.0"/>
+<line x1="50.0" y1="260.0" x2="50.0" y2="10.0"/>
+<line x1="50.0" y1="260.0" x2="400.0" y2="260.0"/>
 <rect x="340.0" y="20.0" width="10.0" height="10.0" class='ai'/>
 <text x='355.0' y='29'>ai</text>
 <rect x="340.0" y="40.0" width="10.0" height="10.0" class='human'/>
@@ -121,14 +127,14 @@ rect.boxplot {
 <text x='355.0' y='69'>monkey</text>
 <text x='200.0' y='300.0' class='label-x'>ln(actual / estimate)</text>
 <text x='15' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>Histogram</text>
-<rect x="127.0" y="196.7" width="18.7" height="93.3" class='ai'/>
-<rect x="197.0" y="10.0" width="18.7" height="280.0" class='ai'/>
-<rect x="267.0" y="196.7" width="18.7" height="93.3" class='ai'/>
-<rect x="337.0" y="196.7" width="18.7" height="93.3" class='ai'/>
-<rect x="215.7" y="103.3" width="18.7" height="186.7" class='human'/>
-<rect x="285.7" y="196.7" width="18.7" height="93.3" class='human'/>
-<rect x="355.7" y="196.7" width="18.7" height="93.3" class='human'/>
-<rect x="94.3" y="103.3" width="18.7" height="186.7" class='monkey'/>
-<rect x="164.3" y="196.7" width="18.7" height="93.3" class='monkey'/>
-<rect x="234.3" y="196.7" width="18.7" height="93.3" class='monkey'/>
+<rect x="127.0" y="176.7" width="18.7" height="83.3" class='ai'/>
+<rect x="197.0" y="10.0" width="18.7" height="250.0" class='ai'/>
+<rect x="267.0" y="176.7" width="18.7" height="83.3" class='ai'/>
+<rect x="337.0" y="176.7" width="18.7" height="83.3" class='ai'/>
+<rect x="215.7" y="93.3" width="18.7" height="166.7" class='human'/>
+<rect x="285.7" y="176.7" width="18.7" height="83.3" class='human'/>
+<rect x="355.7" y="176.7" width="18.7" height="83.3" class='human'/>
+<rect x="94.3" y="93.3" width="18.7" height="166.7" class='monkey'/>
+<rect x="164.3" y="176.7" width="18.7" height="83.3" class='monkey'/>
+<rect x="234.3" y="176.7" width="18.7" height="83.3" class='monkey'/>
 </svg>

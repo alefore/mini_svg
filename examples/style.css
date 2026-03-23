@@ -42,11 +42,19 @@ line.tic {
   fill: rgba(255, 182, 193, 0.7);
   stroke-width: 0;
 }
+.monkey {
+  fill: rgba(216, 230, 173, 0.7);
+  stroke-width: 0;
+}
 rect.ai {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
 rect.human {
+  stroke: var(--text-dim);
+  stroke-width: 0.5;
+}
+rect.monkey {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
