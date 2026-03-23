@@ -5,12 +5,18 @@
 Creates a chart plotting various functions.
 Does linear extrapolation across all samples.
 
+* Input data format:
+  XY samples ([details](data_formats.md#xy-samples))
+
+## Examples
+
 ![LinePlot example](/examples/lineplot.svg?raw=true "LinePlot example")
 
 [source](/examples/lineplot.json)
 
-* Input data format:
-  XY samples ([details](data_formats.md#xy-samples))
+![Timeseries example](/examples/timeseries.svg?raw=true "TimeSeries example")
+
+[source](/examples/timeseries.json)
 
 ## Default values
 
