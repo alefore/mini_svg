@@ -29,6 +29,13 @@ text {
   fill: var(--text);
   font-family: monospace;
 }
+
+line.tick, line.identity-line {
+  stroke: var(--bg-mild);
+}
+line.axis-border {
+  stroke: var(--text-accent);
+}
 text.tick-x {
   text-anchor: middle;
   dominant-baseline: hanging;
@@ -37,6 +44,7 @@ text.tick-y {
   text-anchor: end;
   dominant-baseline: central;
 }
+
 circle.ai, rect.labels-ai {
   fill: rgba(173, 216, 230, 0.7);
   stroke-width: 0;
@@ -44,12 +52,6 @@ circle.ai, rect.labels-ai {
 circle.human, rect.labels-human {
   fill: rgba(255, 182, 193, 0.7);
   stroke-width: 0;
-}
-line.tick, line.identity-line {
-  stroke: var(--bg-mild);
-}
-line.axis-border {
-  stroke: var(--text-accent);
 }
 
 </style>

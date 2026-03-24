@@ -1,29 +1,3 @@
-:root {
-  --bg: #121212;
-  --bg-mild: #282828;
-  --text: #e0e0e0;
-  --text-accent-strong: #b9e0e1;
-  --text-accent: #93e0e3;
-  --text-dim: #63898b;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #ffffff;
-    --bg-mild: #eee;
-    --text: #333333;
-    --text-accent-strong: #76898a;
-    --text-accent: #63898b;
-    --text-dim: #999;
-  }
-}
-svg {
-  background-color: var(--bg);
-}
-text {
-  fill: var(--text);
-  font-family: monospace;
-}
 rect.boxplot {
   fill: var(--text-dim);
   stroke-width: 0;

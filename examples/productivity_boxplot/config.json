@@ -1,7 +1,11 @@
 {
   "boxplot": {
     "writer": {
-      "css": [ "examples/productivity_boxplot/style.css", "examples/productivity_boxplot/ticks.css"],
+      "css": [
+        "examples/style/style-base.css",
+        "examples/style/ticks.css",
+        "examples/productivity_boxplot/style.css"
+      ],
       "width": 400,
       "height": 600
     },

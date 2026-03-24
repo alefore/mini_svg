@@ -1,7 +1,11 @@
 {
   "scatterplot": {
     "writer": {
-      "css": [ "examples/productivity_scatterplot/style.css"],
+      "css": [
+        "examples/style/style-base.css",
+        "examples/style/ticks.css",
+        "examples/productivity_scatterplot/style.css"
+      ],
       "width": 800,
       "height": 600
     },

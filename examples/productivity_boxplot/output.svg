@@ -29,16 +29,7 @@ text {
   fill: var(--text);
   font-family: monospace;
 }
-rect.boxplot {
-  fill: var(--text-dim);
-  stroke-width: 0;
-}
-line.boxplot-median {
-  stroke: var(--text-accent);
-}
-line.boxplot-whisker {
-  stroke: var(--text-accent);
-}
+
 line.tick, line.identity-line {
   stroke: var(--bg-mild);
 }
@@ -52,6 +43,17 @@ text.tick-x {
 text.tick-y {
   text-anchor: end;
   dominant-baseline: central;
+}
+
+rect.boxplot {
+  fill: var(--text-dim);
+  stroke-width: 0;
+}
+line.boxplot-median {
+  stroke: var(--text-accent);
+}
+line.boxplot-whisker {
+  stroke: var(--text-accent);
 }
 
 </style>
