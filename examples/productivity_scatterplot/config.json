@@ -1,0 +1,15 @@
+{
+  "scatterplot": {
+    "writer": {
+      "css": [ "examples/productivity_scatterplot/style.css"],
+      "width": 800,
+      "height": 600
+    },
+    "plot": {
+      "margins": { "top": 10, "right": 20, "bottom": 60, "left": 80 },
+      "x_label": "Actual",
+      "y_label": "Estimate",
+      "identity_line": true
+    }
+  }
+}

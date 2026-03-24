@@ -6,6 +6,8 @@
 
 [source](/examples/boxplot.json)
 
+![BoxPlot example](/examples/productivity_boxplot/output.svg?raw=true "BoxPlot example")
+
 ## LinePlot
 
 ![LinePlot example](/examples/lineplot.svg?raw=true "LinePlot example")
@@ -27,3 +29,5 @@
 ![ScatterPlot example](/examples/scatterplot.svg?raw=true "ScatterPlot example")
 
 [source](/examples/scatterplot.json)
+
+![ScatterPlot example](/examples/productivity_scatterplot/output.svg?raw=true "BoxPlot example")

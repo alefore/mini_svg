@@ -81,26 +81,28 @@ class XYPlot:
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
       yield Line.vertical(x, self.domain.y1, self.domain.y2,
-                          ShapeParams(css_class="tic"))
+                          ShapeParams(css_class="tick tick-x"))
       span = (self.domain.height() / 50) * (
           self.output_range.width() / self.output_range.height())
       yield Line.vertical(x, -span, 0)
       yield Text(
           x_values.format_function(x), x, 2 * -span,
-          ShapeParams(css_class="tic-value-x"))
+          ShapeParams(css_class="tick tick-x"))
 
     y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
       yield Line.horizontal(self.domain.x1, self.domain.x2, y,
-                            ShapeParams(css_class="tic"))
+                            ShapeParams(css_class="tick tick-y"))
       span = self.domain.width() / 50
       yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y)
       yield Text(
           y_values.format_function(y), self.domain.x1 - 2 * span, y,
-          ShapeParams(css_class="tic-value-y"))
+          ShapeParams(css_class="tick tick-y"))
 
-    yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2)
-    yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1)
+    yield Line.vertical(self.domain.x1, self.domain.y1, self.domain.y2,
+                        ShapeParams(css_class="axis-border axis-border-y"))
+    yield Line.horizontal(self.domain.x1, self.domain.x2, self.domain.y1,
+                          ShapeParams(css_class="axis-border axis-border-x"))
 
     if self.identity_line:
       clip = min(self.domain.x2, self.domain.y2)

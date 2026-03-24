@@ -31,7 +31,7 @@ polygon, path, circle {
 line {
   stroke: var(--text-accent);
 }
-line.tic {
+line.tick {
   stroke: var(--bg-mild);
 }
 .ai, .labels-ai {
@@ -58,15 +58,15 @@ rect.monkey {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
-text.tic-value-x, text.tic-value-y {
+text.tick {
   fill: var(--text-dim);
   font-family: monospace;
 }
-text.tic-value-x {
+text.tick-x {
   text-anchor: middle;
   dominant-baseline: hanging;
 }
-text.tic-value-y {
+text.tick-y {
   text-anchor: end;
   dominant-baseline: central;
 }

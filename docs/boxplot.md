@@ -25,6 +25,11 @@ Input data format:
 
 ## CSS
 
-* The main box (rectangle) uses `class=boxplot`.
-* The line representing the median uses `class=boxplot-median`.
-* The text labels (under each box) use `class=boxplot-label`.
+The following objects use the following classes:
+
+* Main box (rectangle): `boxplot`.
+* Line representing the median: `boxplot-median`.
+* Text labels (under each box): `boxplot-label`.
+* The whiskers (lines): `boxplot-whisker`,
+  `boxplot-whisker-span` (for the vertical line),
+  `boxplot-whisker-end` (for the horizontal lines at the top and bottom).

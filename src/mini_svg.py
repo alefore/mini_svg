@@ -136,9 +136,13 @@ class _BoxPlotOne:
   def _shapes(self, index: int) -> Iterable[Shape]:
     q1, median, q3 = self.quantiles
     box_w = 0.7
-    yield Line.vertical(index, self.min_whisker, self.max_whisker)
+    yield Line.vertical(
+        index, self.min_whisker, self.max_whisker,
+        ShapeParams(css_class="boxplot-whisker boxplot-whisker-span"))
     for y in [self.min_whisker, self.max_whisker]:
-      yield Line.horizontal(index - box_w / 2, index + box_w / 2, y)
+      yield Line.horizontal(
+          index - box_w / 2, index + box_w / 2, y,
+          ShapeParams(css_class="boxplot-whisker boxplot-whisker-end"))
     yield Rect(index - box_w / 2, q1, box_w, q3 - q1,
                ShapeParams(css_class="boxplot"))
     yield Line.horizontal(index - box_w / 2, index + box_w / 2, median,
