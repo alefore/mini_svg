@@ -1,0 +1,13 @@
+{
+  "histogram": {
+    "bins": 20,
+    "writer": {
+      "width": 800,
+      "css": ["examples/style/style-base.css", "examples/style/ticks.css", "examples/random_distance.css"]
+    },
+    "plot": {
+      "margins": { "top": 10, "bottom": 60, "left": 80 },
+      "x_label": "distance"
+    }
+  }
+}

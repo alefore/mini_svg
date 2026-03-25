@@ -24,6 +24,10 @@
 
 [source](/examples/histogram.json)
 
+![Histogram example](/examples/random_distance.svg?raw=true "Histogram example")
+
+[source](/examples/random_distance.json)
+
 ## Scatterplot
 
 ![ScatterPlot example](/examples/scatterplot.svg?raw=true "ScatterPlot example")

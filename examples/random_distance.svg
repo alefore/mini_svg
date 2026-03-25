@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="800.0" height="300.0" viewBox="0 0 800.0 300.0" xmlns="http://www.w3.org/2000/svg" version="1.1">
+<style>
+:root {
+  --bg: #121212;
+  --bg-mild: #282828;
+  --text: #e0e0e0;
+  --text-accent-strong: #b9e0e1;
+  --text-accent: #93e0e3;
+  --text-dim: #63898b;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #ffffff;
+    --bg-mild: #eee;
+    --text: #333333;
+    --text-accent-strong: #76898a;
+    --text-accent: #63898b;
+    --text-dim: #999;
+  }
+}
+svg {
+  background-color: var(--bg);
+}
+text {
+  fill: var(--text);
+  font-family: monospace;
+}
+
+line.tick, line.identity-line {
+  stroke: var(--bg-mild);
+}
+line.axis-border {
+  stroke: var(--text-accent);
+}
+text.tick-x {
+  text-anchor: middle;
+  dominant-baseline: hanging;
+}
+text.tick-y {
+  text-anchor: end;
+  dominant-baseline: central;
+}
+
+rect.distance {
+  fill: var(--text-dim);
+}
+
+</style>
+<line x1="224.0" y1="240.0" x2="224.0" y2="10.0" class='tick tick-x'/>
+<line x1="224.0" y1="252.3" x2="224.0" y2="240.0"/>
+<text x='224.0' y='264.5' class='tick tick-x'>0.28</text>
+<line x1="152.0" y1="240.0" x2="152.0" y2="10.0" class='tick tick-x'/>
+<line x1="152.0" y1="252.3" x2="152.0" y2="240.0"/>
+<text x='152.0' y='264.5' class='tick tick-x'>0.14</text>
+<line x1="260.0" y1="240.0" x2="260.0" y2="10.0" class='tick tick-x'/>
+<line x1="260.0" y1="252.3" x2="260.0" y2="240.0"/>
+<text x='260.0' y='264.5' class='tick tick-x'>0.34</text>
+<line x1="296.0" y1="240.0" x2="296.0" y2="10.0" class='tick tick-x'/>
+<line x1="296.0" y1="252.3" x2="296.0" y2="240.0"/>
+<text x='296.0' y='264.5' class='tick tick-x'>0.41</text>
+<line x1="332.0" y1="240.0" x2="332.0" y2="10.0" class='tick tick-x'/>
+<line x1="332.0" y1="252.3" x2="332.0" y2="240.0"/>
+<text x='332.0' y='264.5' class='tick tick-x'>0.48</text>
+<line x1="368.0" y1="240.0" x2="368.0" y2="10.0" class='tick tick-x'/>
+<line x1="368.0" y1="252.3" x2="368.0" y2="240.0"/>
+<text x='368.0' y='264.5' class='tick tick-x'>0.55</text>
+<line x1="404.0" y1="240.0" x2="404.0" y2="10.0" class='tick tick-x'/>
+<line x1="404.0" y1="252.3" x2="404.0" y2="240.0"/>
+<text x='404.0' y='264.5' class='tick tick-x'>0.61</text>
+<line x1="440.0" y1="240.0" x2="440.0" y2="10.0" class='tick tick-x'/>
+<line x1="440.0" y1="252.3" x2="440.0" y2="240.0"/>
+<text x='440.0' y='264.5' class='tick tick-x'>0.68</text>
+<line x1="476.0" y1="240.0" x2="476.0" y2="10.0" class='tick tick-x'/>
+<line x1="476.0" y1="252.3" x2="476.0" y2="240.0"/>
+<text x='476.0' y='264.5' class='tick tick-x'>0.75</text>
+<line x1="512.0" y1="240.0" x2="512.0" y2="10.0" class='tick tick-x'/>
+<line x1="512.0" y1="252.3" x2="512.0" y2="240.0"/>
+<text x='512.0' y='264.5' class='tick tick-x'>0.82</text>
+<line x1="620.0" y1="240.0" x2="620.0" y2="10.0" class='tick tick-x'/>
+<line x1="620.0" y1="252.3" x2="620.0" y2="240.0"/>
+<text x='620.0' y='264.5' class='tick tick-x'>1.02</text>
+<line x1="764.0" y1="240.0" x2="764.0" y2="10.0" class='tick tick-x'/>
+<line x1="764.0" y1="252.3" x2="764.0" y2="240.0"/>
+<text x='764.0' y='264.5' class='tick tick-x'>1.29</text>
+<line x1="116.0" y1="240.0" x2="116.0" y2="10.0" class='tick tick-x'/>
+<line x1="116.0" y1="252.3" x2="116.0" y2="240.0"/>
+<text x='116.0' y='264.5' class='tick tick-x'>0.07</text>
+<line x1="656.0" y1="240.0" x2="656.0" y2="10.0" class='tick tick-x'/>
+<line x1="656.0" y1="252.3" x2="656.0" y2="240.0"/>
+<text x='656.0' y='264.5' class='tick tick-x'>1.09</text>
+<line x1="188.0" y1="240.0" x2="188.0" y2="10.0" class='tick tick-x'/>
+<line x1="188.0" y1="252.3" x2="188.0" y2="240.0"/>
+<text x='188.0' y='264.5' class='tick tick-x'>0.21</text>
+<line x1="692.0" y1="240.0" x2="692.0" y2="10.0" class='tick tick-x'/>
+<line x1="692.0" y1="252.3" x2="692.0" y2="240.0"/>
+<text x='692.0' y='264.5' class='tick tick-x'>1.16</text>
+<line x1="548.0" y1="240.0" x2="548.0" y2="10.0" class='tick tick-x'/>
+<line x1="548.0" y1="252.3" x2="548.0" y2="240.0"/>
+<text x='548.0' y='264.5' class='tick tick-x'>0.88</text>
+<line x1="80.0" y1="240.0" x2="80.0" y2="10.0" class='tick tick-x'/>
+<line x1="80.0" y1="252.3" x2="80.0" y2="240.0"/>
+<text x='80.0' y='264.5' class='tick tick-x'>0.01</text>
+<line x1="728.0" y1="240.0" x2="728.0" y2="10.0" class='tick tick-x'/>
+<line x1="728.0" y1="252.3" x2="728.0" y2="240.0"/>
+<text x='728.0' y='264.5' class='tick tick-x'>1.22</text>
+<line x1="584.0" y1="240.0" x2="584.0" y2="10.0" class='tick tick-x'/>
+<line x1="584.0" y1="252.3" x2="584.0" y2="240.0"/>
+<text x='584.0' y='264.5' class='tick tick-x'>0.95</text>
+<line x1="80.0" y1="240.0" x2="800.0" y2="240.0" class='tick tick-y'/>
+<line x1="65.6" y1="240.0" x2="80.0" y2="240.0"/>
+<text x='51.2' y='240.0' class='tick tick-y'>0</text>
+<line x1="80.0" y1="29.0" x2="800.0" y2="29.0" class='tick tick-y'/>
+<line x1="65.6" y1="29.0" x2="80.0" y2="29.0"/>
+<text x='51.2' y='29.0' class='tick tick-y'>100</text>
+<line x1="80.0" y1="155.6" x2="800.0" y2="155.6" class='tick tick-y'/>
+<line x1="65.6" y1="155.6" x2="80.0" y2="155.6"/>
+<text x='51.2' y='155.6' class='tick tick-y'>40</text>
+<line x1="80.0" y1="71.2" x2="800.0" y2="71.2" class='tick tick-y'/>
+<line x1="65.6" y1="71.2" x2="80.0" y2="71.2"/>
+<text x='51.2' y='71.2' class='tick tick-y'>80</text>
+<line x1="80.0" y1="197.8" x2="800.0" y2="197.8" class='tick tick-y'/>
+<line x1="65.6" y1="197.8" x2="80.0" y2="197.8"/>
+<text x='51.2' y='197.8' class='tick tick-y'>20</text>
+<line x1="80.0" y1="113.4" x2="800.0" y2="113.4" class='tick tick-y'/>
+<line x1="65.6" y1="113.4" x2="80.0" y2="113.4"/>
+<text x='51.2' y='113.4' class='tick tick-y'>60</text>
+<line x1="80.0" y1="240.0" x2="80.0" y2="10.0" class='axis-border axis-border-y'/>
+<line x1="80.0" y1="240.0" x2="800.0" y2="240.0" class='axis-border axis-border-x'/>
+<rect x="740.0" y="20.0" width="10.0" height="10.0" class='labels-distance'/>
+<text x='755.0' y='29.0'>distance</text>
+<text x='400.0' y='300.0' class='label-x'>distance</text>
+<text x='15.0' y='150.0' class='label-y' transform='rotate(-90 15,150.0)'>Histogram</text>
+<rect x="83.6" y="216.8" width="28.8" height="23.2" class='distance'/>
+<rect x="119.6" y="218.9" width="28.8" height="21.1" class='distance'/>
+<rect x="155.6" y="185.1" width="28.8" height="54.9" class='distance'/>
+<rect x="191.6" y="204.1" width="28.8" height="35.9" class='distance'/>
+<rect x="227.6" y="159.8" width="28.8" height="80.2" class='distance'/>
+<rect x="263.6" y="170.4" width="28.8" height="69.6" class='distance'/>
+<rect x="299.6" y="155.6" width="28.8" height="84.4" class='distance'/>
+<rect x="335.6" y="115.5" width="28.8" height="124.5" class='distance'/>
+<rect x="371.6" y="109.2" width="28.8" height="130.8" class='distance'/>
+<rect x="407.6" y="94.4" width="28.8" height="145.6" class='distance'/>
+<rect x="443.6" y="79.6" width="28.8" height="160.4" class='distance'/>
+<rect x="479.6" y="73.3" width="28.8" height="166.7" class='distance'/>
+<rect x="515.6" y="62.8" width="28.8" height="177.2" class='distance'/>
+<rect x="551.6" y="10.0" width="28.8" height="230.0" class='distance'/>
+<rect x="587.6" y="56.4" width="28.8" height="183.6" class='distance'/>
+<rect x="623.6" y="98.6" width="28.8" height="141.4" class='distance'/>
+<rect x="659.6" y="126.1" width="28.8" height="113.9" class='distance'/>
+<rect x="695.6" y="168.3" width="28.8" height="71.7" class='distance'/>
+<rect x="731.6" y="174.6" width="28.8" height="65.4" class='distance'/>
+<rect x="767.6" y="210.5" width="28.8" height="29.5" class='distance'/>
+</svg>
