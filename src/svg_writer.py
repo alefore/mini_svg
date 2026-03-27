@@ -52,7 +52,7 @@ class SvgWriter:
 
   @_write_shape.register
   def _(self, circle: Circle) -> str:
-    contents = f"circle cx='{circle.cx:.1f}' cy='{circle.cy:.1f}' r='{circle.r:.1f}'{circle.params.as_text()}"
+    contents = f'circle cx="{circle.cx:.1f}" cy="{circle.cy:.1f}" r="{circle.r:.1f}"{circle.params.as_text()}'
     title = circle.params.title
     if title is not None:
       return f"<{contents}><title>{title}</title></circle>"
@@ -61,11 +61,11 @@ class SvgWriter:
 
   @_write_shape.register
   def _(self, text: Text) -> str:
-    return f"<text x='{text.x:.1f}' y='{text.y:.1f}'{text.params.as_text()}>{text.text}</text>"
+    return f'<text x="{text.x:.1f}" y="{text.y:.1f}"{text.params.as_text()}>{text.text}</text>'
 
   @_write_shape.register
   def _(self, path: Path) -> str:
-    return f"<path d='{' '.join(str(p) for p in path.points)}' {path.params.as_text()}/>"
+    return f'<path d="{" ".join(str(p) for p in path.points)}" {path.params.as_text()}/>'
 
 
 with_svg_writer = with_config(SvgWriter)
