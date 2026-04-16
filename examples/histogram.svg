@@ -36,7 +36,7 @@ polygon, path, circle {
 line {
   stroke: var(--text-accent);
 }
-line.tic {
+line.tick {
   stroke: var(--bg-mild);
 }
 .ai, .labels-ai {
@@ -63,15 +63,15 @@ rect.monkey {
   stroke: var(--text-dim);
   stroke-width: 0.5;
 }
-text.tic-value-x, text.tic-value-y {
+text.tick {
   fill: var(--text-dim);
   font-family: monospace;
 }
-text.tic-value-x {
+text.tick-x {
   text-anchor: middle;
   dominant-baseline: hanging;
 }
-text.tic-value-y {
+text.tick-y {
   text-anchor: end;
   dominant-baseline: central;
 }
@@ -90,35 +90,35 @@ rect.boxplot {
 }
 
 </style>
-<line x1="50.0" y1="260.0" x2="50.0" y2="10.0" class='tic'/>
+<line x1="50.0" y1="260.0" x2="50.0" y2="10.0" class='tick tick-x'/>
 <line x1="50.0" y1="266.7" x2="50.0" y2="260.0"/>
-<text x='50.0' y='273.3' class='tic-value-x'>3</text>
-<line x1="120.0" y1="260.0" x2="120.0" y2="10.0" class='tic'/>
+<text x='50.0' y='273.3' class='tick tick-x'>3</text>
+<line x1="120.0" y1="260.0" x2="120.0" y2="10.0" class='tick tick-x'/>
 <line x1="120.0" y1="266.7" x2="120.0" y2="260.0"/>
-<text x='120.0' y='273.3' class='tic-value-x'>6</text>
-<line x1="190.0" y1="260.0" x2="190.0" y2="10.0" class='tic'/>
+<text x='120.0' y='273.3' class='tick tick-x'>6</text>
+<line x1="190.0" y1="260.0" x2="190.0" y2="10.0" class='tick tick-x'/>
 <line x1="190.0" y1="266.7" x2="190.0" y2="260.0"/>
-<text x='190.0' y='273.3' class='tic-value-x'>9</text>
-<line x1="260.0" y1="260.0" x2="260.0" y2="10.0" class='tic'/>
+<text x='190.0' y='273.3' class='tick tick-x'>9</text>
+<line x1="260.0" y1="260.0" x2="260.0" y2="10.0" class='tick tick-x'/>
 <line x1="260.0" y1="266.7" x2="260.0" y2="260.0"/>
-<text x='260.0' y='273.3' class='tic-value-x'>13</text>
-<line x1="330.0" y1="260.0" x2="330.0" y2="10.0" class='tic'/>
+<text x='260.0' y='273.3' class='tick tick-x'>13</text>
+<line x1="330.0" y1="260.0" x2="330.0" y2="10.0" class='tick tick-x'/>
 <line x1="330.0" y1="266.7" x2="330.0" y2="260.0"/>
-<text x='330.0' y='273.3' class='tic-value-x'>16</text>
-<line x1="50.0" y1="260.0" x2="400.0" y2="260.0" class='tic'/>
+<text x='330.0' y='273.3' class='tick tick-x'>16</text>
+<line x1="50.0" y1="260.0" x2="400.0" y2="260.0" class='tick tick-y'/>
 <line x1="43.0" y1="260.0" x2="50.0" y2="260.0"/>
-<text x='36.0' y='260.0' class='tic-value-y'>0</text>
-<line x1="50.0" y1="176.7" x2="400.0" y2="176.7" class='tic'/>
+<text x='36.0' y='260.0' class='tick tick-y'>0</text>
+<line x1="50.0" y1="176.7" x2="400.0" y2="176.7" class='tick tick-y'/>
 <line x1="43.0" y1="176.7" x2="50.0" y2="176.7"/>
-<text x='36.0' y='176.7' class='tic-value-y'>1</text>
-<line x1="50.0" y1="93.3" x2="400.0" y2="93.3" class='tic'/>
+<text x='36.0' y='176.7' class='tick tick-y'>1</text>
+<line x1="50.0" y1="93.3" x2="400.0" y2="93.3" class='tick tick-y'/>
 <line x1="43.0" y1="93.3" x2="50.0" y2="93.3"/>
-<text x='36.0' y='93.3' class='tic-value-y'>2</text>
-<line x1="50.0" y1="10.0" x2="400.0" y2="10.0" class='tic'/>
+<text x='36.0' y='93.3' class='tick tick-y'>2</text>
+<line x1="50.0" y1="10.0" x2="400.0" y2="10.0" class='tick tick-y'/>
 <line x1="43.0" y1="10.0" x2="50.0" y2="10.0"/>
-<text x='36.0' y='10.0' class='tic-value-y'>3</text>
-<line x1="50.0" y1="260.0" x2="50.0" y2="10.0"/>
-<line x1="50.0" y1="260.0" x2="400.0" y2="260.0"/>
+<text x='36.0' y='10.0' class='tick tick-y'>3</text>
+<line x1="50.0" y1="260.0" x2="50.0" y2="10.0" class='axis-border axis-border-y'/>
+<line x1="50.0" y1="260.0" x2="400.0" y2="260.0" class='axis-border axis-border-x'/>
 <rect x="340.0" y="20.0" width="10.0" height="10.0" class='labels-ai'/>
 <text x='355.0' y='29.0'>ai</text>
 <rect x="340.0" y="40.0" width="10.0" height="10.0" class='labels-human'/>
