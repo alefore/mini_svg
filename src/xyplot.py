@@ -56,7 +56,7 @@ class XYPlot:
       lx = self.output_range.width() - 60
       ly = 20 + (i * 20)
       yield Rect(lx, ly, 10, 10, ShapeParams(css_class=f"labels-{key}"))
-      yield Text(key, lx + 15, ly + 9)
+      yield Text(key, lx + 15, ly + 9, ShapeParams(css_class=f"labels-{key}"))
 
     if self.x_label:
       yield Text(self.x_label,

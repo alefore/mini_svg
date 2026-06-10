@@ -9,10 +9,19 @@ class ShapeParams:
   css_class: str | None = None
   title: str | None = None
   transform: str | None = None
+  fill: str | None = None
+  stroke: str | None = None
+  stroke_width: str | None = None
 
   def as_text(self) -> str:
     # title must be handled separately.
-    data = {"class": self.css_class, "transform": self.transform}
+    data = {
+        "class": self.css_class,
+        "transform": self.transform,
+        "fill": self.fill,
+        "stroke": self.stroke,
+        "stroke-width": self.stroke_width,
+    }
     return "".join(
         f" {key}='{value}'" for key, value in data.items() if value is not None)
 
