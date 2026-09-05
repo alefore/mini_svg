@@ -11,18 +11,18 @@ export interface ShapeParams {
 
 export function shapeParamsAsText(params: ShapeParams): string {
   // Explicitly typing the record ensures strict static checking
-  const data: Record<string, string | undefined> = {
-    "class": params.cssClass,
-    "transform": params.transform,
-    "fill": params.fill,
-    "stroke": params.stroke,
-    "stroke-width": params.strokeWidth,
+  const data: Record<string, string|undefined> = {
+    'class': params.cssClass,
+    'transform': params.transform,
+    'fill': params.fill,
+    'stroke': params.stroke,
+    'stroke-width': params.strokeWidth,
   };
 
   return Object.entries(data)
-    .filter(([, value]) => value !== undefined)
-    .map(([key, value]) => ` ${key}='${value}'`)
-    .join("");
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => ` ${key}='${value}'`)
+      .join('');
 }
 
 export type PathPoint = {

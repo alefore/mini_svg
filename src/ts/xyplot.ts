@@ -145,16 +145,23 @@ export class XYPlot {
         y1: this.domain.y1,
         x2: x,
         y2: this.domain.y2,
-        params: {cssClass: 'tick tick-x'}
+        params: {cssClass: 'grid-line grid-line-x tick tick-x'}
       });
       const span = (this.domain.height() / 50) *
           (this.outputRange.width() / this.outputRange.height());
-      shapes.push({type: 'line', x1: x, y1: -span, x2: x, y2: 0, params: {}});
+      shapes.push({
+        type: 'line',
+        x1: x,
+        y1: this.domain.y1 - span,
+        x2: x,
+        y2: this.domain.y1,
+        params: {cssClass: 'tick tick-x'}
+      });
       shapes.push({
         type: 'text',
         text: xValues.formatFunction(x),
         x: x,
-        y: 2 * -span,
+        y: this.domain.y1 - 2 * span,
         params: {cssClass: 'tick tick-x'}
       });
     }
@@ -169,7 +176,7 @@ export class XYPlot {
         y1: y,
         x2: this.domain.x2,
         y2: y,
-        params: {cssClass: 'tick tick-y'}
+        params: {cssClass: 'grid-line grid-line-y tick tick-y'}
       });
       const span = this.domain.width() / 50;
       shapes.push({
@@ -178,7 +185,7 @@ export class XYPlot {
         y1: y,
         x2: this.domain.x1,
         y2: y,
-        params: {}
+        params: {cssClass: 'tick tick-y'}
       });
       shapes.push({
         type: 'text',
