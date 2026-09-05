@@ -1,6 +1,6 @@
 # mini_svg
 
-Simple py logic to generate SVG visualizations of scientific data
+Simple py/ts logic to generate SVG visualizations of scientific data
 ([example graphs](examples/README.md)).
 
 The generated images tend to be significantly leaner
@@ -22,8 +22,25 @@ For example, a simple histogram is:
 
 ## Usage
 
-There's two main interfaces:
+There's two main interfaces.
 
-* As a command-line which receives parameters from a json file.
-  See `.sh` files in [the examples directory](examples/).
-* From Python (in-process) through the functions exposed in `mini_svg`.
+### Command-line
+
+As a command-line which receives parameters from a json file.
+See `.sh` files in [the examples directory](examples/).
+
+### Python (in-process)
+
+Call the functions exposed in module `mini_svg`.
+
+### TypeScript (in-browser)
+
+Install:
+
+    npm install git+https://github.com/alefore/mini_svg.git
+
+TODO: More information is missing here.
+
+## Caveats
+
+Type TypeScript implementation is experimental.

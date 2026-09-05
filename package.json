@@ -5,6 +5,7 @@
   "main": "dist/mini_svg_entry.js",
   "types": "dist/mini_svg_entry.d.js",
   "scripts": {
+    "prepare": "tsc",
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && esbuild src/ts/mini_svg_entry.ts --bundle --format=esm --outdir=dist",
     "test": "echo \"Error: no test specified\" && exit 1"
