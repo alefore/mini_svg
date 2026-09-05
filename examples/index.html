@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>mini_svg lineplot test</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="lineplot.css" />
+</head>
+<body>
+  <h2>Introduction</h2>
+  <p>Examples to show the TypeScript logic.</p>
+  <p>python3 -m http.server</p>
+  <h2>Lineplot Output</h2>
+  <div id="chart-container"></div>
+
+  <script type="module">
+    import { lineplot, Box, XYPlot, SvgWriter } from './mini_svg_entry.js';
+
+    const plot = new XYPlot({
+      xLabel: "time",
+      yLabel: "effort",
+      margins: { top: 10, bottom: 50, left: 50, right: 10 }
+    });
+
+    const data = {
+      "exp": [[0, 0], [1, 1], [4, 16], [3, 9], [5, 25], [2, 4]],
+      "lin": [[0, 0], [1, 2], [3, 6], [5, 10]]
+    };
+    document.getElementById('chart-container').innerHTML = lineplot(new SvgWriter(), plot, data);
+  </script>
+</body>
+</html>
