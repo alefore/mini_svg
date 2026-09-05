@@ -1,5 +1,5 @@
 import {Box, Margins, simpleBox} from './box.js';
-import {PlotTicksConfig} from './plot_ticks.js';
+import {getPlotTicks, PlotTicksConfig} from './plot_ticks.js';
 import {MoveAndScale, PointTransformer} from './point_transformer.js';
 import {Shape, ShapeParams, transformShape} from './shape.js';
 
@@ -30,8 +30,8 @@ export class XYPlot {
     domain = new Box(),
     outputRange = new Box(),
     margins,
-    xAxisValues = new PlotTicksConfig(),
-    yAxisValues = new PlotTicksConfig(),
+    xAxisValues = {},
+    yAxisValues = {},
     xLabel,
     yLabel,
     labels = new Set(),
@@ -63,8 +63,8 @@ export class XYPlot {
       domain: this.domain.withDefaults(defaults.domain),
       outputRange: this.outputRange.withDefaults(defaults.outputRange),
       margins: this.margins ?? defaults.margins,
-      xAxisValues: this.xAxisValues.withDefaults(defaults.xAxisValues),
-      yAxisValues: this.yAxisValues.withDefaults(defaults.yAxisValues),
+      xAxisValues: {...defaults.xAxisValues, ...this.xAxisValues},
+      yAxisValues: {...defaults.yAxisValues, ...this.yAxisValues},
       xLabel: this.xLabel ?? defaults.xLabel,
       yLabel: this.yLabel ?? defaults.yLabel,
       labels: this.labels.size > 0 ? this.labels : defaults.labels,
@@ -136,7 +136,8 @@ export class XYPlot {
     const shapes: Shape[] = [];
 
     // X Axis Ticks
-    const xValues = this.xAxisValues.build(this.domain.x1, this.domain.x2);
+    const xValues =
+        getPlotTicks(this.xAxisValues, this.domain.x1, this.domain.x2);
     for (const x of xValues.values) {
       shapes.push({
         type: 'line',
@@ -159,7 +160,8 @@ export class XYPlot {
     }
 
     // Y Axis Ticks
-    const yValues = this.yAxisValues.build(this.domain.y1, this.domain.y2);
+    const yValues =
+        getPlotTicks(this.yAxisValues, this.domain.y1, this.domain.y2);
     for (const y of yValues.values) {
       shapes.push({
         type: 'line',
