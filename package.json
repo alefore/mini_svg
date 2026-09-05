@@ -1,7 +1,9 @@
 {
   "name": "mini_svg",
   "version": "1.0.0",
-  "main": "mini_svg.js",
+  "type": "module",
+  "main": "dist/mini_svg_entry.js",
+  "types": "dist/mini_svg_entry.d.js",
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "npm run typecheck && esbuild src/ts/mini_svg_entry.ts --bundle --format=esm --outdir=dist",
