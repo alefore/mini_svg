@@ -7,7 +7,7 @@ export interface PlotTicksConfig {
   values?: Set<number>;
   maxCount?: number;
   minDistance?: number;
-  timeFormat?: string;
+  timeFormat?: Intl.DateTimeFormatOptions;
   valueFormat?: string;
 }
 
@@ -46,9 +46,7 @@ function fmtTime(config: PlotTicksConfig, t: number): string {
   // Python fromtimestamp uses seconds; JS Date uses milliseconds
   const date = new Date(t * 1000);
   if (!config.timeFormat) throw new Error('Missing timeFormat');
-  // Note: A true strftime port requires a library like date-fns.
-  // Falling back to a standard string representation here.
-  return date.toISOString();
+  return new Intl.DateTimeFormat(undefined, config.timeFormat).format(date);
 }
 
 function getFmt(config: PlotTicksConfig, base: number): (v: number) => string {
