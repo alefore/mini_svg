@@ -9,6 +9,7 @@ export interface PlotTicksConfig {
   minDistance?: number;
   timeFormat?: Intl.DateTimeFormatOptions;
   valueFormat?: string;
+  formatFunction?: (value: number) => string;
 }
 
 function findBase(config: PlotTicksConfig, low: number, high: number): number {
@@ -50,13 +51,16 @@ function fmtTime(config: PlotTicksConfig, t: number): string {
 }
 
 function getFmt(config: PlotTicksConfig, base: number): (v: number) => string {
-  if (config.timeFormat !== undefined && config.valueFormat !== undefined) {
-    throw new Error('Cannot specify both timeFormat and valueFormat');
+  const definedFormats = [
+    config.timeFormat, config.valueFormat, config.formatFunction
+  ].filter(f => f !== undefined);
+  if (definedFormats.length > 1) {
+    throw new Error(
+        'At most one of timeFormat, valueFormat, or formatFunction may be specified.');
   }
 
-  if (config.timeFormat !== undefined) {
-    return (t: number) => fmtTime(config, t);
-  }
+  if (config.formatFunction !== undefined) return config.formatFunction;
+  if (config.timeFormat !== undefined) return (t: number) => fmtTime(config, t);
 
   let valueFormat = config.valueFormat;
   if (valueFormat) {
