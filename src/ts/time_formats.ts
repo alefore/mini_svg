@@ -45,18 +45,22 @@ export function getLargestUnit(durationMs: number): string|undefined {
   return firstNonZero?.unit;
 }
 
-export function formatDuration(
-    durationMs: number, fixedTopUnit?: string): string {
-  if (durationMs === 0 && !fixedTopUnit) return '0s';
+export interface FormatDurationOptions {
+  durationMs: number;
+  fixedTopUnit?: string;
+}
 
-  const isNegative = durationMs < 0;
-  const units = getDurationUnits(durationMs);
+export function formatDuration(options: FormatDurationOptions): string {
+  if (options.durationMs === 0 && !options.fixedTopUnit) return '0s';
+
+  const isNegative = options.durationMs < 0;
+  const units = getDurationUnits(options.durationMs);
 
   let first: DurationUnit|undefined;
   let second: DurationUnit|undefined;
 
-  if (fixedTopUnit) {
-    const topIndex = units.findIndex(u => u.unit === fixedTopUnit);
+  if (options.fixedTopUnit) {
+    const topIndex = units.findIndex(u => u.unit === options.fixedTopUnit);
     if (topIndex !== -1) {
       first = units[topIndex];
       second = units[topIndex + 1];  // May be undefined if first is 'ms'
@@ -91,7 +95,7 @@ export function formatDuration(
   } else {
     result = `${first.val}${first.unit}`;
 
-    if (second) {
+    if (second && second.val != 0) {
       let valStr = second.val.toString();
       if (valStr.length === 1 && second.padTo2) {
         valStr = `0${valStr}`;

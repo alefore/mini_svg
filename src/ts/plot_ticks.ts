@@ -101,7 +101,8 @@ function getFmt(
 
   if (config.isDuration) {
     const topUnit = getLargestUnit(high - low);
-    return (v: number) => formatDuration(v - low, topUnit);
+    return (v: number) =>
+               formatDuration({durationMs: v - low, fixedTopUnit: topUnit});
   }
 
   if (config.timeFormat !== undefined) return (t: number) => fmtTime(config, t);
