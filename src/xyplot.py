@@ -80,9 +80,8 @@ class XYPlot:
     assert self.domain.y2 is not None
     x_values = self.x_axis_values.build(self.domain.x1, self.domain.x2)
     for x in x_values.values:
-      yield Line.vertical(
-          x, self.domain.y1, self.domain.y2,
-          ShapeParams(css_class="grid-line grid-line-x tick tick-x"))
+      yield Line.vertical(x, self.domain.y1, self.domain.y2,
+                          ShapeParams(css_class="grid-line grid-line-x"))
       span = (self.domain.height() / 50) * (
           self.output_range.width() / self.output_range.height())
       yield Line.vertical(x, self.domain.y1 - span, 0,
@@ -93,9 +92,8 @@ class XYPlot:
 
     y_values = self.y_axis_values.build(self.domain.y1, self.domain.y2)
     for y in y_values.values:
-      yield Line.horizontal(
-          self.domain.x1, self.domain.x2, y,
-          ShapeParams(css_class="grid-line grid-line-y tick tick-y"))
+      yield Line.horizontal(self.domain.x1, self.domain.x2, y,
+                            ShapeParams(css_class="grid-line grid-line-y"))
       span = self.domain.width() / 50
       yield Line.horizontal(self.domain.x1 - span, self.domain.x1, y,
                             ShapeParams(css_class="tick tick-y"))
