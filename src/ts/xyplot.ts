@@ -145,7 +145,7 @@ export class XYPlot {
         y1: this.domain.y1,
         x2: x,
         y2: this.domain.y2,
-        params: {cssClass: 'grid-line grid-line-x tick tick-x'}
+        params: {cssClass: 'grid-line grid-line-x'}
       });
       const span = (this.domain.height() / 50) *
           (this.outputRange.width() / this.outputRange.height());
@@ -176,7 +176,7 @@ export class XYPlot {
         y1: y,
         x2: this.domain.x2,
         y2: y,
-        params: {cssClass: 'grid-line grid-line-y tick tick-y'}
+        params: {cssClass: 'grid-line grid-line-y'}
       });
       const span = this.domain.width() / 50;
       shapes.push({
