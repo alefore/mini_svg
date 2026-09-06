@@ -11,9 +11,7 @@ export interface PlotTicksConfig {
   minDistance?: number;
   timeFormat?: Intl.DateTimeFormatOptions;
   valueFormat?: string;
-  // Input values are milliseconds since epoch. We'll display ticks by
-  // subtracting the lowest value from the tick values. In other words,
-  // the values are all relative to the beginning of the graph.
+  // Input values are milliseconds since epoch.
   isDuration?: boolean;
 }
 
@@ -35,9 +33,7 @@ function findBase(config: PlotTicksConfig, low: number, high: number): number {
     roughDistance = Math.max(roughDistance, config.minDistance);
   if (config.isDuration) {
     for (const candidate of DURATION_BASES) {
-      // Since ticks are anchored to low, the total ticks is simply the span
-      // divided by the candidate interval
-      const count = Math.floor((high - low) / candidate) + 1;
+      const count = Math.floor(high / candidate) + 1;
       if (count <= maxCount &&
           (!config.minDistance || candidate >= config.minDistance)) {
         return candidate;
@@ -73,7 +69,7 @@ function getValues(
     config: PlotTicksConfig, low: number, high: number,
     base: number): number[] {
   if (config.values) return Array.from(config.values);
-  const firstTic = config.isDuration ? low : Math.ceil(low / base) * base;
+  const firstTic = Math.ceil(low / base) * base;
   if (firstTic > high) return [];
   const count =
       Math.min(config.maxCount ?? 10, Math.floor((high - firstTic) / base) + 1);
@@ -100,9 +96,9 @@ function getFmt(
   }
 
   if (config.isDuration) {
-    const topUnit = getLargestUnit(high - low);
+    const topUnit = getLargestUnit(high);
     return (v: number) =>
-               formatDuration({durationMs: v - low, fixedTopUnit: topUnit});
+               formatDuration({durationMs: v, fixedTopUnit: topUnit});
   }
 
   if (config.timeFormat !== undefined) return (t: number) => fmtTime(config, t);
