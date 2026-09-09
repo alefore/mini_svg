@@ -26,7 +26,7 @@ export function getDurationUnits(durationMs: number): DurationUnit[] {
   const minutes = Math.floor(rem / MS_PER_MINUTE);
   rem %= MS_PER_MINUTE;
   const seconds = Math.floor(rem / MS_PER_SECOND);
-  const milliseconds = rem % MS_PER_SECOND;
+  const milliseconds = Math.floor(rem % MS_PER_SECOND);
 
   return [
     {unit: 'y', val: years, padTo2: false},
